@@ -15,11 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin Staff',
-            'email' => 'admin@seatweb.com',
-            'password' => 'password123',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@seatweb.com'],
+            [
+                'name' => 'Admin Staff',
+                'password' => 'password123',
+            ]
+        );
+
+        if (Package::exists()) {
+            return;
+        }
 
         $turkiye = Package::create([
             'name' => 'Türkiye Classic 8D6N',
