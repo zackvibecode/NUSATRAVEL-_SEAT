@@ -1,0 +1,79 @@
+@extends('layouts.app')
+
+@section('title', 'Edit Package')
+
+@section('content')
+    <div class="max-w-xl mx-auto">
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <h2 class="text-3xl font-black tracking-tight leading-none">Edit Package</h2>
+                <p class="text-sm text-charcoal mt-2">{{ $package->name }}</p>
+            </div>
+            <a href="{{ route('packages.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back
+            </a>
+        </div>
+
+        <form method="POST" action="{{ route('packages.update', $package) }}" class="bg-white rounded-3xl shadow-sm border border-line p-8 space-y-6">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label for="name" class="block text-sm font-semibold text-ink mb-2">Package Name *</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{ old('name', $package->name) }}"
+                    required
+                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                >
+            </div>
+
+            <div>
+                <label for="destination" class="block text-sm font-semibold text-ink mb-2">Destination *</label>
+                <input
+                    type="text"
+                    id="destination"
+                    name="destination"
+                    value="{{ old('destination', $package->destination) }}"
+                    required
+                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                >
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-semibold text-ink mb-2">Description</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="3"
+                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                >{{ old('description', $package->description) }}</textarea>
+            </div>
+
+            <div>
+                <label for="status" class="block text-sm font-semibold text-ink mb-2">Status</label>
+                <select
+                    id="status"
+                    name="status"
+                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                >
+                    <option value="active" @selected(old('status', $package->status) === 'active')>Active</option>
+                    <option value="archived" @selected(old('status', $package->status) === 'archived')>Archived</option>
+                </select>
+            </div>
+
+            <div class="flex items-center gap-4 pt-2">
+                <button type="submit"
+                        class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
+                    Update Package
+                </button>
+                <a href="{{ route('packages.index') }}" class="text-sm font-bold text-charcoal hover:text-ink">Cancel</a>
+            </div>
+        </form>
+    </div>
+@endsection

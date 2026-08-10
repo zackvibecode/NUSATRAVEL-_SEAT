@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Departure;
+use App\Models\Package;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class DepartureController extends Controller
+{
+    public function index(Request $request): View
+    {
+        $query = Departure::with('package', 'registrations');
+
+        // Filter by month/year (PRD section 12)
+        if ($request->filled('month') && $request->filled('year')) {
+            $query->whereMonth('departure_date', $request->integer('month'))
+                ->whereYear('departure_date', $request->integer('year'));
+        }
+
+        $departures = $query->orderByDesc('departure_date')->get();
+
+        $months = [
+            1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
+            5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
+            9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December',
+        ];
+
+        $filterActive = $request->filled('month') && $request->filled('year');
+
+        return view('departures.index', [
+            'departures' => $departures,
+            'months' => $months,
+            'selectedMonth' => $request->filled('month') ? $request->integer('month') : null,
+            'selectedYear' => $request->filled('year') ? $request->integer('year') : null,
+            'filterActive' => $filterActive,
+        ]);
+    }
+
+    public function create(): View
+    {
+        $packages = Package::active()->orderBy('name')->get();
+
+        return view('departures.create', compact('packages'));
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'package_id' => ['required', 'exists:packages,id'],
+            'departure_date' => ['required', 'date'],
+            'return_date' => ['required', 'date', 'after_or_equal:departure_date'],
+            'total_seats' => ['required', 'integer', 'min:1'],
+            'price' => ['nullable', 'numeric', 'min:0'],
+            'airline' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', 'in:open,cancelled'],
+            'notes' => ['nullable', 'string'],
+        ]);
+
+        $data['status'] ??= 'open';
+
+        Departure::create($data);
+
+        return redirect()->route('departures.index')->with('success', 'Departure created successfully.');
+    }
+
+    public function show(Departure $departure): View
+    {
+        $departure->load('package', 'registrations');
+
+        return view('departures.show', [
+            'departure' => $departure,
+            'registrations' => $departure->registrations,
+        ]);
+    }
+
+    public function edit(Departure $departure): View
+    {
+        $packages = Package::active()->orderBy('name')->get();
+
+        return view('departures.edit', compact('departure', 'packages'));
+    }
+
+    public function update(Request $request, Departure $departure): RedirectResponse
+    {
+        $data = $request->validate([
+            'package_id' => ['required', 'exists:packages,id'],
+            'departure_date' => ['required', 'date'],
+            'return_date' => ['required', 'date', 'after_or_equal:departure_date'],
+            'total_seats' => ['required', 'integer', 'min:1'],
+            'price' => ['nullable', 'numeric', 'min:0'],
+            'airline' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', 'in:open,cancelled'],
+            'notes' => ['nullable', 'string'],
+        ]);
+
+        $departure->update($data);
+
+        return redirect()->route('departures.show', $departure)->with('success', 'Departure updated successfully.');
+    }
+}

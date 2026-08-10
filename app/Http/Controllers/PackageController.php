@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Package;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class PackageController extends Controller
+{
+    public function index(): View
+    {
+        $packages = Package::withCount('departures')
+            ->orderByDesc('status')
+            ->orderBy('name')
+            ->get();
+
+        return view('packages.index', compact('packages'));
+    }
+
+    public function create(): View
+    {
+        return view('packages.create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'destination' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', 'in:active,archived'],
+        ]);
+
+        Package::create($data);
+
+        return redirect()->route('packages.index')->with('success', 'Package created successfully.');
+    }
+
+    public function edit(Package $package): View
+    {
+        return view('packages.edit', compact('package'));
+    }
+
+    public function update(Request $request, Package $package): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'destination' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', 'in:active,archived'],
+        ]);
+
+        $package->update($data);
+
+        return redirect()->route('packages.index')->with('success', 'Package updated successfully.');
+    }
+
+    /**
+     * Archive instead of delete so historical departures/registrations stay (PRD rule 9).
+     */
+    public function destroy(Package $package): RedirectResponse
+    {
+        $package->update(['status' => 'archived']);
+
+        return redirect()->route('packages.index')->with('success', 'Package archived. Historical data was kept.');
+    }
+}
