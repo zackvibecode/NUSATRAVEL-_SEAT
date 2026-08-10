@@ -3,11 +3,15 @@ set -e
 
 cd /app
 
+echo "Checking Vite manifest..."
+test -f public/build/manifest.json
+
 php artisan migrate --force
 php artisan db:seed --force
 
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# Avoid route:cache â€” safer for first deploys
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
 
 exec php artisan serve --host=0.0.0.0 --port="${PORT:-10000}"

@@ -10,14 +10,12 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::redirect('/', '/login');
 
 // Public login / logout (PRD section 4.2)
-Route::get('login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('login', [AuthController::class, 'login'])->name('login.attempt');
-Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // All internal pages require authentication (PRD section 4.2)
 Route::middleware('auth')->group(function () {

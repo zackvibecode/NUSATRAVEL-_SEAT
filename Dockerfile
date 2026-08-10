@@ -1,14 +1,12 @@
-# Build frontend assets
+# Build CSS/JS assets
 FROM node:24-bookworm AS frontend
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY vite.config.js ./
+COPY package.json package-lock.json vite.config.js ./
 COPY resources ./resources
 COPY public ./public
-RUN npm run build
+RUN npm ci && npm run build && test -f public/build/manifest.json
 
-# PHP runtime for Laravel on Render
+# PHP runtime
 FROM php:8.3-cli-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -27,6 +25,7 @@ COPY . .
 COPY --from=frontend /app/public/build ./public/build
 
 RUN composer dump-autoload --optimize \
+    && test -f public/build/manifest.json \
     && chmod -R 775 storage bootstrap/cache \
     && chmod +x docker/start.sh
 
