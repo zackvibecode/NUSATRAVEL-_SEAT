@@ -6,7 +6,7 @@
 
         <title>Login — SeatWeb</title>
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('partials.assets')
     </head>
     <body class="bg-white text-ink antialiased min-h-screen">
         <div class="min-h-screen flex flex-col lg:flex-row">

@@ -6,7 +6,7 @@
 
         <title>@yield('title', 'SeatWeb') — Trip Seat Availability</title>
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('partials.assets')
     </head>
     <body class="bg-fog text-ink antialiased">
         <div class="min-h-screen flex">

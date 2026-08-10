@@ -1,12 +1,3 @@
-# Build CSS/JS assets
-FROM node:24-bookworm AS frontend
-WORKDIR /app
-COPY package.json package-lock.json vite.config.js ./
-COPY resources ./resources
-COPY public ./public
-RUN npm ci && npm run build && test -f public/build/manifest.json
-
-# PHP runtime
 FROM php:8.3-cli-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -22,7 +13,6 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 COPY . .
-COPY --from=frontend /app/public/build ./public/build
 
 RUN composer dump-autoload --optimize \
     && test -f public/build/manifest.json \
