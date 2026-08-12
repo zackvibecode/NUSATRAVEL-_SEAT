@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Departure;
 use App\Models\Package;
+use App\Support\TripListFilter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -12,30 +13,14 @@ class DepartureController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Departure::with('package', 'registrations');
+        $filter = TripListFilter::fromRequest($request, 'departures', 'departures.index');
 
-        // Filter by month/year (PRD section 12)
-        if ($request->filled('month') && $request->filled('year')) {
-            $query->whereMonth('departure_date', $request->integer('month'))
-                ->whereYear('departure_date', $request->integer('year'));
-        }
-
-        $departures = $query->orderByDesc('departure_date')->get();
-
-        $months = [
-            1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
-            5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
-            9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December',
-        ];
-
-        $filterActive = $request->filled('month') && $request->filled('year');
+        $query = Departure::query()->with('package', 'registrations');
+        $departures = $filter->applyToDepartureQuery($query)->get();
 
         return view('departures.index', [
+            'filter' => $filter,
             'departures' => $departures,
-            'months' => $months,
-            'selectedMonth' => $request->filled('month') ? $request->integer('month') : null,
-            'selectedYear' => $request->filled('year') ? $request->integer('year') : null,
-            'filterActive' => $filterActive,
         ]);
     }
 

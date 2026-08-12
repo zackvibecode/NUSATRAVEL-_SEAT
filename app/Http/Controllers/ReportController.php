@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Departure;
+use App\Support\TripListFilter;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -13,14 +14,15 @@ class ReportController extends Controller
      */
     public function index(Request $request): View
     {
-        $month = $request->integer('month', now()->month);
-        $year = $request->integer('year', now()->year);
+        $filter = TripListFilter::fromRequest($request, 'reports', 'reports.index');
 
-        $departures = Departure::with('package', 'registrations')
-            ->whereMonth('departure_date', $month)
-            ->whereYear('departure_date', $year)
-            ->orderBy('departure_date')
-            ->get();
+        if (! $request->has('month') && ! $request->has('year')) {
+            $filter->month = now()->month;
+            $filter->year = now()->year;
+        }
+
+        $query = Departure::query()->with('package', 'registrations');
+        $departures = $filter->applyToDepartureQuery($query)->get();
 
         $totalDepartures = $departures->count();
         $totalCapacity = $departures->sum('total_seats');
@@ -30,17 +32,17 @@ class ReportController extends Controller
             ? round(($registeredPax / $totalCapacity) * 100, 1)
             : 0;
 
-        $months = [
-            1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
-            5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
-            9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December',
-        ];
+        $periodLabel = match (true) {
+            $filter->month !== null && $filter->year !== null => TripListFilter::months()[$filter->month].' '.$filter->year,
+            $filter->year !== null => (string) $filter->year,
+            $filter->month !== null => TripListFilter::months()[$filter->month],
+            default => 'All time',
+        };
 
         return view('reports.index', [
+            'filter' => $filter,
             'departures' => $departures,
-            'months' => $months,
-            'month' => $month,
-            'year' => $year,
+            'periodLabel' => $periodLabel,
             'totalDepartures' => $totalDepartures,
             'totalCapacity' => $totalCapacity,
             'registeredPax' => $registeredPax,

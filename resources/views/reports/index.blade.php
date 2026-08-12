@@ -10,31 +10,7 @@
         </div>
     </div>
 
-    <!-- Month/year filter -->
-    <form method="GET" action="{{ route('reports.index') }}" class="bg-white rounded-3xl shadow-sm border border-line p-5 mb-6 flex flex-wrap items-end gap-4">
-        <div>
-            <label for="month" class="block text-xs font-semibold text-charcoal mb-2">Month</label>
-            <select name="month" id="month"
-                    class="rounded-full border border-line bg-white px-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
-                @foreach ($months as $num => $label)
-                    <option value="{{ $num }}" @selected($month === $num)>{{ $label }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label for="year" class="block text-xs font-semibold text-charcoal mb-2">Year</label>
-            <select name="year" id="year"
-                    class="rounded-full border border-line bg-white px-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
-                @for ($y = now()->year - 1; $y <= now()->year + 2; $y++)
-                    <option value="{{ $y }}" @selected($year === $y)>{{ $y }}</option>
-                @endfor
-            </select>
-        </div>
-        <button type="submit"
-                class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-2.5 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
-            Generate
-        </button>
-    </form>
+    @include('partials.trip-filters', ['filter' => $filter, 'showPackage' => false])
 
     <!-- Summary -->
     <div class="bg-white rounded-3xl shadow-sm border border-line p-8 mb-6">
@@ -44,7 +20,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                 </svg>
             </div>
-            <h3 class="font-bold text-lg tracking-tight">{{ $months[$month] }} {{ $year }} Summary</h3>
+            <h3 class="font-bold text-lg tracking-tight">{{ $periodLabel }} Summary</h3>
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-5 gap-6">
             <div>
@@ -84,7 +60,12 @@
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-left text-charcoal border-b border-line bg-fog/50">
-                        <th class="px-6 py-4 font-semibold">Trip</th>
+                        <th class="px-6 py-4 font-semibold">
+                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'package_name', 'label' => 'Trip'])
+                        </th>
+                        <th class="px-6 py-4 font-semibold">
+                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'departure_date', 'label' => 'Date'])
+                        </th>
                         <th class="px-6 py-4 font-semibold text-right">Registered</th>
                         <th class="px-6 py-4 font-semibold text-right">Capacity</th>
                         <th class="px-6 py-4 font-semibold text-right">Available</th>
@@ -99,8 +80,8 @@
                                    class="font-bold text-ink hover:text-brand">
                                     {{ $departure->package->name }}
                                 </a>
-                                <span class="text-charcoal text-xs font-medium ml-2">{{ $departure->departure_date->format('d M') }}</span>
                             </td>
+                            <td class="px-6 py-4 text-charcoal font-medium">{{ $departure->departure_date->format('d M Y') }}</td>
                             <td class="px-6 py-4 text-right font-semibold">{{ $departure->registered_pax }}</td>
                             <td class="px-6 py-4 text-right text-charcoal">{{ $departure->total_seats }}</td>
                             <td class="px-6 py-4 text-right font-bold {{ $departure->available_seats <= 0 ? 'text-brand' : 'text-positive' }}">{{ $departure->available_seats }}</td>
@@ -108,8 +89,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-charcoal font-medium">
-                                No departures found for {{ $months[$month] }} {{ $year }}.
+                            <td colspan="6" class="px-6 py-12 text-center text-charcoal font-medium">
+                                No departures found for {{ $periodLabel }}.
                             </td>
                         </tr>
                     @endforelse

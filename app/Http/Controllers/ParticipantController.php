@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Registration;
+use App\Support\TripListFilter;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -14,9 +15,12 @@ class ParticipantController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = Registration::with('departure.package');
+        $filter = TripListFilter::fromRequest($request, 'participants', 'participants.index');
+        $search = $request->input('search');
 
-        if ($search = $request->input('search')) {
+        $query = Registration::query()->with('departure.package');
+
+        if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('phone', 'like', "%{$search}%")
@@ -24,9 +28,10 @@ class ParticipantController extends Controller
             });
         }
 
-        $registrations = $query->orderByDesc('created_at')->get();
+        $registrations = $filter->applyToRegistrationQuery($query)->get();
 
         return view('participants.index', [
+            'filter' => $filter,
             'registrations' => $registrations,
             'search' => $search,
         ]);

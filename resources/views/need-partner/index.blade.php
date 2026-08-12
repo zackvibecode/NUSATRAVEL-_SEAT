@@ -36,14 +36,22 @@
         </div>
     </div>
 
+    @include('partials.trip-filters', ['filter' => $filter])
+
     <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-left text-charcoal border-b border-line bg-fog/50">
-                        <th class="px-6 py-4 font-semibold">Name</th>
-                        <th class="px-6 py-4 font-semibold">Package</th>
-                        <th class="px-6 py-4 font-semibold">Departure</th>
+                        <th class="px-6 py-4 font-semibold">
+                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'name', 'label' => 'Name'])
+                        </th>
+                        <th class="px-6 py-4 font-semibold">
+                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'package_name', 'label' => 'Package'])
+                        </th>
+                        <th class="px-6 py-4 font-semibold">
+                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'departure_date', 'label' => 'Departure'])
+                        </th>
                         <th class="px-6 py-4 font-semibold">Partner Needed</th>
                     </tr>
                 </thead>

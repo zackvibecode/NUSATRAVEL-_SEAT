@@ -3,20 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
+use App\Support\TripListFilter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PackageController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $packages = Package::withCount('departures')
-            ->orderByDesc('status')
-            ->orderBy('name')
-            ->get();
+        $filter = TripListFilter::fromRequest($request, 'packages', 'packages.index');
 
-        return view('packages.index', compact('packages'));
+        $query = Package::query()->withCount('departures');
+        $packages = $filter->applyToPackageQuery($query)->get();
+
+        return view('packages.index', [
+            'filter' => $filter,
+            'packages' => $packages,
+        ]);
     }
 
     public function create(): View

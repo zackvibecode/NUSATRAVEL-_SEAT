@@ -17,15 +17,23 @@
         </a>
     </div>
 
+    @include('partials.trip-filters', ['filter' => $filter, 'showPackage' => false, 'showStatus' => true])
+
     <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-left text-charcoal border-b border-line bg-fog/50">
-                        <th class="px-6 py-4 font-semibold">Package</th>
-                        <th class="px-6 py-4 font-semibold">Destination</th>
+                        <th class="px-6 py-4 font-semibold">
+                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'name', 'label' => 'Package'])
+                        </th>
+                        <th class="px-6 py-4 font-semibold">
+                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'destination', 'label' => 'Destination'])
+                        </th>
                         <th class="px-6 py-4 font-semibold">Description</th>
-                        <th class="px-6 py-4 font-semibold text-center">Departures</th>
+                        <th class="px-6 py-4 font-semibold text-center">
+                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'departures_count', 'label' => 'Departures'])
+                        </th>
                         <th class="px-6 py-4 font-semibold">Status</th>
                         <th class="px-6 py-4 font-semibold text-right">Actions</th>
                     </tr>
