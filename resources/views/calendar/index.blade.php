@@ -8,48 +8,48 @@
             <h2 class="text-3xl font-black tracking-tight leading-none">Calendar</h2>
             <p class="text-sm text-charcoal mt-2">Monthly view of all departures.</p>
         </div>
-        <form method="GET" action="{{ route('calendar.index') }}" class="flex items-end gap-3">
-            <div>
-                <label for="month" class="block text-xs font-semibold text-charcoal mb-2">Month</label>
-                <select name="month" id="month"
-                        class="rounded-full border border-line bg-white px-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
-                    @foreach ($months as $num => $label)
-                        <option value="{{ $num }}" @selected($month === $num)>{{ $label }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label for="year" class="block text-xs font-semibold text-charcoal mb-2">Year</label>
-                <select name="year" id="year"
-                        class="rounded-full border border-line bg-white px-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
-                    @for ($y = now()->year - 1; $y <= now()->year + 2; $y++)
-                        <option value="{{ $y }}" @selected($year === $y)>{{ $y }}</option>
-                    @endfor
-                </select>
-            </div>
-            <button type="submit"
-                    class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-2.5 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
-                View
-            </button>
-        </form>
     </div>
 
     <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden">
+        <!-- Header with prev/next navigation -->
         <div class="px-6 py-5 border-b border-line flex items-center justify-between">
-            <h3 class="font-bold text-lg tracking-tight">{{ $monthLabel }} {{ $year }}</h3>
-            <div class="flex items-center gap-4 text-xs font-medium text-charcoal">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('calendar.index', ['month' => $prevMonth, 'year' => $prevYear]) }}"
+                   class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-fog hover:bg-brand-soft text-charcoal hover:text-brand transition-all duration-150"
+                   title="Previous month">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </a>
+                <a href="{{ route('calendar.index', ['month' => $nextMonth, 'year' => $nextYear]) }}"
+                   class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-fog hover:bg-brand-soft text-charcoal hover:text-brand transition-all duration-150"
+                   title="Next month">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <h3 class="font-bold text-lg tracking-tight ml-2">{{ $monthLabel }} {{ $year }}</h3>
+                @if (! $isCurrentMonth)
+                    <a href="{{ route('calendar.index') }}"
+                       class="text-xs font-bold text-brand hover:text-brand-hover px-3 py-1.5 rounded-full bg-brand-soft hover:bg-brand hover:text-white transition-all duration-150">
+                        Today
+                    </a>
+                @endif
+            </div>
+            <div class="hidden sm:flex items-center gap-4 text-xs font-medium text-charcoal">
                 <span class="flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-brand"></span> Departure
-                </span>
-                <span class="flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-positive"></span> Has seats
+                    <span class="w-2 h-2 rounded-full bg-brand"></span> Full
                 </span>
                 <span class="flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-warning"></span> Almost full
                 </span>
+                <span class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-positive"></span> Has seats
+                </span>
             </div>
         </div>
 
+        <!-- Day headers -->
         <div class="grid grid-cols-7 text-center text-xs font-semibold text-charcoal border-b border-line bg-fog/50">
             <div class="py-3">Sun</div>
             <div class="py-3">Mon</div>
@@ -60,12 +60,21 @@
             <div class="py-3">Sat</div>
         </div>
 
+        <!-- Calendar grid -->
         @foreach ($weeks as $week)
             <div class="grid grid-cols-7 border-b border-line last:border-b-0">
                 @foreach ($week as $cell)
-                    <div class="min-h-[100px] border-r border-line last:border-r-0 p-2 {{ $cell ? 'bg-white' : 'bg-fog/30' }}">
+                    @php
+                        $isToday = $cell && $cell['date']->isToday();
+                    @endphp
+                    <div class="min-h-[100px] border-r border-line last:border-r-0 p-2 {{ $cell ? 'bg-white' : 'bg-fog/30' }} {{ $isToday ? 'ring-2 ring-brand ring-inset' : '' }}">
                         @if ($cell)
-                            <div class="text-xs font-bold text-charcoal mb-1">{{ $cell['day'] }}</div>
+                            <div class="text-xs font-bold {{ $isToday ? 'text-brand' : 'text-charcoal' }} mb-1 flex items-center justify-between">
+                                <span>{{ $cell['day'] }}</span>
+                                @if ($isToday)
+                                    <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>
+                                @endif
+                            </div>
                             <div class="space-y-1">
                                 @foreach ($cell['departures'] as $departure)
                                     @php

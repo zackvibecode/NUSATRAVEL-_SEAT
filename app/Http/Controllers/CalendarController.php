@@ -61,12 +61,21 @@ class CalendarController extends Controller
             9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December',
         ];
 
+        // Prev / next month navigation
+        $prev = $start->copy()->subMonth();
+        $next = $start->copy()->addMonth();
+
         return view('calendar.index', [
             'weeks' => $weeks,
             'month' => $month,
             'year' => $year,
             'monthLabel' => $months[$month],
             'months' => $months,
+            'prevMonth' => $prev->month,
+            'prevYear' => $prev->year,
+            'nextMonth' => $next->month,
+            'nextYear' => $next->year,
+            'isCurrentMonth' => $start->isSameMonth(now()),
         ]);
     }
 }
