@@ -22,6 +22,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // All internal pages require authentication (PRD section 4.2)
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard/attention-trips', [DashboardController::class, 'attentionTrips'])->name('dashboard.attention-trips');
     Route::get('hermes', [HermesGuideController::class, 'index'])->name('hermes.guide');
     Route::get('hermes/chat', [HermesGuideController::class, 'chat'])->name('hermes.chat');
     Route::post('hermes/chat', [HermesGuideController::class, 'chatMessage'])->name('hermes.chat.message');

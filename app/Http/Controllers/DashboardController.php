@@ -24,12 +24,7 @@ class DashboardController extends Controller
 
         // Count by status for summary cards (derived from existing status_label)
         $almostFullTrips = $upcoming->filter(fn ($d) => $d->status_label === 'almost_full')->count();
-
-        $needAttention = $upcoming
-            ->filter(fn ($d) => $d->status_label === 'open')
-            ->sortBy('departure_date')
-            ->sortByDesc('available_seats')
-            ->take(5);
+        $attentionCount = $upcoming->filter(fn ($d) => $d->status_label === 'open')->count();
 
         $recentRegistrations = Registration::with('departure.package')
             ->latest()
@@ -63,10 +58,29 @@ class DashboardController extends Controller
             'registeredPax' => $stats['registeredPax'],
             'availableSeats' => $stats['availableSeats'],
             'almostFullTrips' => $almostFullTrips,
-            'upcomingDepartures' => $upcoming,
-            'needAttention' => $needAttention,
+            'attentionCount' => $attentionCount,
+            'upcomingDepartures' => $upcoming->take(5),
             'recentRegistrations' => $recentRegistrations,
             'trendData' => $trendData,
+        ]);
+    }
+
+    /**
+     * Full list of trips that need attention, grouped by month (earliest first).
+     */
+    public function attentionTrips(Request $request)
+    {
+        $departures = Departure::query()
+            ->with('package')
+            ->withSum('registrations as registered_pax_sum', 'pax')
+            ->upcoming()
+            ->orderBy('departure_date')
+            ->get()
+            ->filter(fn ($d) => $d->status_label === 'open')
+            ->groupBy(fn ($d) => $d->departure_date->format('F Y'));
+
+        return view('dashboard.attention-trips', [
+            'groupedDepartures' => $departures,
         ]);
     }
 }

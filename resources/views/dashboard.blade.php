@@ -76,7 +76,7 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-lg tracking-tight">Upcoming Trips</h3>
-                    <p class="text-xs text-charcoal mt-0.5 font-medium">{{ $upcomingTrips }} departures scheduled</p>
+                    <p class="text-xs text-charcoal mt-0.5 font-medium">Next 5 departures scheduled</p>
                 </div>
             </div>
             <a href="{{ route('departures.index') }}" class="text-sm font-bold text-brand hover:text-brand-hover flex items-center gap-1">
@@ -104,46 +104,35 @@
         </div>
     </div>
 
-    <!-- Trips need attention -->
-    <div class="bg-white rounded-2xl shadow-sm border border-line overflow-hidden">
-        <div class="px-6 py-5 border-b border-line">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-warning-soft flex items-center justify-center">
-                    <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+    <!-- Attention trips button -->
+    <a href="{{ route('dashboard.attention-trips') }}"
+       class="block bg-white rounded-2xl shadow-sm border border-line overflow-hidden hover:shadow-md hover:border-brand/30 transition-all duration-150 group">
+        <div class="px-6 py-6 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-warning-soft flex items-center justify-center flex-shrink-0">
+                    <svg class="w-6 h-6 text-warning" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg tracking-tight">Trips Need Attention</h3>
-                    <p class="text-xs text-charcoal mt-0.5 font-medium">Open trips with the most seats still available</p>
+                    <h3 class="font-bold text-lg tracking-tight group-hover:text-brand transition-colors">Trips Need Attention</h3>
+                    <p class="text-sm text-charcoal mt-0.5 font-medium">
+                        {{ $attentionCount }} open trips with seats still available — sorted by earliest month first
+                    </p>
                 </div>
             </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+                @if ($attentionCount > 0)
+                    <span class="inline-flex items-center justify-center min-w-8 h-8 px-2 rounded-full bg-warning-soft text-warning text-sm font-black">
+                        {{ $attentionCount }}
+                    </span>
+                @endif
+                <span class="w-10 h-10 rounded-full bg-fog group-hover:bg-brand group-hover:text-white text-charcoal flex items-center justify-center transition-all duration-150">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </div>
         </div>
-
-        <div class="divide-y divide-line">
-            @forelse ($needAttention as $departure)
-                <a href="{{ route('departures.show', $departure) }}" class="block px-6 py-5 transition-colors hover:bg-fog/50">
-                    <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <p class="font-black uppercase text-sm tracking-tight">{{ $departure->package->name }}</p>
-                            <p class="text-xs text-charcoal mt-1 font-medium flex items-center gap-1.5">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                                {{ $departure->departure_date->format('d M Y') }}
-                            </p>
-                        </div>
-                        @include('partials.status-badge', ['status' => $departure->status_label])
-                    </div>
-                    <div class="mt-4">
-                        @include('partials.capacity-bar', ['departure' => $departure])
-                    </div>
-                </a>
-            @empty
-                <div class="px-6 py-12 text-center text-charcoal font-medium text-sm">
-                    No open trips with available seats right now.
-                </div>
-            @endforelse
-        </div>
-    </div>
+    </a>
 @endsection
