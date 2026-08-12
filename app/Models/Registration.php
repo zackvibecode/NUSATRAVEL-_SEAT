@@ -4,14 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Registration extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'departure_id',
         'name',
         'phone',
         'pax',
+        'payment_status',
         'need_partner',
         'partner_gender',
         'notes',
@@ -37,5 +41,23 @@ class Registration extends Model
         }
 
         return $this->partner_gender === 'male' ? 'Male' : 'Female';
+    }
+
+    public function getPaymentLabelAttribute(): string
+    {
+        return match ($this->payment_status) {
+            'paid' => 'Paid',
+            'deposit' => 'Deposit',
+            default => 'Pending',
+        };
+    }
+
+    public function getPaymentColorAttribute(): string
+    {
+        return match ($this->payment_status) {
+            'paid' => 'bg-positive-soft text-positive',
+            'deposit' => 'bg-warning-soft text-warning',
+            default => 'bg-brand-soft text-brand',
+        };
     }
 }

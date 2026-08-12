@@ -12,6 +12,13 @@
             Back to Departures
         </a>
         <div class="flex items-center gap-3">
+            <a href="{{ route('departures.manifest', $departure) }}" target="_blank"
+               class="inline-flex items-center gap-2 bg-white shadow-sm border border-line hover:shadow-md text-ink text-sm font-bold rounded-full px-6 py-3 transition-all duration-150">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                </svg>
+                Print Manifest
+            </a>
             <a href="{{ route('departures.edit', $departure) }}"
                class="inline-flex items-center gap-2 bg-white shadow-sm border border-line hover:shadow-md text-ink text-sm font-bold rounded-full px-6 py-3 transition-all duration-150">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -165,6 +172,7 @@
                         <th class="px-6 py-4 font-semibold">Name</th>
                         <th class="px-6 py-4 font-semibold">Phone</th>
                         <th class="px-6 py-4 font-semibold text-right">Pax</th>
+                        <th class="px-6 py-4 font-semibold">Payment</th>
                         <th class="px-6 py-4 font-semibold">Partner</th>
                         <th class="px-6 py-4 font-semibold">Notes</th>
                         <th class="px-6 py-4 font-semibold text-right">Actions</th>
@@ -176,6 +184,11 @@
                             <td class="px-6 py-4 font-bold">{{ $registration->name }}</td>
                             <td class="px-6 py-4 text-charcoal font-medium">{{ $registration->phone }}</td>
                             <td class="px-6 py-4 text-right font-bold">{{ $registration->pax }}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold {{ $registration->payment_color }}">
+                                    {{ $registration->payment_label }}
+                                </span>
+                            </td>
                             <td class="px-6 py-4">
                                 @if ($registration->need_partner)
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-warning-soft text-warning">
@@ -193,6 +206,7 @@
                                             data-name="{{ $registration->name }}"
                                             data-phone="{{ $registration->phone }}"
                                             data-pax="{{ $registration->pax }}"
+                                            data-payment-status="{{ $registration->payment_status }}"
                                             data-need-partner="{{ $registration->need_partner ? '1' : '0' }}"
                                             data-partner-gender="{{ $registration->partner_gender }}"
                                             data-notes="{{ $registration->notes }}"
@@ -202,6 +216,14 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                         </svg>
                                         Edit
+                                    </button>
+                                    <button type="button"
+                                            onclick="copyWhatsApp('{{ addslashes($registration->name) }}', '{{ $registration->phone }}', '{{ addslashes($departure->package->name) }}', '{{ $departure->departure_date->format('d M Y') }}')"
+                                            class="inline-flex items-center gap-1.5 text-positive hover:text-positive/80 text-sm font-semibold">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                        </svg>
+                                        WA
                                     </button>
                                     <form method="POST" action="{{ route('registrations.destroy', $registration) }}"
                                           onsubmit="return confirm('Delete this registration? Seat availability will be recalculated.');">
@@ -219,7 +241,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-charcoal font-medium">
+                            <td colspan="7" class="px-6 py-12 text-center text-charcoal font-medium">
                                 No registrations yet. Add the first participant below.
                             </td>
                         </tr>
@@ -245,7 +267,7 @@
             </div>
         </div>
 
-        <form method="POST" action="{{ route('registrations.store') }}" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <form method="POST" action="{{ route('registrations.store') }}" class="grid grid-cols-1 md:grid-cols-2 gap-5" id="addRegForm">
             @csrf
             <input type="hidden" name="departure_id" value="{{ $departure->id }}">
 
@@ -287,6 +309,19 @@
             </div>
 
             <div>
+                <label for="reg_payment_status" class="block text-sm font-semibold text-ink mb-2">Payment Status</label>
+                <select
+                    id="reg_payment_status"
+                    name="payment_status"
+                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                >
+                    <option value="pending" @selected(old('payment_status', 'pending') === 'pending')>Pending</option>
+                    <option value="deposit" @selected(old('payment_status') === 'deposit')>Deposit</option>
+                    <option value="paid" @selected(old('payment_status') === 'paid')>Paid</option>
+                </select>
+            </div>
+
+            <div>
                 <label for="reg_need_partner" class="block text-sm font-semibold text-ink mb-2">Need Partner?</label>
                 <select
                     id="reg_need_partner"
@@ -324,7 +359,7 @@
             </div>
 
             <div class="md:col-span-2 flex items-center gap-4 pt-2">
-                <button type="submit"
+                <button type="submit" id="saveRegBtn"
                         class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
                     Save Registration
                 </button>
@@ -363,6 +398,16 @@
                 </div>
 
                 <div>
+                    <label for="edit_payment_status" class="block text-sm font-semibold text-ink mb-2">Payment Status</label>
+                    <select id="edit_payment_status" name="payment_status"
+                            class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
+                        <option value="pending">Pending</option>
+                        <option value="deposit">Deposit</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                </div>
+
+                <div>
                     <label for="edit_need_partner" class="block text-sm font-semibold text-ink mb-2">Need Partner?</label>
                     <select id="edit_need_partner" name="need_partner" onchange="toggleEditPartnerGender(this)"
                             class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
@@ -388,7 +433,7 @@
                 </div>
 
                 <div class="md:col-span-2 flex items-center gap-4 pt-2">
-                    <button type="submit"
+                    <button type="submit" id="updateRegBtn"
                             class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
                         Update Registration
                     </button>
@@ -428,6 +473,7 @@
         form.querySelector('#edit_name').value = btn.dataset.name;
         form.querySelector('#edit_phone').value = btn.dataset.phone;
         form.querySelector('#edit_pax').value = btn.dataset.pax;
+        form.querySelector('#edit_payment_status').value = btn.dataset.paymentStatus || 'pending';
         form.querySelector('#edit_need_partner').value = btn.dataset.needPartner;
         form.querySelector('#edit_partner_gender').value = btn.dataset.partnerGender;
         form.querySelector('#edit_notes').value = btn.dataset.notes;
@@ -447,5 +493,31 @@
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
+
+    function copyWhatsApp(name, phone, packageName, date) {
+        const msg = `Hi ${name}, your booking for ${packageName} on ${date} is confirmed. Total pax: ${document.getElementById('reg_pax')?.value || 'N/A'}. Please reply YES to confirm.`;
+        navigator.clipboard.writeText(msg).then(() => {
+            alert('WhatsApp message copied to clipboard!');
+        }).catch(() => {
+            // Fallback
+            const ta = document.createElement('textarea');
+            ta.value = msg;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            alert('WhatsApp message copied to clipboard!');
+        });
+    }
+
+    // Disable submit buttons on form submit
+    document.getElementById('addRegForm')?.addEventListener('submit', function() {
+        document.getElementById('saveRegBtn').disabled = true;
+        document.getElementById('saveRegBtn').textContent = 'Saving...';
+    });
+    document.getElementById('editForm')?.addEventListener('submit', function() {
+        document.getElementById('updateRegBtn').disabled = true;
+        document.getElementById('updateRegBtn').textContent = 'Updating...';
+    });
 </script>
 @endsection

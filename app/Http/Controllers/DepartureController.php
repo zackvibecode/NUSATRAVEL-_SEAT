@@ -15,8 +15,11 @@ class DepartureController extends Controller
     {
         $filter = TripListFilter::fromRequest($request, 'departures', 'departures.index');
 
-        $query = Departure::query()->with('package', 'registrations');
-        $departures = $filter->applyToDepartureQuery($query)->get();
+        $query = Departure::query()
+            ->with('package')
+            ->withSum('registrations as registered_pax_sum', 'pax');
+
+        $departures = $filter->applyToDepartureQuery($query)->paginate(20);
 
         return view('departures.index', [
             'filter' => $filter,
@@ -53,7 +56,7 @@ class DepartureController extends Controller
 
     public function show(Departure $departure): View
     {
-        $departure->load('package', 'registrations');
+        $departure->load(['package', 'registrations' => fn ($q) => $q->latest()]);
 
         return view('departures.show', [
             'departure' => $departure,
@@ -84,5 +87,18 @@ class DepartureController extends Controller
         $departure->update($data);
 
         return redirect()->route('departures.show', $departure)->with('success', 'Departure updated successfully.');
+    }
+
+    /**
+     * Print-friendly manifest for tour guides.
+     */
+    public function manifest(Departure $departure): View
+    {
+        $departure->load(['package', 'registrations' => fn ($q) => $q->orderBy('name')]);
+
+        return view('departures.manifest', [
+            'departure' => $departure,
+            'registrations' => $departure->registrations,
+        ]);
     }
 }

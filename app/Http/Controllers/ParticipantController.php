@@ -28,7 +28,7 @@ class ParticipantController extends Controller
             });
         }
 
-        $registrations = $filter->applyToRegistrationQuery($query)->get();
+        $registrations = $filter->applyToRegistrationQuery($query)->paginate(20);
 
         return view('participants.index', [
             'filter' => $filter,

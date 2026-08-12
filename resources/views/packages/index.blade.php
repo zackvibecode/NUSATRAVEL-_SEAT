@@ -84,5 +84,10 @@
                 </tbody>
             </table>
         </div>
+        @if ($packages->hasPages())
+            <div class="px-6 py-4 border-t border-line">
+                {{ $packages->links() }}
+            </div>
+        @endif
     </div>
 @endsection

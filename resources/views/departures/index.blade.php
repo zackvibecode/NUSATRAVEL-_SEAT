@@ -28,12 +28,11 @@
                             @include('partials.sort-link', ['filter' => $filter, 'column' => 'package_name', 'label' => 'Package'])
                         </th>
                         <th class="px-6 py-4 font-semibold">
-                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'destination', 'label' => 'Country'])
-                        </th>
-                        <th class="px-6 py-4 font-semibold">
                             @include('partials.sort-link', ['filter' => $filter, 'column' => 'departure_date', 'label' => 'Departure'])
                         </th>
-                        <th class="px-6 py-4 font-semibold">Return</th>
+                        <th class="px-6 py-4 font-semibold">
+                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'destination', 'label' => 'Country'])
+                        </th>
                         <th class="px-6 py-4 font-semibold text-right">Pax</th>
                         <th class="px-6 py-4 font-semibold text-right">Capacity</th>
                         <th class="px-6 py-4 font-semibold text-right">Available</th>
@@ -45,9 +44,8 @@
                     @forelse ($departures as $departure)
                         <tr class="transition-colors hover:bg-fog/50">
                             <td class="px-6 py-4 font-bold">{{ $departure->package->name }}</td>
-                            <td class="px-6 py-4 text-charcoal font-medium">{{ $departure->package->destination }}</td>
                             <td class="px-6 py-4 text-charcoal font-medium">{{ $departure->departure_date->format('d M Y') }}</td>
-                            <td class="px-6 py-4 text-charcoal">{{ $departure->return_date->format('d M Y') }}</td>
+                            <td class="px-6 py-4 text-charcoal font-medium">{{ $departure->package->destination }}</td>
                             <td class="px-6 py-4 text-right font-semibold">{{ $departure->registered_pax }}</td>
                             <td class="px-6 py-4 text-right text-charcoal">{{ $departure->total_seats }}</td>
                             <td class="px-6 py-4 text-right font-bold {{ $departure->available_seats <= 0 ? 'text-brand' : 'text-positive' }}">{{ $departure->available_seats }}</td>
@@ -76,7 +74,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-12 text-center text-charcoal font-medium">
+                            <td colspan="8" class="px-6 py-12 text-center text-charcoal font-medium">
                                 No departures found for the selected filters.
                             </td>
                         </tr>
@@ -84,5 +82,11 @@
                 </tbody>
             </table>
         </div>
+
+        @if ($departures->hasPages())
+            <div class="px-6 py-4 border-t border-line">
+                {{ $departures->links() }}
+            </div>
+        @endif
     </div>
 @endsection

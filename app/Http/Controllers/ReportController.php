@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Departure;
+use App\Services\SeatMetricsService;
 use App\Support\TripListFilter;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -12,7 +13,7 @@ class ReportController extends Controller
     /**
      * Monthly report: totals and per-departure breakdown (PRD section 12).
      */
-    public function index(Request $request): View
+    public function index(Request $request, SeatMetricsService $metrics): View
     {
         $filter = TripListFilter::fromRequest($request, 'reports', 'reports.index');
 
@@ -21,16 +22,13 @@ class ReportController extends Controller
             $filter->year = now()->year;
         }
 
-        $query = Departure::query()->with('package', 'registrations');
-        $departures = $filter->applyToDepartureQuery($query)->get();
+        $query = Departure::query()
+            ->with('package')
+            ->withSum('registrations as registered_pax_sum', 'pax');
 
-        $totalDepartures = $departures->count();
-        $totalCapacity = $departures->sum('total_seats');
-        $registeredPax = $departures->sum(fn ($d) => $d->registered_pax);
-        $availableSeats = $totalCapacity - $registeredPax;
-        $overallOccupancy = $totalCapacity > 0
-            ? round(($registeredPax / $totalCapacity) * 100, 1)
-            : 0;
+        $departures = $filter->applyToDepartureQuery($query)->paginate(20);
+
+        $stats = $metrics->calculate($departures->getCollection());
 
         $periodLabel = match (true) {
             $filter->month !== null && $filter->year !== null => TripListFilter::months()[$filter->month].' '.$filter->year,
@@ -43,11 +41,11 @@ class ReportController extends Controller
             'filter' => $filter,
             'departures' => $departures,
             'periodLabel' => $periodLabel,
-            'totalDepartures' => $totalDepartures,
-            'totalCapacity' => $totalCapacity,
-            'registeredPax' => $registeredPax,
-            'availableSeats' => $availableSeats,
-            'overallOccupancy' => $overallOccupancy,
+            'totalDepartures' => $departures->total(),
+            'totalCapacity' => $stats['totalCapacity'],
+            'registeredPax' => $stats['registeredPax'],
+            'availableSeats' => $stats['availableSeats'],
+            'overallOccupancy' => $stats['overallOccupancy'],
         ]);
     }
 }

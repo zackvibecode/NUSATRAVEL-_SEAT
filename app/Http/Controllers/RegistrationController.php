@@ -21,6 +21,7 @@ class RegistrationController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'pax' => ['required', 'integer', 'min:1'],
+            'payment_status' => ['nullable', 'in:pending,deposit,paid'],
             'need_partner' => ['sometimes', 'boolean'],
             'partner_gender' => ['nullable', 'in:male,female'],
             'notes' => ['nullable', 'string'],
@@ -65,6 +66,7 @@ class RegistrationController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'pax' => ['required', 'integer', 'min:1'],
+            'payment_status' => ['nullable', 'in:pending,deposit,paid'],
             'need_partner' => ['sometimes', 'boolean'],
             'partner_gender' => ['nullable', 'in:male,female'],
             'notes' => ['nullable', 'string'],
@@ -77,7 +79,10 @@ class RegistrationController extends Controller
         }
 
         // Recalculate available seats excluding this registration's current pax
-        $available = $departure->available_seats + $registration->pax;
+        $otherPax = $departure->registrations()
+            ->where('id', '!=', $registration->id)
+            ->sum('pax');
+        $available = $departure->total_seats - $otherPax;
 
         if ($data['pax'] > $available) {
             return back()
@@ -98,8 +103,7 @@ class RegistrationController extends Controller
     }
 
     /**
-     * Delete a registration. Historical safety is not a concern here — staff may remove
-     * an entry that was added by mistake.
+     * Delete a registration (soft delete for audit trail).
      */
     public function destroy(Registration $registration): RedirectResponse
     {

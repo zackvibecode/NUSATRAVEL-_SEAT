@@ -44,7 +44,8 @@ class Departure extends Model
      */
     public function getRegisteredPaxAttribute(): int
     {
-        return (int) $this->registrations()->sum('pax');
+        // Use withSum value if eager loaded, otherwise query
+        return (int) ($this->registered_pax_sum ?? $this->registrations()->sum('pax'));
     }
 
     /**

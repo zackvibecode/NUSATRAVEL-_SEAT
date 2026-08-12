@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartureController;
 use App\Http\Controllers\HermesGuideController;
@@ -32,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::post('departures', [DepartureController::class, 'store'])->name('departures.store');
     Route::get('departures/{departure}', [DepartureController::class, 'show'])->name('departures.show');
     Route::get('departures/{departure}/edit', [DepartureController::class, 'edit'])->name('departures.edit');
+    Route::get('departures/{departure}/manifest', [DepartureController::class, 'manifest'])->name('departures.manifest');
     Route::put('departures/{departure}', [DepartureController::class, 'update'])->name('departures.update');
 
     Route::post('registrations', [RegistrationController::class, 'store'])->name('registrations.store');
@@ -41,4 +43,5 @@ Route::middleware('auth')->group(function () {
     Route::get('participants', [ParticipantController::class, 'index'])->name('participants.index');
     Route::get('need-partner', [NeedPartnerController::class, 'index'])->name('need-partner.index');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
 });

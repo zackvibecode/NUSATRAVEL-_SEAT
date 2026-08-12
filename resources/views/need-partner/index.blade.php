@@ -36,22 +36,56 @@
         </div>
     </div>
 
-    @include('partials.trip-filters', ['filter' => $filter])
+    <!-- Auto-match suggestions -->
+    @if ($matches->isNotEmpty())
+        <div class="bg-white rounded-3xl shadow-sm border border-line p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-2xl bg-positive-soft flex items-center justify-center">
+                    <svg class="w-5 h-5 text-positive" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg tracking-tight">Suggested Room Matches</h3>
+                    <p class="text-xs text-charcoal mt-0.5 font-medium">Auto-paired solo travellers on the same trip with same gender</p>
+                </div>
+            </div>
+            <div class="space-y-3">
+                @foreach ($matches as $match)
+                    <div class="flex items-center justify-between bg-fog rounded-2xl px-5 py-4">
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center -space-x-2">
+                                <span class="w-8 h-8 rounded-full bg-brand-soft text-brand font-bold text-xs flex items-center justify-center border-2 border-white">
+                                    {{ strtoupper(substr($match['pair'][0]->name, 0, 1)) }}
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-brand-soft text-brand font-bold text-xs flex items-center justify-center border-2 border-white">
+                                    {{ strtoupper(substr($match['pair'][1]->name, 0, 1)) }}
+                                </span>
+                            </div>
+                            <div>
+                                <p class="font-bold text-sm">{{ $match['pair'][0]->name }} + {{ $match['pair'][1]->name }}</p>
+                                <p class="text-xs text-charcoal mt-0.5">
+                                    {{ $match['departure']->package->name }} · {{ $match['departure']->departure_date->format('d M Y') }}
+                                </p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-positive-soft text-positive">
+                            {{ ucfirst($match['type']) }} pair
+                        </span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-left text-charcoal border-b border-line bg-fog/50">
-                        <th class="px-6 py-4 font-semibold">
-                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'name', 'label' => 'Name'])
-                        </th>
-                        <th class="px-6 py-4 font-semibold">
-                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'package_name', 'label' => 'Package'])
-                        </th>
-                        <th class="px-6 py-4 font-semibold">
-                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'departure_date', 'label' => 'Departure'])
-                        </th>
+                        <th class="px-6 py-4 font-semibold">Name</th>
+                        <th class="px-6 py-4 font-semibold">Package</th>
+                        <th class="px-6 py-4 font-semibold">Departure</th>
                         <th class="px-6 py-4 font-semibold">Partner Needed</th>
                     </tr>
                 </thead>
@@ -82,5 +116,11 @@
                 </tbody>
             </table>
         </div>
+
+        @if ($registrations->hasPages())
+            <div class="px-6 py-4 border-t border-line">
+                {{ $registrations->links() }}
+            </div>
+        @endif
     </div>
 @endsection

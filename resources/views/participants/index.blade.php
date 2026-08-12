@@ -12,9 +12,6 @@
 
     <!-- Search -->
     <form method="GET" action="{{ route('participants.index') }}" class="bg-white rounded-3xl shadow-sm border border-line p-5 mb-6 flex flex-wrap items-end gap-4">
-        @foreach ($filter->queryParams() as $key => $value)
-            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-        @endforeach
         <div class="flex-1 min-w-[240px]">
             <label for="search" class="block text-xs font-semibold text-charcoal mb-2">Search</label>
             <div class="relative">
@@ -37,29 +34,22 @@
                 class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
             Search
         </button>
-        @if ($search || $filter->isActive())
+        @if ($search)
             <a href="{{ route('participants.index') }}" class="text-sm font-semibold text-charcoal hover:text-ink px-2 py-3">Clear</a>
         @endif
     </form>
-
-    @include('partials.trip-filters', ['filter' => $filter, 'extra' => ['search' => $search ?? '']])
 
     <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-left text-charcoal border-b border-line bg-fog/50">
-                        <th class="px-6 py-4 font-semibold">
-                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'name', 'label' => 'Name', 'extra' => ['search' => $search ?? '']])
-                        </th>
+                        <th class="px-6 py-4 font-semibold">Name</th>
                         <th class="px-6 py-4 font-semibold">Phone</th>
-                        <th class="px-6 py-4 font-semibold">
-                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'package_name', 'label' => 'Package', 'extra' => ['search' => $search ?? '']])
-                        </th>
-                        <th class="px-6 py-4 font-semibold">
-                            @include('partials.sort-link', ['filter' => $filter, 'column' => 'departure_date', 'label' => 'Departure', 'extra' => ['search' => $search ?? '']])
-                        </th>
+                        <th class="px-6 py-4 font-semibold">Package</th>
+                        <th class="px-6 py-4 font-semibold">Departure</th>
                         <th class="px-6 py-4 font-semibold text-right">Pax</th>
+                        <th class="px-6 py-4 font-semibold">Payment</th>
                         <th class="px-6 py-4 font-semibold">Partner</th>
                     </tr>
                 </thead>
@@ -77,6 +67,11 @@
                             </td>
                             <td class="px-6 py-4 text-right font-bold">{{ $registration->pax }}</td>
                             <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold {{ $registration->payment_color }}">
+                                    {{ $registration->payment_label }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
                                 @if ($registration->need_partner)
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-warning-soft text-warning">
                                         {{ $registration->partner_label }}
@@ -88,9 +83,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-charcoal font-medium">
-                                @if ($search || $filter->isActive())
-                                    No participants matched your filters.
+                            <td colspan="7" class="px-6 py-12 text-center text-charcoal font-medium">
+                                @if ($search)
+                                    No participants matched your search.
                                 @else
                                     No participants yet.
                                 @endif
@@ -100,5 +95,11 @@
                 </tbody>
             </table>
         </div>
+
+        @if ($registrations->hasPages())
+            <div class="px-6 py-4 border-t border-line">
+                {{ $registrations->links() }}
+            </div>
+        @endif
     </div>
 @endsection
