@@ -22,6 +22,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('hermes', [HermesGuideController::class, 'index'])->name('hermes.guide');
+    Route::get('hermes/chat', [HermesGuideController::class, 'chat'])->name('hermes.chat');
+    Route::post('hermes/chat', [HermesGuideController::class, 'chatMessage'])->name('hermes.chat.message');
 
     Route::resource('packages', PackageController::class)->except(['show']);
 

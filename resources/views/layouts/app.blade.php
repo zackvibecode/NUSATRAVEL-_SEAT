@@ -33,9 +33,9 @@
                                 'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>',
                             ],
                             [
-                                'route' => 'hermes.guide',
+                                'route' => 'hermes.chat',
                                 'pattern' => 'hermes.*',
-                                'label' => 'Hermes Sync',
+                                'label' => 'Hermes Chat',
                                 'short' => 'Hermes',
                                 'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
                             ],

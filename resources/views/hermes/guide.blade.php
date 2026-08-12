@@ -10,9 +10,10 @@
                 For Hermes Agent only — Dropbox baca Excel, SeatWeb yang ubah data.
             </p>
         </div>
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-brand-soft text-brand">
-            AI import guide
-        </span>
+        <a href="{{ route('hermes.chat') }}"
+           class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-2.5">
+            Buka chatbot
+        </a>
     </div>
 
     <div class="grid lg:grid-cols-3 gap-4 mb-8">
@@ -63,6 +64,44 @@
                 </p>
             </div>
         </div>
+    </div>
+
+    <div class="bg-white rounded-3xl p-6 shadow-sm border border-line mb-8">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal mb-4">Hermes chatbot API (baca / edit / delete)</h3>
+        <p class="text-sm text-charcoal mb-4">
+            Token sama: <code class="bg-fog px-1.5 py-0.5 rounded">Authorization: Bearer SEATWEB_IMPORT_TOKEN</code>
+            · Base: <code class="bg-fog px-1.5 py-0.5 rounded">{{ $apiBase }}</code>
+        </p>
+        <div class="overflow-x-auto text-xs sm:text-sm">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-charcoal">
+                        <th class="py-2 pr-4">Method</th>
+                        <th class="py-2 pr-4">Path</th>
+                        <th class="py-2">Buat apa</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-line font-mono">
+                    <tr><td class="py-2 pr-4">POST</td><td class="py-2 pr-4">/chat</td><td class="font-sans">Chat: {"message":"list package"}</td></tr>
+                    <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/overview</td><td class="font-sans">Ringkasan counts</td></tr>
+                    <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/packages?q=</td><td class="font-sans">Baca / cari package</td></tr>
+                    <tr><td class="py-2 pr-4">POST/PUT/DELETE</td><td class="py-2 pr-4">/packages</td><td class="font-sans">Create / edit / archive</td></tr>
+                    <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/departures?q=</td><td class="font-sans">Baca trip</td></tr>
+                    <tr><td class="py-2 pr-4">POST/PUT/DELETE</td><td class="py-2 pr-4">/departures</td><td class="font-sans">Create / edit / cancel trip</td></tr>
+                    <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/registrations?q=</td><td class="font-sans">Baca pax</td></tr>
+                    <tr><td class="py-2 pr-4">POST/PUT/DELETE</td><td class="py-2 pr-4">/registrations</td><td class="font-sans">Create / edit / padam pax</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <pre class="text-xs sm:text-sm bg-fog rounded-2xl p-4 overflow-x-auto whitespace-pre-wrap font-mono text-ink leading-relaxed mt-4">Kau agent SeatWeb. Bila user tanya data trip/pax:
+- Baca: GET {{ $apiBase }}/packages , /departures , /registrations , /overview
+- Chat: POST {{ $apiBase }}/chat  {"message":"..."}
+- Edit: PUT {{ $apiBase }}/packages/{id}  (name, destination, status)
+- Padam pax: DELETE {{ $apiBase }}/registrations/{id}
+- Archive package: DELETE {{ $apiBase }}/packages/{id}
+- Cancel trip: DELETE {{ $apiBase }}/departures/{id}
+Header: Authorization: Bearer SEATWEB_IMPORT_TOKEN
+Jangan guna DATABASE_URL. Package delete = archive. Trip delete = cancel.</pre>
     </div>
 
     <div class="bg-white rounded-3xl p-6 shadow-sm border border-line mb-8">

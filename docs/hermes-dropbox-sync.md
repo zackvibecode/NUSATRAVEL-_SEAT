@@ -10,6 +10,22 @@ Dropbox Excel  →  Hermes (read + map)  →  POST /api/imports/dropbox-excel  �
 
 Hermes never receives `DATABASE_URL`. It only gets `IMPORT_API_TOKEN`.
 
+## Chatbot + CRUD API
+
+Same Bearer token. Base URL: `/api/hermes`
+
+| Action | Endpoint |
+|---|---|
+| Chat | `POST /api/hermes/chat` `{"message":"list package"}` |
+| Read | `GET /api/hermes/packages` `departures` `registrations` `overview` |
+| Create | `POST` same paths |
+| Edit | `PUT /api/hermes/packages/{id}` (and departures / registrations) |
+| Archive package | `DELETE /api/hermes/packages/{id}` |
+| Cancel trip | `DELETE /api/hermes/departures/{id}` |
+| Delete pax | `DELETE /api/hermes/registrations/{id}` |
+
+Staff UI chat: `/hermes/chat` (login required, no token).
+
 ## API
 
 - **URL:** `POST /api/imports/dropbox-excel`
