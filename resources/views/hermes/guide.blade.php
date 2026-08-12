@@ -147,7 +147,7 @@
                                 </td>
                                 <td class="px-6 py-3">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-brand-soft text-brand">
-                                        {{ $run->status }}@if ($run->dry_run) · dry-run@endif
+                                        {{ $run->status }}{{ $run->dry_run ? ' · dry-run' : '' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-3 text-xs text-charcoal">
