@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartureController;
+use App\Http\Controllers\HermesGuideController;
 use App\Http\Controllers\NeedPartnerController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ParticipantController;
@@ -20,6 +21,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // All internal pages require authentication (PRD section 4.2)
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('hermes', [HermesGuideController::class, 'index'])->name('hermes.guide');
 
     Route::resource('packages', PackageController::class)->except(['show']);
 
