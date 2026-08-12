@@ -11,6 +11,19 @@ if [ -z "${APP_KEY:-}" ]; then
 fi
 
 echo "==> APP_KEY is set"
+
+# Neon / Render give DATABASE_URL; Laravel reads DB_URL
+if [ -n "${DATABASE_URL:-}" ] && [ -z "${DB_URL:-}" ]; then
+  export DB_URL="$DATABASE_URL"
+fi
+
+if [ -n "${DB_URL:-}" ]; then
+  export DB_CONNECTION="${DB_CONNECTION:-pgsql}"
+  echo "==> Using Postgres (Neon/Render)"
+else
+  echo "==> Using default DB_CONNECTION=${DB_CONNECTION:-sqlite}"
+fi
+
 echo "==> Checking assets"
 ls -la public/build/manifest.json
 
