@@ -22,6 +22,9 @@ class DashboardController extends Controller
 
         $stats = $metrics->calculate($upcoming);
 
+        // Count by status for summary cards (derived from existing status_label)
+        $almostFullTrips = $upcoming->filter(fn ($d) => $d->status_label === 'almost_full')->count();
+
         $needAttention = $upcoming
             ->filter(fn ($d) => $d->status_label === 'open')
             ->sortBy('departure_date')
@@ -59,6 +62,7 @@ class DashboardController extends Controller
             'totalCapacity' => $stats['totalCapacity'],
             'registeredPax' => $stats['registeredPax'],
             'availableSeats' => $stats['availableSeats'],
+            'almostFullTrips' => $almostFullTrips,
             'upcomingDepartures' => $upcoming,
             'needAttention' => $needAttention,
             'recentRegistrations' => $recentRegistrations,

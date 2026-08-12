@@ -6,7 +6,7 @@
     $extra = $extra ?? [];
 @endphp
 
-<form method="GET" action="{{ route($filter->actionRoute) }}" class="bg-white rounded-3xl shadow-sm border border-line p-5 mb-6 flex flex-wrap items-end gap-4">
+<form method="GET" action="{{ route($filter->actionRoute) }}" class="flex flex-wrap items-end gap-3">
     @foreach ($extra as $key => $value)
         @if ($value !== null && $value !== '')
             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
