@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'import' => [
+        'token' => env('IMPORT_API_TOKEN'),
+    ],
+
 ];

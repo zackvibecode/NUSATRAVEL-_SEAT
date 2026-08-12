@@ -1,0 +1,46 @@
+{
+  "filename": "TRANSJAVA_customers.xlsx",
+  "dropbox_path": "/SeatWeb/Incoming/TRANSJAVA_customers.xlsx",
+  "packages": [
+    {
+      "name": "TRANSJAVA",
+      "destination": "INDONESIA",
+      "description": "Synced from Dropbox Excel",
+      "status": "active"
+    }
+  ],
+  "departures": [
+    {
+      "package_name": "TRANSJAVA",
+      "destination": "INDONESIA",
+      "departure_date": "2026-09-15",
+      "return_date": "2026-09-22",
+      "total_seats": 25,
+      "price": 2599,
+      "airline": "AirAsia",
+      "status": "open"
+    }
+  ],
+  "registrations": [
+    {
+      "name": "Ahmad Ali",
+      "phone": "012-3456789",
+      "pax": 2,
+      "need_partner": false,
+      "package_name": "TRANSJAVA",
+      "destination": "INDONESIA",
+      "departure_date": "2026-09-15",
+      "notes": "Family"
+    },
+    {
+      "name": "Siti Aminah",
+      "phone": "013-1112223",
+      "pax": 1,
+      "need_partner": true,
+      "partner_gender": "female",
+      "package_name": "TRANSJAVA",
+      "destination": "INDONESIA",
+      "departure_date": "2026-09-15"
+    }
+  ]
+}
