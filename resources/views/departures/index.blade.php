@@ -18,7 +18,7 @@
     </div>
 
     <!-- Filter toolbar -->
-    <div class="bg-white rounded-2xl shadow-sm border border-line p-5 mb-6">
+    <div class="bg-white rounded-3xl shadow-sm border border-line p-5 sm:p-6 mb-6">
         @include('partials.trip-filters', ['filter' => $filter])
     </div>
 

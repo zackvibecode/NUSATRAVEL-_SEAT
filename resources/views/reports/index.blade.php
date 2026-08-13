@@ -10,7 +10,9 @@
         </div>
     </div>
 
-    @include('partials.trip-filters', ['filter' => $filter, 'showPackage' => false, 'showSort' => false])
+    <div class="bg-white rounded-3xl shadow-sm border border-line p-5 sm:p-6 mb-6">
+        @include('partials.trip-filters', ['filter' => $filter, 'showPackage' => false, 'showSort' => false])
+    </div>
 
     <!-- Summary -->
     <div class="bg-white rounded-3xl shadow-sm border border-line p-8 mb-6">

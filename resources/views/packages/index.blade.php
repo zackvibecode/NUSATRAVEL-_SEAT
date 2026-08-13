@@ -17,7 +17,9 @@
         </a>
     </div>
 
-    @include('partials.trip-filters', ['filter' => $filter, 'showPackage' => false, 'showStatus' => true])
+    <div class="bg-white rounded-3xl shadow-sm border border-line p-5 sm:p-6 mb-6">
+        @include('partials.trip-filters', ['filter' => $filter, 'showPackage' => false, 'showStatus' => true])
+    </div>
 
     <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden">
         <div class="overflow-x-auto">
@@ -59,7 +61,7 @@
                                     </a>
 
                                     <button type="button"
-                                            class="inline-flex items-center gap-1.5 text-red-600 hover:text-red-700 text-sm font-semibold"
+                                            class="inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 text-sm font-bold rounded-full px-4 py-2 transition-all duration-150 border border-red-200"
                                             data-delete-package
                                             data-delete-url="{{ route('packages.destroy', $package) }}"
                                             data-package-name="{{ $package->name }}"
