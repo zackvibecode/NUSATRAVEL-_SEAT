@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <div>
-            <h2 class="text-3xl font-black tracking-tight leading-none">Attention Trips</h2>
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Attention Trips</h2>
             <p class="text-sm text-charcoal mt-2">Open trips that still need more registrations, sorted by earliest month first.</p>
         </div>
         <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">
@@ -20,7 +20,7 @@
         <div class="mb-8">
             <!-- Month header -->
             <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-2xl bg-brand-soft flex items-center justify-center">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                     <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>

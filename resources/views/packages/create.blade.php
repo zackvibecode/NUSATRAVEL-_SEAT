@@ -6,7 +6,7 @@
     <div class="max-w-xl mx-auto">
         <div class="flex items-end justify-between mb-8">
             <div>
-                <h2 class="text-3xl font-black tracking-tight leading-none">Create Package</h2>
+                <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Create Package</h2>
                 <p class="text-sm text-charcoal mt-2">A package is the reusable travel product (e.g. Yunnan 8D6N).</p>
             </div>
             <a href="{{ route('packages.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">
@@ -17,7 +17,7 @@
             </a>
         </div>
 
-        <form method="POST" action="{{ route('packages.store') }}" class="bg-white rounded-3xl shadow-sm border border-line p-8 space-y-6">
+        <form method="POST" action="{{ route('packages.store') }}" class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 space-y-6">
             @csrf
 
             <div>
@@ -29,7 +29,7 @@
                     value="{{ old('name') }}"
                     required
                     placeholder="e.g. Yunnan 8D6N"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
 
@@ -42,7 +42,7 @@
                     value="{{ old('destination') }}"
                     required
                     placeholder="e.g. China"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
 
@@ -53,7 +53,7 @@
                     name="description"
                     rows="3"
                     placeholder="Optional. e.g. Kunming, Dali, Lijiang, Shangri-La"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >{{ old('description') }}</textarea>
             </div>
 
@@ -62,7 +62,7 @@
                 <select
                     id="status"
                     name="status"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     <option value="active" @selected(old('status', 'active') === 'active')>Active</option>
                     <option value="archived" @selected(old('status') === 'archived')>Archived</option>

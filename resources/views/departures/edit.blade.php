@@ -6,7 +6,7 @@
     <div class="max-w-xl mx-auto">
         <div class="flex items-end justify-between mb-8">
             <div>
-                <h2 class="text-3xl font-black tracking-tight leading-none">Edit Departure</h2>
+                <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Edit Departure</h2>
                 <p class="text-sm text-charcoal mt-2">{{ $departure->package->name }} — {{ $departure->departure_date->format('d M Y') }}</p>
             </div>
             <a href="{{ route('departures.show', $departure) }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">
@@ -17,7 +17,7 @@
             </a>
         </div>
 
-        <form method="POST" action="{{ route('departures.update', $departure) }}" class="bg-white rounded-3xl shadow-sm border border-line p-8 space-y-6">
+        <form method="POST" action="{{ route('departures.update', $departure) }}" class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 space-y-6">
             @csrf
             @method('PUT')
 
@@ -27,7 +27,7 @@
                     id="package_id"
                     name="package_id"
                     required
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     @foreach ($packages as $package)
                         <option value="{{ $package->id }}" @selected(old('package_id', $departure->package_id) == $package->id)>{{ $package->name }}</option>
@@ -35,7 +35,7 @@
                 </select>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="departure_date" class="block text-sm font-semibold text-ink mb-2">Departure Date *</label>
                     <input
@@ -44,7 +44,7 @@
                         name="departure_date"
                         value="{{ old('departure_date', $departure->departure_date->format('Y-m-d')) }}"
                         required
-                        class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                 </div>
                 <div>
@@ -55,12 +55,12 @@
                         name="return_date"
                         value="{{ old('return_date', $departure->return_date->format('Y-m-d')) }}"
                         required
-                        class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="total_seats" class="block text-sm font-semibold text-ink mb-2">Total Seats *</label>
                     <input
@@ -70,7 +70,7 @@
                         value="{{ old('total_seats', $departure->total_seats) }}"
                         min="1"
                         required
-                        class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                 </div>
                 <div>
@@ -82,7 +82,7 @@
                         value="{{ old('price', $departure->price) }}"
                         min="0"
                         step="0.01"
-                        class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                 </div>
             </div>
@@ -94,7 +94,7 @@
                     id="airline"
                     name="airline"
                     value="{{ old('airline', $departure->airline) }}"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
 
@@ -103,7 +103,7 @@
                 <select
                     id="status"
                     name="status"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     <option value="open" @selected(old('status', $departure->status) !== 'cancelled')>
                         Automatic (Open / Almost Full / Full / Departed)
@@ -119,7 +119,7 @@
                     id="notes"
                     name="notes"
                     rows="3"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >{{ old('notes', $departure->notes) }}</textarea>
             </div>
 

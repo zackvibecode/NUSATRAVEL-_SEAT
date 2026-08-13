@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <div>
-            <h2 class="text-3xl font-black tracking-tight leading-none">Hermes Sync</h2>
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Hermes Sync</h2>
             <p class="text-sm text-charcoal mt-2">
                 For Hermes Agent only — Dropbox baca Excel, SeatWeb yang ubah data.
             </p>
@@ -17,7 +17,7 @@
     </div>
 
     <div class="grid lg:grid-cols-3 gap-4 mb-8">
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-line lg:col-span-2">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-line lg:col-span-2">
             <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal mb-4">Bagaimana ia jalan</h3>
             <ol class="space-y-4 text-sm">
                 <li class="flex gap-3">
@@ -44,7 +44,7 @@
             </ol>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-line">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-line">
             <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal mb-4">Status API</h3>
             <div class="space-y-3 text-sm">
                 <div>
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-line mb-8">
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-line mb-8">
         <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal mb-4">Hermes chatbot API (baca / edit / delete)</h3>
         <p class="text-sm text-charcoal mb-4">
             Token sama: <code class="bg-fog px-1.5 py-0.5 rounded">Authorization: Bearer SEATWEB_IMPORT_TOKEN</code>
@@ -104,7 +104,7 @@ Header: Authorization: Bearer SEATWEB_IMPORT_TOKEN
 Jangan guna DATABASE_URL. Package delete = hard delete (cascades trips/pax). Trip delete = cancel.</pre>
     </div>
 
-    <div class="bg-white rounded-3xl p-6 shadow-sm border border-line mb-8">
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-line mb-8">
         <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal mb-4">Prompt / cron untuk Hermes</h3>
         <pre class="text-xs sm:text-sm bg-fog rounded-2xl p-4 overflow-x-auto whitespace-pre-wrap font-mono text-ink leading-relaxed">Every 5 minutes:
 1. List new .xlsx/.csv in Dropbox /SeatWeb/Incoming/
@@ -120,7 +120,7 @@ Jangan guna DATABASE_URL. Package delete = hard delete (cascades trips/pax). Tri
     </div>
 
     <div class="grid lg:grid-cols-2 gap-4 mb-8">
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-line">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-line">
             <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal mb-4">Excel → SeatWeb (apa yang diubah)</h3>
             <ul class="space-y-3 text-sm">
                 <li class="flex gap-2">
@@ -141,7 +141,7 @@ Jangan guna DATABASE_URL. Package delete = hard delete (cascades trips/pax). Tri
             </p>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-line">
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-line">
             <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal mb-4">Staff vs Hermes</h3>
             <div class="space-y-3 text-sm">
                 <div class="rounded-2xl bg-fog px-4 py-3">
@@ -156,7 +156,7 @@ Jangan guna DATABASE_URL. Package delete = hard delete (cascades trips/pax). Tri
         </div>
     </div>
 
-    <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-8">
         <div class="px-6 py-4 border-b border-line flex items-center justify-between">
             <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal">Recent import runs</h3>
             <span class="text-xs text-charcoal">Dari table import_runs</span>

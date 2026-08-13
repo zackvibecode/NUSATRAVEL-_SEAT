@@ -14,7 +14,7 @@
             <aside class="w-64 bg-white border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen">
                 <div class="px-6 py-6">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                        <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-brand text-white font-black text-lg shadow-sm">S</span>
+                        <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-brand text-white font-black text-lg shadow-sm">S</span>
                         <div>
                             <span class="text-lg font-black tracking-tight leading-none block">SeatWeb</span>
                             <span class="text-[11px] text-charcoal font-medium mt-0.5 block">Trip Seat Availability</span>
@@ -89,7 +89,7 @@
                             $isActive = request()->routeIs($item['pattern']);
                         @endphp
                         <a href="{{ route($item['route']) }}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-150 {{ $isActive ? 'bg-brand text-white shadow-md' : 'text-ink hover:bg-brand-soft hover:text-brand' }}">
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-150 {{ $isActive ? 'bg-brand text-white shadow-md' : 'text-ink hover:bg-brand-soft hover:text-brand' }}">
                             <span class="{{ $isActive ? 'text-white' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
                             <span>{{ $item['label'] }}</span>
                         </a>
@@ -109,7 +109,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="mt-4">
                         @csrf
                         <button type="submit"
-                                class="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-semibold text-ink hover:bg-brand-soft hover:text-brand transition-all duration-150">
+                                class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-ink hover:bg-brand-soft hover:text-brand transition-all duration-150">
                             <svg class="w-5 h-5 text-charcoal" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                             </svg>
@@ -146,11 +146,11 @@
             </nav>
 
             <!-- Main content -->
-            <main class="flex-1 md:ml-0 px-4 md:px-8 py-6 md:py-8 pt-16 md:pt-8 pb-24 md:pb-8 overflow-x-auto">
+            <main class="flex-1 md:ml-0 px-4 md:px-8 py-6 md:py-8 pt-16 md:pt-8 pb-24 md:pb-8">
                 <div class="max-w-6xl mx-auto">
                     @if (session('success'))
-                        <div class="mb-4 bg-brand-soft border border-brand/20 text-brand-ink text-sm font-medium rounded-2xl px-5 py-3.5 flex items-center gap-3">
-                            <svg class="w-5 h-5 text-brand flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <div class="mb-4 bg-positive-soft border border-positive/20 text-positive text-sm font-semibold rounded-xl px-5 py-3.5 flex items-center gap-3">
+                            <svg class="w-5 h-5 text-positive flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             {{ session('success') }}
@@ -158,17 +158,23 @@
                     @endif
 
                     @if (session('error'))
-                        <div class="mb-4 bg-brand-soft border border-brand/20 text-brand-ink text-sm font-medium rounded-2xl px-5 py-3.5 flex items-center gap-3">
-                            <svg class="w-5 h-5 text-brand flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <div class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl px-5 py-3.5 flex items-center gap-3">
+                            <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                             </svg>
                             {{ session('error') }}
                         </div>
                     @endif
 
                     @if ($errors->any())
-                        <div class="mb-4 bg-brand-soft border border-brand/20 text-brand-ink text-sm font-medium rounded-2xl px-5 py-3.5">
-                            <ul class="list-disc pl-4 space-y-1">
+                        <div class="mb-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-xl px-5 py-3.5">
+                            <div class="flex items-center gap-3 mb-1">
+                                <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                                <span>Please fix the following:</span>
+                            </div>
+                            <ul class="list-disc pl-9 space-y-0.5">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
