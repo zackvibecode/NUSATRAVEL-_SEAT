@@ -85,7 +85,7 @@
                     <tr><td class="py-2 pr-4">POST</td><td class="py-2 pr-4">/chat</td><td class="font-sans">Chat: {"message":"list package"}</td></tr>
                     <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/overview</td><td class="font-sans">Ringkasan counts</td></tr>
                     <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/packages?q=</td><td class="font-sans">Baca / cari package</td></tr>
-                    <tr><td class="py-2 pr-4">POST/PUT/DELETE</td><td class="py-2 pr-4">/packages</td><td class="font-sans">Create / edit / archive</td></tr>
+                    <tr><td class="py-2 pr-4">POST/PUT/DELETE</td><td class="py-2 pr-4">/packages</td><td class="font-sans">Create / edit / hard-delete</td></tr>
                     <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/departures?q=</td><td class="font-sans">Baca trip</td></tr>
                     <tr><td class="py-2 pr-4">POST/PUT/DELETE</td><td class="py-2 pr-4">/departures</td><td class="font-sans">Create / edit / cancel trip</td></tr>
                     <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/registrations?q=</td><td class="font-sans">Baca pax</td></tr>
@@ -101,7 +101,7 @@
 - Archive package: DELETE {{ $apiBase }}/packages/{id}
 - Cancel trip: DELETE {{ $apiBase }}/departures/{id}
 Header: Authorization: Bearer SEATWEB_IMPORT_TOKEN
-Jangan guna DATABASE_URL. Package delete = archive. Trip delete = cancel.</pre>
+Jangan guna DATABASE_URL. Package delete = hard delete (cascades trips/pax). Trip delete = cancel.</pre>
     </div>
 
     <div class="bg-white rounded-3xl p-6 shadow-sm border border-line mb-8">

@@ -71,11 +71,11 @@ class HermesApiController extends Controller
 
     public function destroyPackage(Package $package): JsonResponse
     {
-        $package = $this->hermes->archivePackage($package);
+        $payload = $this->hermes->deletePackage($package);
 
         return response()->json([
-            'message' => 'Package archived. Historical trips kept.',
-            'data' => $this->hermes->packagePayload($package),
+            'message' => 'Package deleted from database. Related trips and registrations were removed.',
+            'data' => $payload,
         ]);
     }
 

@@ -56,13 +56,13 @@ class HermesApiAndChatTest extends TestCase
             ->deleteJson('/api/hermes/registrations/'.$reg->json('id'))
             ->assertOk();
 
-        $this->assertDatabaseMissing('registrations', ['id' => $reg->json('id')]);
+        $this->assertSoftDeleted('registrations', ['id' => $reg->json('id')]);
 
         $this->withToken($this->token)
             ->deleteJson('/api/hermes/packages/'.$id)
             ->assertOk();
 
-        $this->assertSame('archived', Package::find($id)->status);
+        $this->assertDatabaseMissing('packages', ['id' => $id]);
     }
 
     public function test_staff_chatbot_lists_packages(): void
@@ -103,6 +103,6 @@ class HermesApiAndChatTest extends TestCase
             ->assertOk()
             ->assertJsonPath('action', 'delete_registration');
 
-        $this->assertDatabaseMissing('registrations', ['id' => $reg->id]);
+        $this->assertSoftDeleted('registrations', ['id' => $reg->id]);
     }
 }

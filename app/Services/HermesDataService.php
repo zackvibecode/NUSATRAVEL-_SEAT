@@ -76,11 +76,23 @@ class HermesDataService
         return $package->fresh();
     }
 
-    public function archivePackage(Package $package): Package
+    /**
+     * Hard-delete a package (cascades departures + registrations).
+     *
+     * @return array<string, mixed> Payload captured before delete
+     */
+    public function deletePackage(Package $package): array
     {
-        $package->update(['status' => 'archived']);
+        $payload = $this->packagePayload($package);
+        $package->delete();
 
-        return $package->fresh();
+        return $payload;
+    }
+
+    /** @deprecated Use deletePackage() — kept as alias for callers that still say "archive". */
+    public function archivePackage(Package $package): array
+    {
+        return $this->deletePackage($package);
     }
 
     /**
@@ -258,7 +270,7 @@ class HermesDataService
                     ."- list package / list trip / list pax\n"
                     ."- cari TRANSJAVA\n"
                     ."- berapa seat TRANSJAVA\n"
-                    ."- archive package 6\n"
+                    ."- delete package 6 / padam pakej 6\n"
                     ."- cancel trip 10\n"
                     ."- padam pax 12\n"
                     ."- overview",
@@ -312,16 +324,21 @@ class HermesDataService
             ];
         }
 
-        if (preg_match('/\b(archive|arsib)\b.*package\s+(\d+)/u', $lower, $m)
-            || preg_match('/package\s+(\d+).*\b(archive|arsib)\b/u', $lower, $m2)) {
-            $id = (int) ($m[2] ?? $m2[1] ?? 0);
+        if (preg_match('/\b(delete|padam|hapus|archive|arsib)\b.*\b(package|pakej)\s+(\d+)/u', $lower, $m)
+            || preg_match('/\b(package|pakej)\s+(\d+).*\b(delete|padam|hapus|archive|arsib)\b/u', $lower, $m2)) {
+            $id = (int) ($m[3] ?? $m2[2] ?? 0);
             $package = Package::find($id);
             if (! $package) {
                 return ['action' => 'error', 'reply' => "Package #{$id} tak jumpa.", 'data' => null];
             }
-            $this->archivePackage($package);
+            $name = $package->name;
+            $payload = $this->deletePackage($package);
 
-            return ['action' => 'archive_package', 'reply' => "Package #{$id} {$package->name} di-archive. History trip/pax kekal.", 'data' => $this->packagePayload($package->fresh())];
+            return [
+                'action' => 'delete_package',
+                'reply' => "Package #{$id} {$name} dipadam dari database. Trip + pax linked ikut hilang.",
+                'data' => $payload,
+            ];
         }
 
         if (preg_match('/\b(cancel|batal)\b.*\b(trip|departure)\s+(\d+)/u', $lower, $m)

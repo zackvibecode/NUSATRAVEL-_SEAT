@@ -62,12 +62,14 @@ class PackageController extends Controller
     }
 
     /**
-     * Archive instead of delete so historical departures/registrations stay (PRD rule 9).
+     * Hard-delete the package. Related departures and registrations cascade.
      */
     public function destroy(Package $package): RedirectResponse
     {
-        $package->update(['status' => 'archived']);
+        $name = $package->name;
+        $package->delete();
 
-        return redirect()->route('packages.index')->with('success', 'Package archived. Historical data was kept.');
+        return redirect()->route('packages.index')
+            ->with('success', "Pakej \"{$name}\" telah dipadam dari database.");
     }
 }

@@ -6,7 +6,7 @@
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>
             <h2 class="text-3xl font-black tracking-tight leading-none">Hermes Chat</h2>
-            <p class="text-sm text-charcoal mt-2">Tanya / arahan: baca, edit, archive, padam pax. Contoh: <span class="font-semibold text-ink">list package</span>, <span class="font-semibold text-ink">cari TRANSJAVA</span>, <span class="font-semibold text-ink">padam pax 12</span></p>
+            <p class="text-sm text-charcoal mt-2">Tanya / arahan: baca, edit, padam pakej, padam pax. Contoh: <span class="font-semibold text-ink">list package</span>, <span class="font-semibold text-ink">cari TRANSJAVA</span>, <span class="font-semibold text-ink">padam pax 12</span></p>
         </div>
         <a href="{{ route('hermes.guide') }}" class="text-sm font-semibold text-brand hover:underline">API guide →</a>
     </div>
@@ -14,7 +14,7 @@
     <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden flex flex-col" style="min-height: 28rem;">
         <div id="hermes-log" class="flex-1 p-5 space-y-4 overflow-y-auto max-h-[60vh]">
             <div class="text-sm bg-fog rounded-2xl px-4 py-3 text-charcoal">
-                Hi. Taip <strong>help</strong> untuk command. Saya boleh list data, cari, archive package, cancel trip, padam pax.
+                Hi. Taip <strong>help</strong> untuk command. Saya boleh list data, cari, padam package, cancel trip, padam pax.
             </div>
         </div>
         <form id="hermes-form" class="border-t border-line p-4 flex gap-3">
