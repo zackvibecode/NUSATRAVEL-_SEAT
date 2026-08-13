@@ -5,21 +5,21 @@
     $showStatus = $showStatus ?? false;
     $extra = $extra ?? [];
 
-    $selectClass = 'w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all';
-    $labelClass = 'block text-xs font-semibold text-charcoal mb-2';
+    $selectClass = 'rounded-xl border border-line bg-white px-3 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all';
+    $labelClass = 'block text-[11px] font-semibold text-charcoal mb-1.5';
 @endphp
 
 <form method="GET" action="{{ route($filter->actionRoute) }}"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-5">
+      class="flex flex-wrap items-end gap-x-6 gap-y-4">
     @foreach ($extra as $key => $value)
         @if ($value !== null && $value !== '')
             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
         @endif
     @endforeach
 
-    <div class="min-w-0">
+    <div>
         <label for="month" class="{{ $labelClass }}">Month</label>
-        <select name="month" id="month" class="{{ $selectClass }}">
+        <select name="month" id="month" class="{{ $selectClass }} min-w-[8.5rem]">
             <option value="" @selected($filter->month === null)>All Months</option>
             @foreach (\App\Support\TripListFilter::months() as $num => $label)
                 <option value="{{ $num }}" @selected($filter->month === $num)>{{ $label }}</option>
@@ -27,9 +27,9 @@
         </select>
     </div>
 
-    <div class="min-w-0">
+    <div>
         <label for="year" class="{{ $labelClass }}">Year</label>
-        <select name="year" id="year" class="{{ $selectClass }}">
+        <select name="year" id="year" class="{{ $selectClass }} min-w-[7rem]">
             <option value="" @selected($filter->year === null)>All Years</option>
             @foreach (\App\Support\TripListFilter::years() as $y)
                 <option value="{{ $y }}" @selected($filter->year === $y)>{{ $y }}</option>
@@ -37,9 +37,9 @@
         </select>
     </div>
 
-    <div class="min-w-0">
+    <div>
         <label for="destination" class="{{ $labelClass }}">Country</label>
-        <select name="destination" id="destination" class="{{ $selectClass }}">
+        <select name="destination" id="destination" class="{{ $selectClass }} min-w-[9.5rem]">
             <option value="" @selected($filter->destination === null)>All Countries</option>
             @foreach (\App\Support\TripListFilter::destinations() as $dest)
                 <option value="{{ $dest }}" @selected($filter->destination === $dest)>{{ $dest }}</option>
@@ -48,9 +48,9 @@
     </div>
 
     @if ($showPackage)
-        <div class="min-w-0">
+        <div>
             <label for="package_id" class="{{ $labelClass }}">Package</label>
-            <select name="package_id" id="package_id" class="{{ $selectClass }}">
+            <select name="package_id" id="package_id" class="{{ $selectClass }} min-w-[10.5rem] max-w-[14rem]">
                 <option value="" @selected($filter->packageId === null)>All Packages</option>
                 @foreach ($filter->packagesForDropdown() as $pkg)
                     <option value="{{ $pkg->id }}" @selected($filter->packageId === $pkg->id)>{{ $pkg->name }}</option>
@@ -60,9 +60,9 @@
     @endif
 
     @if ($showStatus)
-        <div class="min-w-0">
+        <div>
             <label for="status" class="{{ $labelClass }}">Status</label>
-            <select name="status" id="status" class="{{ $selectClass }}">
+            <select name="status" id="status" class="{{ $selectClass }} min-w-[7rem]">
                 <option value="" @selected($filter->status === null)>All</option>
                 <option value="active" @selected($filter->status === 'active')>Active</option>
                 <option value="archived" @selected($filter->status === 'archived')>Archived</option>
@@ -71,9 +71,9 @@
     @endif
 
     @if ($showSort)
-        <div class="min-w-0">
+        <div>
             <label for="sort" class="{{ $labelClass }}">Sort by</label>
-            <select name="sort" id="sort" class="{{ $selectClass }}">
+            <select name="sort" id="sort" class="{{ $selectClass }} min-w-[9.5rem]">
                 @if ($filter->context === 'packages')
                     <option value="name" @selected($filter->sort === 'name')>Package name</option>
                     <option value="destination" @selected($filter->sort === 'destination')>Country</option>
@@ -89,22 +89,22 @@
                 @endif
             </select>
         </div>
-        <div class="min-w-0">
+        <div>
             <label for="dir" class="{{ $labelClass }}">Order</label>
-            <select name="dir" id="dir" class="{{ $selectClass }}">
+            <select name="dir" id="dir" class="{{ $selectClass }} min-w-[10rem]">
                 <option value="asc" @selected($filter->dir === 'asc')>Oldest / A–Z first</option>
                 <option value="desc" @selected($filter->dir === 'desc')>Newest / Z–A first</option>
             </select>
         </div>
     @endif
 
-    <div class="flex flex-wrap items-end gap-3 sm:col-span-2 lg:col-span-1 xl:col-span-2 pb-0.5">
+    <div class="flex items-center gap-3 pb-0.5">
         <button type="submit"
-                class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
+                class="bg-brand hover:bg-brand-hover text-white text-xs font-bold rounded-full px-5 py-2 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
             Filter
         </button>
         <a href="{{ route($filter->actionRoute) }}"
-           class="inline-flex items-center text-sm font-semibold text-charcoal hover:text-ink px-3 py-3">
+           class="text-xs font-semibold text-charcoal hover:text-ink py-2">
             Reset
         </a>
     </div>
