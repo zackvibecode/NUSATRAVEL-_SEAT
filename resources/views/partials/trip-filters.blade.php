@@ -3,6 +3,7 @@
     $showPackage = $showPackage ?? true;
     $showSort = $showSort ?? true;
     $showStatus = $showStatus ?? false;
+    $showSearch = $showSearch ?? ($filter->context === 'departures');
     $extra = $extra ?? [];
 
     $selectClass = 'rounded-xl border border-line bg-white px-3 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all';
@@ -16,6 +17,27 @@
             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
         @endif
     @endforeach
+
+    @if ($showSearch)
+        <div class="flex-1 min-w-[220px]">
+            <label for="search" class="{{ $labelClass }}">Search</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="w-4 h-4 text-charcoal" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <input
+                    type="text"
+                    id="search"
+                    name="search"
+                    value="{{ $filter->search }}"
+                    placeholder="Search package, destination, airline, or customer..."
+                    class="w-full rounded-xl border border-line bg-white pl-9 pr-4 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                >
+            </div>
+        </div>
+    @endif
 
     <div>
         <label for="month" class="{{ $labelClass }}">Month</label>

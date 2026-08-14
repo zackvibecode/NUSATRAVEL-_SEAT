@@ -27,6 +27,12 @@ class TripListFilter
 
     public ?string $status = null;
 
+    /**
+     * Free-text search across package name, destination, airline and
+     * registered customer/participant name (PRD section 15).
+     */
+    public ?string $search = null;
+
     public string $sort;
 
     public string $dir;
@@ -41,6 +47,7 @@ class TripListFilter
         $this->destination = filled($params['destination'] ?? null) ? (string) $params['destination'] : null;
         $this->packageId = isset($params['package_id']) && $params['package_id'] !== '' ? (int) $params['package_id'] : null;
         $this->status = filled($params['status'] ?? null) ? (string) $params['status'] : null;
+        $this->search = filled($params['search'] ?? null) ? trim((string) $params['search']) : null;
 
         $defaults = self::defaultSort($context);
         $this->sort = self::allowedSort($context, $params['sort'] ?? null) ?? $defaults['sort'];
@@ -83,6 +90,7 @@ class TripListFilter
             || $this->year !== null
             || $this->destination !== null
             || $this->packageId !== null
+            || $this->search !== null
             || ($this->status !== null && $this->context === 'packages');
     }
 
@@ -98,6 +106,7 @@ class TripListFilter
             'destination' => $this->destination,
             'package_id' => $this->packageId,
             'status' => $this->status,
+            'search' => $this->search,
             'sort' => $this->sort,
             'dir' => $this->dir,
         ], fn ($v) => $v !== null && $v !== '');
@@ -147,6 +156,19 @@ class TripListFilter
 
         if ($this->destination !== null) {
             $query->whereHas('package', fn (Builder $q) => $q->where('destination', $this->destination));
+        }
+
+        if ($this->search !== null) {
+            $term = "%{$this->search}%";
+
+            $query->where(function (Builder $q) use ($term) {
+                $q->where('airline', 'like', $term)
+                    ->orWhereHas('package', function (Builder $p) use ($term) {
+                        $p->where('name', 'like', $term)
+                            ->orWhere('destination', 'like', $term);
+                    })
+                    ->orWhereHas('registrations', fn (Builder $r) => $r->where('name', 'like', $term));
+            });
         }
 
         return $this->orderDepartureQuery($query);

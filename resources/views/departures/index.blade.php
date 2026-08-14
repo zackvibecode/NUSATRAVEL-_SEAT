@@ -28,7 +28,11 @@
             @include('partials.trip-card', ['departure' => $departure])
         @empty
             <div class="bg-white rounded-2xl border border-line px-6 py-12 text-center text-charcoal font-medium">
-                No departures found for the selected filters.
+                @if ($filter->isActive())
+                    No departures found for the selected filters{{ $filter->search ? ' or search "' . e($filter->search) . '"' : '' }}.
+                @else
+                    No departures found.
+                @endif
             </div>
         @endforelse
     </div>
