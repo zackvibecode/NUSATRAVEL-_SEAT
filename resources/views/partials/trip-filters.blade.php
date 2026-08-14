@@ -142,19 +142,55 @@
         if (!form) return;
 
         const searchInput = form.querySelector('#search');
+        const FOCUS_KEY = 'trip_search_focused';
+        const CURSOR_KEY = 'trip_search_cursor';
 
-        // Strip a single query param from the current URL so the browser
-        // doesn't keep appending duplicate keys when auto-submitting.
+        // Restore focus + cursor position after a page reload so the user
+        // can keep typing without interruption.
+        if (searchInput && sessionStorage.getItem(FOCUS_KEY) === '1') {
+            sessionStorage.removeItem(FOCUS_KEY);
+            searchInput.focus();
+            const pos = parseInt(sessionStorage.getItem(CURSOR_KEY), 10);
+            const len = searchInput.value.length;
+            const restore = isNaN(pos) ? len : Math.min(pos, len);
+            try {
+                searchInput.setSelectionRange(restore, restore);
+            } catch (e) {
+                // Some input types don't support setSelectionRange — ignore.
+            }
+            sessionStorage.removeItem(CURSOR_KEY);
+        }
+
         function submitForm() {
+            if (searchInput) {
+                sessionStorage.setItem(FOCUS_KEY, '1');
+                sessionStorage.setItem(CURSOR_KEY, String(searchInput.selectionStart || searchInput.value.length));
+            }
             form.submit();
         }
 
-        // Live search: auto-submit after a short debounce while typing.
+        // Live search: auto-submit after debounce while typing, but only if
+        // the value actually changed (prevents double-submit on Enter etc).
         if (searchInput) {
             let timer = null;
+            let lastValue = searchInput.value;
+
             searchInput.addEventListener('input', function () {
+                const value = searchInput.value;
+                if (value === lastValue) return;
+                lastValue = value;
                 clearTimeout(timer);
-                timer = setTimeout(submitForm, 450);
+                timer = setTimeout(submitForm, 700);
+            });
+
+            // If the user hits Enter, cancel the pending debounce and submit
+            // immediately (keeps focus restored right away).
+            searchInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(timer);
+                    submitForm();
+                }
             });
         }
 
