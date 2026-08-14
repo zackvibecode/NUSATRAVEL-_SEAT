@@ -11,6 +11,7 @@
 @endphp
 
 <form method="GET" action="{{ route($filter->actionRoute) }}"
+      id="tripFilterForm"
       class="flex flex-wrap items-end gap-x-6 gap-y-4">
     @foreach ($extra as $key => $value)
         @if ($value !== null && $value !== '')
@@ -33,9 +34,11 @@
                     name="search"
                     value="{{ $filter->search }}"
                     placeholder="Search package, destination, airline, or customer..."
+                    autocomplete="off"
                     class="w-full rounded-xl border border-line bg-white pl-9 pr-4 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
+            <p class="text-[10px] text-charcoal mt-1 font-medium">Case-insensitive · results update as you type</p>
         </div>
     @endif
 
@@ -131,3 +134,34 @@
         </a>
     </div>
 </form>
+
+@if ($showSearch)
+<script>
+    (function () {
+        const form = document.getElementById('tripFilterForm');
+        if (!form) return;
+
+        const searchInput = form.querySelector('#search');
+
+        // Strip a single query param from the current URL so the browser
+        // doesn't keep appending duplicate keys when auto-submitting.
+        function submitForm() {
+            form.submit();
+        }
+
+        // Live search: auto-submit after a short debounce while typing.
+        if (searchInput) {
+            let timer = null;
+            searchInput.addEventListener('input', function () {
+                clearTimeout(timer);
+                timer = setTimeout(submitForm, 450);
+            });
+        }
+
+        // Auto-submit when any dropdown changes too (month/year/etc).
+        form.querySelectorAll('select').forEach(function (sel) {
+            sel.addEventListener('change', submitForm);
+        });
+    })();
+</script>
+@endif

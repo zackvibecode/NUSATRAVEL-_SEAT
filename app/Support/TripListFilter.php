@@ -159,15 +159,17 @@ class TripListFilter
         }
 
         if ($this->search !== null) {
-            $term = "%{$this->search}%";
+            // Lowercase both sides so matching is case-insensitive across
+            // SQLite (tests) and MySQL (prod), regardless of column collation.
+            $term = '%'.strtolower($this->search).'%';
 
             $query->where(function (Builder $q) use ($term) {
-                $q->where('airline', 'like', $term)
+                $q->whereRaw('LOWER(airline) LIKE ?', [$term])
                     ->orWhereHas('package', function (Builder $p) use ($term) {
-                        $p->where('name', 'like', $term)
-                            ->orWhere('destination', 'like', $term);
+                        $p->whereRaw('LOWER(name) LIKE ?', [$term])
+                            ->orWhereRaw('LOWER(destination) LIKE ?', [$term]);
                     })
-                    ->orWhereHas('registrations', fn (Builder $r) => $r->where('name', 'like', $term));
+                    ->orWhereHas('registrations', fn (Builder $r) => $r->whereRaw('LOWER(name) LIKE ?', [$term]));
             });
         }
 
