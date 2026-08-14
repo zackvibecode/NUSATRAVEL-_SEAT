@@ -13,7 +13,7 @@
     <!-- Search -->
     <div class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-5 mb-4">
         <form method="GET" action="{{ route('participants.index') }}" class="flex flex-wrap items-end gap-3">
-            <div class="flex-1 min-w-[200px]">
+            <div class="flex-1 min-w-[280px] sm:min-w-[360px]">
                 <label for="search" class="block text-[11px] font-semibold text-charcoal mb-1.5">Search</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -27,7 +27,7 @@
                         name="search"
                         value="{{ $search }}"
                         placeholder="Search by name, phone, or package..."
-                        class="w-full rounded-xl border border-line bg-white pl-9 pr-4 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border border-line bg-white pl-9 pr-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                 </div>
             </div>
