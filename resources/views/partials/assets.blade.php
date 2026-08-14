@@ -1,3 +1,9 @@
+{{-- Favicon (circular SeatWeb "S" mark) --}}
+<link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+<link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+
 {{-- Load built assets without @vite (avoids ViteManifestNotFoundException 500) --}}
 @php
     $manifestPath = public_path('build/manifest.json');

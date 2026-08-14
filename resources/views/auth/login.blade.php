@@ -84,7 +84,7 @@
             <div class="lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-fog">
                 <div class="w-full max-w-md">
                     <div class="lg:hidden text-center mb-8">
-                        <span class="flex items-center justify-center w-14 h-14 rounded-2xl bg-brand text-white font-black text-2xl mx-auto shadow-lg">S</span>
+                        <span class="flex items-center justify-center w-14 h-14 rounded-full bg-brand text-white font-black text-2xl mx-auto shadow-lg">S</span>
                         <h1 class="text-3xl font-black tracking-tight mt-4">Trip Seat Availability</h1>
                     </div>
 

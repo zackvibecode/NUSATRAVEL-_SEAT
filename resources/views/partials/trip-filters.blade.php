@@ -35,7 +35,7 @@
                     value="{{ $filter->search }}"
                     placeholder="Search package, destination, airline, or customer..."
                     autocomplete="off"
-                    class="w-full rounded-xl border border-line bg-white pl-11 pr-4 py-3 text-base font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-white pl-12 pr-4 py-3 text-base font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
             <p class="text-[11px] text-charcoal mt-1.5 font-medium">Case-insensitive · results update as you type</p>
@@ -123,9 +123,9 @@
         </div>
     @endif
 
-    <div class="flex items-center gap-3 pb-0.5 ml-auto">
+    <div class="flex items-center gap-3 pb-0.5">
         <button type="submit"
-                class="bg-brand hover:bg-brand-hover text-white text-xs font-bold rounded-full px-6 py-2.5 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
+                class="bg-brand hover:bg-brand-hover text-white text-xs font-bold rounded-full px-5 py-2 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
             Filter
         </button>
         <a href="{{ route($filter->actionRoute) }}"

@@ -14,7 +14,7 @@
             <aside class="w-64 bg-white border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen">
                 <div class="px-6 py-6">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                        <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-brand text-white font-black text-lg shadow-sm">S</span>
+                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-brand text-white font-black text-lg shadow-sm">S</span>
                         <div>
                             <span class="text-lg font-black tracking-tight leading-none block">SeatWeb</span>
                             <span class="text-[11px] text-charcoal font-medium mt-0.5 block">Trip Seat Availability</span>
@@ -122,7 +122,7 @@
             <!-- Mobile top bar -->
             <div class="md:hidden fixed top-0 inset-x-0 z-20 bg-white border-b border-line px-4 py-3 flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                    <span class="flex items-center justify-center w-8 h-8 rounded-xl bg-brand text-white font-black text-sm">S</span>
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand text-white font-black text-sm">S</span>
                     <span class="font-black tracking-tight">SeatWeb</span>
                 </a>
                 <form method="POST" action="{{ route('logout') }}">
