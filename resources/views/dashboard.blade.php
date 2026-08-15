@@ -84,6 +84,8 @@
                     <span class="{{ $activity->seat_delta > 0 ? 'text-positive' : 'text-brand' }}">{{ $activity->seat_change_label }}</span>
                     <span class="text-charcoal">|</span>
                     {{ $activity->departure_date->format('j M Y') }}
+                    <span class="text-charcoal">|</span>
+                    <span class="text-charcoal font-normal">updated {{ $activity->updated_at_label }}</span>
                 </p>
             @empty
                 <p class="px-4 sm:px-6 py-3 text-sm text-charcoal font-medium">No seat updates from Hermes yet.</p>

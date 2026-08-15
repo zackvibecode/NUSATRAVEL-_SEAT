@@ -33,4 +33,11 @@ class HermesSeatActivity extends Model
 
         return 'Seat '.$prefix.$this->seat_delta;
     }
+
+    public function getUpdatedAtLabelAttribute(): string
+    {
+        return $this->created_at
+            ->timezone('Asia/Kuala_Lumpur')
+            ->format('j M Y, g:ia');
+    }
 }

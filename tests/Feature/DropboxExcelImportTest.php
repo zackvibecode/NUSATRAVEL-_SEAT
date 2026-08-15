@@ -224,6 +224,7 @@ class DropboxExcelImportTest extends TestCase
             'departure_date' => '2026-08-20',
             'seat_delta' => 5,
         ]);
+        $activity = HermesSeatActivity::firstOrFail();
 
         $this->actingAs($user)
             ->get(route('dashboard'))
@@ -231,7 +232,8 @@ class DropboxExcelImportTest extends TestCase
             ->assertSee('Hermes Update Activity')
             ->assertSee('Makassar')
             ->assertSee('Seat +5')
-            ->assertSee('20 Aug 2026');
+            ->assertSee('20 Aug 2026')
+            ->assertSee('updated '.$activity->updated_at_label);
     }
 
     public function test_hermes_update_page_shows_activity_from_sidebar_route(): void
@@ -243,6 +245,7 @@ class DropboxExcelImportTest extends TestCase
             'departure_date' => '2026-08-25',
             'seat_delta' => -3,
         ]);
+        $activity = HermesSeatActivity::firstOrFail();
 
         $this->actingAs($user)
             ->get(route('hermes.updates'))
@@ -250,7 +253,8 @@ class DropboxExcelImportTest extends TestCase
             ->assertSee('Hermes Update')
             ->assertSee('Yunnan')
             ->assertSee('Seat -3')
-            ->assertSee('25 Aug 2026');
+            ->assertSee('25 Aug 2026')
+            ->assertSee('updated '.$activity->updated_at_label);
     }
 
     /**

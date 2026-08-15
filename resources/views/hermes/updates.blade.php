@@ -5,7 +5,7 @@
 @section('content')
     <div class="mb-6">
         <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Hermes Update</h2>
-        <p class="text-sm text-charcoal mt-2">Seat changes Hermes made. Latest first · travel date, not sync time.</p>
+        <p class="text-sm text-charcoal mt-2">Seat changes Hermes made. Latest first · travel date and time updated.</p>
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden">
@@ -22,6 +22,8 @@
                         <span class="{{ $activity->seat_delta > 0 ? 'text-positive' : 'text-brand' }}">{{ $activity->seat_change_label }}</span>
                         <span class="text-charcoal">|</span>
                         {{ $activity->departure_date->format('j M Y') }}
+                        <span class="text-charcoal">|</span>
+                        <span class="text-charcoal font-normal">updated {{ $activity->updated_at_label }}</span>
                     </p>
                 </div>
             @empty
