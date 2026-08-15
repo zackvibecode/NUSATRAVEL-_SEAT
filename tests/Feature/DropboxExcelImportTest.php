@@ -3,9 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Departure;
+use App\Models\HermesSeatActivity;
 use App\Models\ImportRun;
 use App\Models\Package;
-use App\Models\Registration;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -112,6 +113,7 @@ class DropboxExcelImportTest extends TestCase
         $this->assertDatabaseCount('registrations', 0);
         $this->assertDatabaseCount('import_runs', 1);
         $this->assertTrue(ImportRun::firstOrFail()->dry_run);
+        $this->assertDatabaseCount('hermes_seat_activities', 0);
     }
 
     public function test_skips_over_capacity_registration(): void
@@ -139,6 +141,109 @@ class DropboxExcelImportTest extends TestCase
             ->assertJsonPath('counts.skipped', 1);
 
         $this->assertDatabaseCount('registrations', 0);
+    }
+
+    public function test_total_seats_increase_records_positive_activity_with_travel_date(): void
+    {
+        $payload = $this->capacityOnlyPayload(25);
+
+        $this->withToken($this->token)
+            ->postJson('/api/imports/dropbox-excel', $payload)
+            ->assertOk();
+
+        HermesSeatActivity::query()->delete();
+
+        $payload['departures'][0]['total_seats'] = 30;
+
+        $this->withToken($this->token)
+            ->postJson('/api/imports/dropbox-excel', $payload)
+            ->assertOk();
+
+        $this->assertDatabaseCount('hermes_seat_activities', 1);
+        $activity = HermesSeatActivity::firstOrFail();
+        $this->assertSame('TRANSJAVA', $activity->package_name);
+        $this->assertTrue($activity->departure_date->isSameDay('2026-09-15'));
+        $this->assertSame(5, $activity->seat_delta);
+    }
+
+    public function test_unchanged_seats_do_not_record_activity(): void
+    {
+        $payload = $this->capacityOnlyPayload(25);
+
+        $this->withToken($this->token)
+            ->postJson('/api/imports/dropbox-excel', $payload)
+            ->assertOk();
+
+        HermesSeatActivity::query()->delete();
+
+        $this->withToken($this->token)
+            ->postJson('/api/imports/dropbox-excel', $payload)
+            ->assertOk();
+
+        $this->assertDatabaseCount('hermes_seat_activities', 0);
+    }
+
+    public function test_pax_increase_records_negative_seat_activity(): void
+    {
+        $this->withToken($this->token)
+            ->postJson('/api/imports/dropbox-excel', $this->capacityOnlyPayload(25))
+            ->assertOk();
+
+        HermesSeatActivity::query()->delete();
+
+        $payload = $this->capacityOnlyPayload(25);
+        $payload['registrations'] = [
+            [
+                'name' => 'Ahmad Ali',
+                'phone' => '012-3456789',
+                'pax' => 3,
+                'need_partner' => false,
+                'package_name' => 'TRANSJAVA',
+                'destination' => 'INDONESIA',
+                'departure_date' => '2026-09-15',
+            ],
+        ];
+
+        $this->withToken($this->token)
+            ->postJson('/api/imports/dropbox-excel', $payload)
+            ->assertOk();
+
+        $this->assertDatabaseCount('hermes_seat_activities', 1);
+        $activity = HermesSeatActivity::firstOrFail();
+        $this->assertSame('TRANSJAVA', $activity->package_name);
+        $this->assertTrue($activity->departure_date->isSameDay('2026-09-15'));
+        $this->assertSame(-3, $activity->seat_delta);
+    }
+
+    public function test_dashboard_shows_hermes_activity_using_travel_date(): void
+    {
+        $user = User::factory()->create();
+
+        HermesSeatActivity::create([
+            'package_name' => 'Makassar',
+            'departure_date' => '2026-08-20',
+            'seat_delta' => 5,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('Hermes Update Activity')
+            ->assertSee('Makassar')
+            ->assertSee('Seat +5')
+            ->assertSee('20 Aug 2026');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function capacityOnlyPayload(int $totalSeats): array
+    {
+        $payload = $this->samplePayload();
+        $payload['departures'][0]['total_seats'] = $totalSeats;
+        $payload['registrations'] = [];
+
+        return $payload;
     }
 
     /**

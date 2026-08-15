@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 class HermesDataService
 {
+    public function __construct(private HermesSeatActivityLogger $activityLogger) {}
+
     public function overview(): array
     {
         $packages = Package::query()->count();
@@ -126,7 +128,7 @@ class HermesDataService
      */
     public function createDeparture(array $data): Departure
     {
-        return Departure::create([
+        $departure = Departure::create([
             'package_id' => (int) $data['package_id'],
             'departure_date' => $data['departure_date'],
             'return_date' => $data['return_date'],
@@ -136,6 +138,11 @@ class HermesDataService
             'status' => $data['status'] ?? 'open',
             'notes' => $data['notes'] ?? null,
         ]);
+
+        $departure->load('package');
+        $this->activityLogger->record($departure, $departure->available_seats);
+
+        return $departure;
     }
 
     /**
@@ -143,6 +150,7 @@ class HermesDataService
      */
     public function updateDeparture(Departure $departure, array $data): Departure
     {
+        $before = $departure->available_seats;
         $payload = [];
         foreach (['package_id', 'departure_date', 'return_date', 'total_seats', 'price', 'airline', 'status', 'notes'] as $field) {
             if (array_key_exists($field, $data)) {
@@ -151,7 +159,10 @@ class HermesDataService
         }
         $departure->update($payload);
 
-        return $departure->fresh();
+        $fresh = $departure->fresh(['package']);
+        $this->activityLogger->record($fresh, $fresh->available_seats - $before);
+
+        return $fresh;
     }
 
     public function cancelDeparture(Departure $departure): Departure
@@ -202,7 +213,7 @@ class HermesDataService
             throw new \RuntimeException('partner_gender is required when need_partner is true.');
         }
 
-        return Registration::create([
+        $registration = Registration::create([
             'departure_id' => $departure->id,
             'name' => trim((string) $data['name']),
             'phone' => $data['phone'] ?? null,
@@ -211,6 +222,11 @@ class HermesDataService
             'partner_gender' => $needPartner ? ($data['partner_gender'] ?? null) : null,
             'notes' => $data['notes'] ?? null,
         ]);
+
+        $departure->loadMissing('package');
+        $this->activityLogger->record($departure, -$pax);
+
+        return $registration;
     }
 
     /**
@@ -238,6 +254,8 @@ class HermesDataService
             throw new \RuntimeException('partner_gender is required when need_partner is true.');
         }
 
+        $oldPax = $registration->pax;
+
         $registration->update([
             'name' => isset($data['name']) ? trim((string) $data['name']) : $registration->name,
             'phone' => array_key_exists('phone', $data) ? $data['phone'] : $registration->phone,
@@ -247,12 +265,21 @@ class HermesDataService
             'notes' => array_key_exists('notes', $data) ? $data['notes'] : $registration->notes,
         ]);
 
+        $departure->loadMissing('package');
+        $this->activityLogger->record($departure, $oldPax - $pax);
+
         return $registration->fresh();
     }
 
     public function deleteRegistration(Registration $registration): void
     {
+        $departure = $registration->departure()->with('package')->first();
+        $pax = $registration->pax;
         $registration->delete();
+
+        if ($departure) {
+            $this->activityLogger->record($departure, $pax);
+        }
     }
 
     /**

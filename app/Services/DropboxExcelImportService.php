@@ -7,12 +7,15 @@ use App\Models\ImportRun;
 use App\Models\Package;
 use App\Models\Registration;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
 class DropboxExcelImportService
 {
+    public function __construct(private HermesSeatActivityLogger $activityLogger) {}
+
     /**
      * Upsert packages, departures, and registrations from a structured payload.
      *
@@ -51,6 +54,10 @@ class DropboxExcelImportService
         $packageIndex = [];
         /** @var array<string, Departure> */
         $departureIndex = [];
+
+        $availableBefore = $this->activityLogger->snapshotAvailable(
+            $this->findDeparturesTouchedByPayload($payload),
+        );
 
         try {
             DB::transaction(function () use ($payload, &$counts, &$errors, &$summary, &$packageIndex, &$departureIndex) {
@@ -95,6 +102,11 @@ class DropboxExcelImportService
         }
 
         $status = count($errors) > 0 ? 'completed_with_errors' : 'completed';
+
+        foreach ($this->findDeparturesTouchedByPayload($payload) as $departure) {
+            $before = $availableBefore[$departure->id] ?? 0;
+            $this->activityLogger->record($departure, $departure->available_seats - $before);
+        }
 
         $run = ImportRun::create([
             'source' => 'dropbox-excel',
@@ -826,6 +838,61 @@ class DropboxExcelImportService
             'departure_id' => $departureId,
             'id' => $id,
         ];
+    }
+
+    /**
+     * Existing + just-imported trips mentioned in this payload, with current available seats.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return Collection<int, Departure>
+     */
+    private function findDeparturesTouchedByPayload(array $payload): Collection
+    {
+        $ids = [];
+        $packageIndex = [];
+        $departureIndex = [];
+
+        foreach (array_merge($payload['departures'] ?? [], $payload['registrations'] ?? []) as $row) {
+            $packageName = trim((string) ($row['package_name'] ?? $row['package'] ?? ''));
+            $destination = trim((string) ($row['destination'] ?? ''));
+            $dateRaw = $row['departure_date'] ?? null;
+
+            if ($dateRaw === null && empty($row['departure_id'])) {
+                continue;
+            }
+
+            $date = '';
+            if ($dateRaw) {
+                try {
+                    $date = Carbon::parse($dateRaw)->toDateString();
+                } catch (Throwable) {
+                    continue;
+                }
+            }
+
+            $found = $this->resolveDeparture(
+                $row,
+                $packageName,
+                $destination,
+                $date,
+                $packageIndex,
+                $departureIndex,
+            );
+
+            if ($found instanceof Departure && $found->id) {
+                $ids[] = $found->id;
+            }
+        }
+
+        if ($ids === []) {
+            return collect();
+        }
+
+        return Departure::query()
+            ->with('package')
+            ->withSum('registrations as registered_pax_sum', 'pax')
+            ->whereIn('id', array_values(array_unique($ids)))
+            ->get();
     }
 
     /**

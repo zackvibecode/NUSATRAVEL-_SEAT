@@ -65,6 +65,26 @@
         </div>
     </div>
 
+    <!-- Hermes seat updates -->
+    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-4">
+        <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-line">
+            <h3 class="font-bold text-base tracking-tight">Hermes Update Activity</h3>
+        </div>
+        <div class="divide-y divide-line">
+            @forelse ($hermesSeatActivities as $activity)
+                <p class="px-4 sm:px-6 py-2.5 text-sm font-medium">
+                    {{ $activity->package_name }}
+                    <span class="text-charcoal">|</span>
+                    <span class="{{ $activity->seat_delta > 0 ? 'text-positive' : 'text-brand' }}">{{ $activity->seat_change_label }}</span>
+                    <span class="text-charcoal">|</span>
+                    {{ $activity->departure_date->format('j M Y') }}
+                </p>
+            @empty
+                <p class="px-4 sm:px-6 py-3 text-sm text-charcoal font-medium">No seat updates from Hermes yet.</p>
+            @endforelse
+        </div>
+    </div>
+
     <!-- Upcoming Trips — main focus -->
     <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-4">
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">

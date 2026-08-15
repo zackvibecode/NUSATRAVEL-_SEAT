@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\HermesSeatActivity;
 use App\Models\Package;
 use App\Models\Registration;
 use App\Models\User;
@@ -104,5 +105,75 @@ class HermesApiAndChatTest extends TestCase
             ->assertJsonPath('action', 'delete_registration');
 
         $this->assertSoftDeleted('registrations', ['id' => $reg->id]);
+    }
+
+    public function test_updating_total_seats_records_available_seat_activity(): void
+    {
+        $package = $this->withToken($this->token)->postJson('/api/hermes/packages', [
+            'name' => 'Yunnan',
+            'destination' => 'China',
+        ])->assertCreated();
+
+        HermesSeatActivity::query()->delete();
+
+        $dep = $this->withToken($this->token)->postJson('/api/hermes/departures', [
+            'package_id' => $package->json('id'),
+            'departure_date' => '2026-08-25',
+            'return_date' => '2026-08-30',
+            'total_seats' => 10,
+        ])->assertCreated();
+
+        $created = HermesSeatActivity::firstOrFail();
+        $this->assertSame('Yunnan', $created->package_name);
+        $this->assertTrue($created->departure_date->isSameDay('2026-08-25'));
+        $this->assertSame(10, $created->seat_delta);
+
+        HermesSeatActivity::query()->delete();
+
+        $this->withToken($this->token)
+            ->putJson('/api/hermes/departures/'.$dep->json('id'), ['total_seats' => 7])
+            ->assertOk();
+
+        $this->assertDatabaseCount('hermes_seat_activities', 1);
+        $updated = HermesSeatActivity::firstOrFail();
+        $this->assertSame('Yunnan', $updated->package_name);
+        $this->assertTrue($updated->departure_date->isSameDay('2026-08-25'));
+        $this->assertSame(-3, $updated->seat_delta);
+    }
+
+    public function test_registration_pax_change_records_seat_activity(): void
+    {
+        $package = $this->withToken($this->token)->postJson('/api/hermes/packages', [
+            'name' => 'Chengdu',
+            'destination' => 'China',
+        ])->assertCreated();
+
+        $dep = $this->withToken($this->token)->postJson('/api/hermes/departures', [
+            'package_id' => $package->json('id'),
+            'departure_date' => '2026-09-02',
+            'return_date' => '2026-09-08',
+            'total_seats' => 20,
+        ])->assertCreated();
+
+        HermesSeatActivity::query()->delete();
+
+        $reg = $this->withToken($this->token)->postJson('/api/hermes/registrations', [
+            'departure_id' => $dep->json('id'),
+            'name' => 'Ahmad',
+            'pax' => 3,
+        ])->assertCreated();
+
+        $activity = HermesSeatActivity::firstOrFail();
+        $this->assertSame('Chengdu', $activity->package_name);
+        $this->assertTrue($activity->departure_date->isSameDay('2026-09-02'));
+        $this->assertSame(-3, $activity->seat_delta);
+
+        HermesSeatActivity::query()->delete();
+
+        $this->withToken($this->token)
+            ->putJson('/api/hermes/registrations/'.$reg->json('id'), ['pax' => 3])
+            ->assertOk();
+
+        $this->assertDatabaseCount('hermes_seat_activities', 0);
     }
 }

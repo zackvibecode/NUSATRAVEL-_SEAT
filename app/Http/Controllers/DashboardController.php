@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Departure;
+use App\Models\HermesSeatActivity;
 use App\Models\Registration;
 use App\Services\SeatMetricsService;
 use App\Support\TripListFilter;
@@ -62,6 +63,7 @@ class DashboardController extends Controller
             'upcomingDepartures' => $upcoming->take(5),
             'recentRegistrations' => $recentRegistrations,
             'trendData' => $trendData,
+            'hermesSeatActivities' => HermesSeatActivity::query()->latest()->take(8)->get(),
         ]);
     }
 
