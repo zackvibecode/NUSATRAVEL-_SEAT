@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('hermes', [HermesGuideController::class, 'index'])->name('hermes.guide');
     Route::get('hermes/chat', [HermesGuideController::class, 'chat'])->name('hermes.chat');
     Route::post('hermes/chat', [HermesGuideController::class, 'chatMessage'])->name('hermes.chat.message');
+    Route::get('hermes/updates', [HermesGuideController::class, 'updates'])->name('hermes.updates');
 
     Route::resource('packages', PackageController::class)->except(['show']);
 

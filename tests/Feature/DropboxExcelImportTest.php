@@ -234,6 +234,25 @@ class DropboxExcelImportTest extends TestCase
             ->assertSee('20 Aug 2026');
     }
 
+    public function test_hermes_update_page_shows_activity_from_sidebar_route(): void
+    {
+        $user = User::factory()->create();
+
+        HermesSeatActivity::create([
+            'package_name' => 'Yunnan',
+            'departure_date' => '2026-08-25',
+            'seat_delta' => -3,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('hermes.updates'))
+            ->assertOk()
+            ->assertSee('Hermes Update')
+            ->assertSee('Yunnan')
+            ->assertSee('Seat -3')
+            ->assertSee('25 Aug 2026');
+    }
+
     /**
      * @return array<string, mixed>
      */

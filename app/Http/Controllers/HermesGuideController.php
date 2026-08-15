@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HermesSeatActivity;
 use App\Models\ImportRun;
 use App\Services\HermesDataService;
 use Illuminate\Http\JsonResponse;
@@ -27,6 +28,15 @@ class HermesGuideController extends Controller
     public function chat(): View
     {
         return view('hermes.chat');
+    }
+
+    public function updates(): View
+    {
+        $activities = HermesSeatActivity::query()
+            ->latest()
+            ->paginate(30);
+
+        return view('hermes.updates', compact('activities'));
     }
 
     public function chatMessage(Request $request, HermesDataService $hermes): JsonResponse
