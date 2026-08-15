@@ -3,31 +3,81 @@
 @section('title', 'Hermes Update')
 
 @section('content')
-    <div class="mb-6">
-        <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Hermes Update</h2>
-        <p class="text-sm text-charcoal mt-2">Seat changes Hermes made. Latest first · travel date and time updated.</p>
+    <!-- Page header -->
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Hermes Update</h2>
+            <p class="text-sm text-charcoal mt-2">Seat changes Hermes made. Latest first · travel date and time updated.</p>
+        </div>
+        @if ($activities->total() > 0)
+            <span class="inline-flex items-center gap-1.5 self-start sm:self-auto px-3.5 py-1.5 rounded-full bg-brand-soft text-brand text-xs font-bold flex-shrink-0">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                {{ $activities->total() }} updates
+            </span>
+        @endif
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden">
+    <!-- Activity feed -->
+    <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden">
         <div class="divide-y divide-line">
             @forelse ($activities as $activity)
-                <div class="px-4 sm:px-6 py-3 flex items-center justify-between gap-3 text-sm font-medium">
-                    <p class="min-w-0 truncate">
-                        @if ($activity->departure_id)
-                            <a href="{{ route('departures.show', $activity->departure_id) }}" class="hover:text-brand">{{ $activity->package_name }}</a>
+                @php
+                    $isAdd = $activity->seat_delta > 0;
+                @endphp
+                <div class="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-4 hover:bg-fog/60 transition-colors duration-150">
+                    <!-- Direction icon chip -->
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex-shrink-0 flex items-center justify-center {{ $isAdd ? 'bg-positive-soft text-positive' : 'bg-brand-soft text-brand' }}">
+                        @if ($isAdd)
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                            </svg>
                         @else
-                            {{ $activity->package_name }}
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/>
+                            </svg>
                         @endif
-                        <span class="text-charcoal">|</span>
-                        <span class="{{ $activity->seat_delta > 0 ? 'text-positive' : 'text-brand' }}">{{ $activity->seat_change_label }}</span>
-                        <span class="text-charcoal">|</span>
-                        {{ $activity->departure_date->format('j M Y') }}
-                        <span class="text-charcoal">|</span>
-                        <span class="text-charcoal font-normal">updated {{ $activity->updated_at_label }}</span>
-                    </p>
+                    </div>
+
+                    <!-- Main info -->
+                    <div class="min-w-0 flex-1">
+                        @if ($activity->departure_id)
+                            <a href="{{ route('departures.show', $activity->departure_id) }}"
+                               class="font-bold text-sm sm:text-base text-ink hover:text-brand transition-colors tracking-tight truncate block">
+                                {{ $activity->package_name }}
+                            </a>
+                        @else
+                            <p class="font-bold text-sm sm:text-base text-ink tracking-tight truncate">{{ $activity->package_name }}</p>
+                        @endif
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs">
+                            <span class="text-charcoal font-semibold inline-flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                Trip {{ $activity->departure_date->format('D, j M Y') }}
+                            </span>
+                            <span class="text-charcoal/70 font-medium" title="{{ $activity->updated_at_label }}">
+                                {{ $activity->created_at->timezone('Asia/Kuala_Lumpur')->diffForHumans() }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Seat delta badge -->
+                    <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-black flex-shrink-0 {{ $isAdd ? 'bg-positive-soft text-positive' : 'bg-brand-soft text-brand' }}">
+                        {{ $activity->seat_change_label }}
+                    </span>
                 </div>
             @empty
-                <p class="px-4 sm:px-6 py-12 text-center text-sm text-charcoal font-medium">No seat updates from Hermes yet.</p>
+                <div class="px-6 py-16 text-center">
+                    <div class="w-14 h-14 rounded-3xl bg-brand-soft flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-7 h-7 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <p class="font-bold text-ink text-sm">No seat updates yet</p>
+                    <p class="text-charcoal font-medium text-sm mt-1">Changes Hermes makes will show up here.</p>
+                </div>
             @endforelse
         </div>
     </div>
