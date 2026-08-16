@@ -52,5 +52,6 @@ Route::middleware('auth')->group(function () {
     Route::get('participants', [ParticipantController::class, 'index'])->name('participants.index');
     Route::get('need-partner', [NeedPartnerController::class, 'index'])->name('need-partner.index');
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
 });

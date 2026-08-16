@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Breadcrumb / actions -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
         <a href="{{ route('departures.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -37,7 +37,7 @@
     </div>
 
     <!-- Trip header -->
-    <div class="bg-white rounded-xl shadow-sm border border-line p-8 mb-6">
+    <div class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 mb-4">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
                 <div class="flex items-center gap-3">
@@ -98,9 +98,9 @@
     </div>
 
     <!-- Seat summary -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-line">
-            <div class="flex items-center gap-3 mb-4">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
+        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+            <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                     <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
@@ -108,10 +108,10 @@
                 </div>
                 <p class="text-xs font-semibold text-charcoal uppercase tracking-wider">Total Seats</p>
             </div>
-            <p class="text-2xl sm:text-2xl sm:text-3xl font-black leading-none">{{ $departure->total_seats }}</p>
+            <p class="text-2xl sm:text-3xl font-black leading-none">{{ $departure->total_seats }}</p>
         </div>
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-line">
-            <div class="flex items-center gap-3 mb-4">
+        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+            <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                     <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -119,10 +119,10 @@
                 </div>
                 <p class="text-xs font-semibold text-charcoal uppercase tracking-wider">Registered</p>
             </div>
-            <p class="text-2xl sm:text-2xl sm:text-3xl font-black leading-none">{{ $departure->registered_pax }}</p>
+            <p class="text-2xl sm:text-3xl font-black leading-none">{{ $departure->registered_pax }}</p>
         </div>
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-line">
-            <div class="flex items-center gap-3 mb-4">
+        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+            <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl {{ $departure->available_seats <= 0 ? 'bg-brand' : 'bg-positive-soft' }} flex items-center justify-center">
                     <svg class="w-5 h-5 {{ $departure->available_seats <= 0 ? 'text-white' : 'text-positive' }}" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
@@ -130,10 +130,10 @@
                 </div>
                 <p class="text-xs font-semibold text-charcoal uppercase tracking-wider">Available</p>
             </div>
-            <p class="text-2xl sm:text-2xl sm:text-3xl font-black leading-none {{ $departure->available_seats <= 0 ? 'text-brand' : 'text-positive' }}">{{ $departure->available_seats }}</p>
+            <p class="text-2xl sm:text-3xl font-black leading-none {{ $departure->available_seats <= 0 ? 'text-brand' : 'text-positive' }}">{{ $departure->available_seats }}</p>
         </div>
-        <div class="bg-white rounded-xl p-6 shadow-sm border border-line">
-            <div class="flex items-center gap-3 mb-4">
+        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+            <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                     <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
@@ -141,8 +141,8 @@
                 </div>
                 <p class="text-xs font-semibold text-charcoal uppercase tracking-wider">Occupancy</p>
             </div>
-            <p class="text-2xl sm:text-2xl sm:text-3xl font-black leading-none">{{ $departure->occupancy_percent }}%</p>
-            <div class="mt-3 h-2 bg-fog rounded-full overflow-hidden">
+            <p class="text-2xl sm:text-3xl font-black leading-none">{{ $departure->occupancy_percent }}%</p>
+            <div class="mt-2 h-1.5 bg-fog rounded-full overflow-hidden">
                 <div class="h-full rounded-full {{ $departure->occupancy_percent >= 100 ? 'bg-brand' : ($departure->occupancy_percent >= 75 ? 'bg-warning' : 'bg-positive') }}"
                      style="width: {{ min(100, $departure->occupancy_percent) }}%"></div>
             </div>
@@ -150,8 +150,8 @@
     </div>
 
     <!-- Registrations table -->
-    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-8">
-        <div class="px-6 py-5 border-b border-line flex items-center justify-between">
+    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-4">
+        <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                     <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -256,7 +256,7 @@
     </div>
 
     <!-- Add registration form -->
-    <div id="add-registration" class="bg-white rounded-xl shadow-sm border border-line p-8 mb-8">
+    <div id="add-registration" class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 mb-4">
         <div class="flex items-center gap-3 mb-6">
             <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                 <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">

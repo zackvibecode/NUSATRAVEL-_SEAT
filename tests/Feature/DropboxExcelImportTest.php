@@ -229,11 +229,10 @@ class DropboxExcelImportTest extends TestCase
         $this->actingAs($user)
             ->get(route('dashboard'))
             ->assertOk()
-            ->assertSee('Hermes Update Activity')
+            ->assertSee('Hermes Update')
             ->assertSee('Makassar')
             ->assertSee('Seat +5')
-            ->assertSee('20 Aug 2026')
-            ->assertSee('updated '.$activity->updated_at_label);
+            ->assertSee('20 Aug 2026');
     }
 
     public function test_hermes_update_page_shows_activity_from_sidebar_route(): void

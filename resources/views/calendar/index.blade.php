@@ -3,7 +3,7 @@
 @section('title', 'Calendar')
 
 @section('content')
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5">
         <div>
             <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Calendar</h2>
             <p class="text-sm text-charcoal mt-2">Monthly view of all departures.</p>

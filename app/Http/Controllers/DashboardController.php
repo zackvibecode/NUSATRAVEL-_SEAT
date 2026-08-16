@@ -67,6 +67,7 @@ class DashboardController extends Controller
             'totalCapacity' => $stats['totalCapacity'],
             'registeredPax' => $stats['registeredPax'],
             'availableSeats' => $stats['availableSeats'],
+            'overallOccupancy' => $stats['overallOccupancy'],
             'almostFullTrips' => $almostFullTrips,
             'attentionCount' => $attentionCount,
             'upcomingDepartures' => $upcoming->take(5),
