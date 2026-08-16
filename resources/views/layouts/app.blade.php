@@ -10,19 +10,16 @@
     </head>
     <body class="bg-fog text-ink antialiased">
         <div class="min-h-screen flex">
-            <!-- Sidebar -->
+            <!-- Sidebar — Vercel clean -->
             <aside class="w-64 bg-white border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen">
-                <div class="px-6 py-6">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-brand text-white font-black text-lg shadow-sm">S</span>
-                        <div>
-                            <span class="text-lg font-black tracking-tight leading-none block">SeatWeb</span>
-                            <span class="text-[11px] text-charcoal font-medium mt-0.5 block">Trip Seat Availability</span>
-                        </div>
+                <div class="px-5 py-5 border-b border-line">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-md bg-ink text-white font-bold text-sm">S</span>
+                        <span class="font-semibold tracking-tight">SeatWeb</span>
                     </a>
                 </div>
 
-                <nav class="flex-1 px-4 py-2 space-y-1">
+                <nav class="flex-1 px-3 py-3 space-y-0.5">
                     @php
                         $navItems = [
                             [
@@ -96,8 +93,8 @@
                             $isActive = request()->routeIs($item['pattern']);
                         @endphp
                         <a href="{{ route($item['route']) }}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-150 {{ $isActive ? 'bg-brand text-white shadow-md' : 'text-ink hover:bg-brand-soft hover:text-brand' }}">
-                            <span class="{{ $isActive ? 'text-white' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
+                           class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors {{ $isActive ? 'bg-fog text-ink font-semibold' : 'text-charcoal hover:bg-fog hover:text-ink' }}">
+                            <span class="{{ $isActive ? 'text-ink' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
                             <span>{{ $item['label'] }}</span>
                         </a>
                     @endforeach
@@ -105,19 +102,19 @@
 
                 <div class="px-5 py-5 border-t border-line text-sm">
                     <div class="flex items-center gap-3">
-                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-brand-soft text-brand font-bold text-sm">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-md bg-ink text-white font-bold text-sm">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </span>
                         <div class="min-w-0">
-                            <div class="text-ink font-semibold truncate">{{ auth()->user()->name }}</div>
+                            <div class="text-ink font-medium truncate">{{ auth()->user()->name }}</div>
                             <div class="text-xs text-charcoal truncate">{{ auth()->user()->email }}</div>
                         </div>
                     </div>
-                    <form method="POST" action="{{ route('logout') }}" class="mt-4">
+                    <form method="POST" action="{{ route('logout') }}" class="mt-3">
                         @csrf
                         <button type="submit"
-                                class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-ink hover:bg-brand-soft hover:text-brand transition-all duration-150">
-                            <svg class="w-5 h-5 text-charcoal" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-charcoal hover:bg-fog hover:text-ink transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                             </svg>
                             <span>Logout</span>
@@ -129,12 +126,12 @@
             <!-- Mobile top bar -->
             <div class="md:hidden fixed top-0 inset-x-0 z-20 bg-white border-b border-line px-4 py-3 flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand text-white font-black text-sm">S</span>
-                    <span class="font-black tracking-tight">SeatWeb</span>
+                    <span class="flex items-center justify-center w-7 h-7 rounded-md bg-ink text-white font-bold text-xs">S</span>
+                    <span class="font-semibold tracking-tight text-sm">SeatWeb</span>
                 </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-brand text-sm font-semibold">Logout</button>
+                    <button type="submit" class="text-ink text-sm font-medium">Logout</button>
                 </form>
             </div>
 

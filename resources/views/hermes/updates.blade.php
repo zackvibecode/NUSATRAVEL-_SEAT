@@ -6,7 +6,7 @@
     <!-- Page header -->
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Hermes Update</h2>
+            <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">Hermes Update</h2>
             <p class="text-sm text-charcoal mt-2">Seat changes Hermes made. Latest first · travel date and time updated.</p>
         </div>
         @if ($activities->total() > 0)

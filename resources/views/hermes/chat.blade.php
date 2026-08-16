@@ -5,13 +5,13 @@
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5">
         <div>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Hermes Chat</h2>
+            <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">Hermes Chat</h2>
             <p class="text-sm text-charcoal mt-2">Ask or command: read, edit, delete packages, delete pax. Try: <span class="font-semibold text-ink">list package</span>, <span class="font-semibold text-ink">cari TRANSJAVA</span></p>
         </div>
         <a href="{{ route('hermes.guide') }}" class="text-sm font-semibold text-brand hover:underline">API guide →</a>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden flex flex-col" style="min-height: 28rem;">
+    <div class="bg-white rounded-lg border border-line overflow-hidden flex flex-col" style="min-height: 28rem;">
         <div id="hermes-log" class="flex-1 p-4 sm:p-5 space-y-4 overflow-y-auto max-h-[60vh]">
             <div class="mr-12 text-sm bg-fog rounded-2xl px-4 py-3 whitespace-pre-wrap text-ink">
                 Hi. Type <strong>help</strong> for commands. I can list data, search, delete package, cancel trip, delete pax.
@@ -31,7 +31,7 @@
             @csrf
             <input id="hermes-input" type="text" autocomplete="off" placeholder="Type a command... e.g. list package"
                    class="flex-1 rounded-full border border-line px-5 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none">
-            <button type="submit" id="hermes-send" class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed">
+            <button type="submit" id="hermes-send" class="bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed">
                 Send
             </button>
         </form>

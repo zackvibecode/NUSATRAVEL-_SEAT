@@ -27,7 +27,7 @@
                 Edit Trip
             </a>
             <a href="#add-registration"
-               class="inline-flex items-center gap-2 bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
+               class="inline-flex items-center gap-2 bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -37,7 +37,7 @@
     </div>
 
     <!-- Trip header -->
-    <div class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 mb-4">
+    <div class="bg-white rounded-lg border border-line p-4 sm:p-6 mb-4">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
                 <div class="flex items-center gap-3">
@@ -47,7 +47,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">{{ $departure->package->name }}</h2>
+                        <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">{{ $departure->package->name }}</h2>
                         <p class="text-sm text-charcoal font-medium mt-2 flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -150,7 +150,7 @@
     </div>
 
     <!-- Registrations table -->
-    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-4">
+    <div class="bg-white rounded-lg border border-line overflow-hidden mb-4">
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
@@ -159,7 +159,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-lg tracking-tight">Registrations</h3>
+                    <h3 class="font-semibold text-base tracking-tight">Registrations</h3>
                     <p class="text-xs text-charcoal mt-0.5 font-medium">{{ $registrations->count() }} entries · total {{ $departure->registered_pax }} pax</p>
                 </div>
             </div>
@@ -256,7 +256,7 @@
     </div>
 
     <!-- Add registration form -->
-    <div id="add-registration" class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 mb-4">
+    <div id="add-registration" class="bg-white rounded-lg border border-line p-4 sm:p-6 mb-4">
         <div class="flex items-center gap-3 mb-6">
             <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                 <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -264,7 +264,7 @@
                 </svg>
             </div>
             <div>
-                <h3 class="font-bold text-lg tracking-tight">Add Registration</h3>
+                <h3 class="font-semibold text-base tracking-tight">Add Registration</h3>
                 <p class="text-xs text-charcoal mt-0.5 font-medium">
                     One row can represent multiple pax (e.g. Ahmad = family of 4). {{ $departure->available_seats }} seats currently available.
                 </p>
@@ -367,7 +367,7 @@
 
             <div class="md:col-span-2 flex items-center gap-4 pt-2">
                 <button type="submit" id="saveRegBtn"
-                        class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
+                        class="bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">
                     Save Registration
                 </button>
             </div>
@@ -441,7 +441,7 @@
 
                 <div class="md:col-span-2 flex items-center gap-4 pt-2">
                     <button type="submit" id="updateRegBtn"
-                            class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
+                            class="bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">
                         Update Registration
                     </button>
                     <button type="button" data-close-edit-modal class="text-sm font-bold text-charcoal hover:text-ink">Cancel</button>

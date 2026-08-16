@@ -6,7 +6,7 @@
     <!-- Page header -->
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5">
         <div>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Dashboard</h2>
+            <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">Dashboard</h2>
             <p class="text-sm text-charcoal mt-2">Track registrations and seat availability at a glance.</p>
         </div>
         <div class="flex items-center gap-2 text-sm text-charcoal font-medium">
@@ -21,59 +21,59 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
         <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
-                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center flex-shrink-0">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
                 </div>
                 <p class="text-xs font-semibold text-charcoal uppercase tracking-wider leading-tight">Upcoming Trips</p>
             </div>
-            <p class="text-2xl sm:text-3xl font-black leading-none">{{ $upcomingTrips }}</p>
+            <p class="text-2xl font-semibold leading-none tracking-tight">{{ $upcomingTrips }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">{{ $registeredPax }} pax booked</p>
         </div>
         <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
-                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center flex-shrink-0">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
                 </div>
                 <p class="text-xs font-semibold text-charcoal uppercase tracking-wider leading-tight">Total Capacity</p>
             </div>
-            <p class="text-2xl sm:text-3xl font-black leading-none">{{ $totalCapacity }}</p>
+            <p class="text-2xl font-semibold leading-none tracking-tight">{{ $totalCapacity }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">{{ $overallOccupancy }}% occupied</p>
         </div>
         <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
-                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-positive-soft flex items-center justify-center flex-shrink-0">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-positive-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-positive" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                     </svg>
                 </div>
                 <p class="text-xs font-semibold text-charcoal uppercase tracking-wider leading-tight">Seats Available</p>
             </div>
-            <p class="text-2xl sm:text-3xl font-black leading-none {{ $availableSeats <= 0 ? 'text-brand' : 'text-positive' }}">{{ $availableSeats }}</p>
+            <p class="text-2xl font-semibold leading-none tracking-tight {{ $availableSeats <= 0 ? 'text-brand' : 'text-positive' }}">{{ $availableSeats }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">{{ $availableSeats <= 0 ? 'All trips full' : 'across all trips' }}</p>
         </div>
         <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
-                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-warning-soft flex items-center justify-center flex-shrink-0">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-warning-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-warning" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
                 </div>
                 <p class="text-xs font-semibold text-charcoal uppercase tracking-wider leading-tight">Almost Full</p>
             </div>
-            <p class="text-2xl sm:text-3xl font-black leading-none {{ $almostFullTrips > 0 ? 'text-warning' : '' }}">{{ $almostFullTrips }}</p>
+            <p class="text-2xl font-semibold leading-none tracking-tight {{ $almostFullTrips > 0 ? 'text-warning' : '' }}">{{ $almostFullTrips }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">{{ $attentionCount }} need attention</p>
         </div>
     </div>
 
     <!-- 6-month revenue & pax trend — SVG line chart -->
-    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-4">
+    <div class="bg-white rounded-lg border border-line overflow-hidden mb-4">
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div>
-                <h3 class="font-bold text-base sm:text-lg tracking-tight">Revenue &amp; Pax Trend</h3>
+                <h3 class="font-semibold text-base tracking-tight">Revenue &amp; Pax Trend</h3>
                 <p class="text-xs text-charcoal mt-0.5 font-medium">Last 6 months · recognised: paid in full, deposit at 50%</p>
             </div>
             <div class="hidden sm:flex items-center gap-4 text-xs font-semibold">
@@ -155,9 +155,9 @@
     <!-- Two-column: Hermes + Attention -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <!-- Hermes seat updates -->
-        <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden">
+        <div class="bg-white rounded-lg border border-line overflow-hidden">
             <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-line flex items-center justify-between gap-3">
-                <h3 class="font-bold text-base tracking-tight">Hermes Update</h3>
+                <h3 class="font-semibold text-base tracking-tight">Hermes Update</h3>
                 <a href="{{ route('hermes.updates') }}" class="text-sm font-bold text-brand hover:text-brand-hover flex items-center gap-1 flex-shrink-0">
                     View all
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -192,7 +192,7 @@
 
         <!-- Attention trips -->
         <a href="{{ route('dashboard.attention-trips') }}"
-           class="block bg-white rounded-xl shadow-sm border border-line hover:shadow-md hover:border-brand/30 transition-all duration-150 group">
+           class="block bg-white rounded-lg border border-line hover:shadow-md hover:border-brand/30 transition-all duration-150 group">
             <div class="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between h-full">
                 <div class="flex items-center gap-3 sm:gap-4 min-w-0">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-warning-soft flex items-center justify-center flex-shrink-0">
@@ -224,10 +224,10 @@
     </div>
 
     <!-- Upcoming Trips -->
-    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden">
+    <div class="bg-white rounded-lg border border-line overflow-hidden">
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div>
-                <h3 class="font-bold text-base sm:text-lg tracking-tight">Upcoming Trips</h3>
+                <h3 class="font-semibold text-base tracking-tight">Upcoming Trips</h3>
                 <p class="text-xs text-charcoal mt-0.5 font-medium">Next 5 departures scheduled</p>
             </div>
             <a href="{{ route('departures.index') }}" class="text-sm font-bold text-brand hover:text-brand-hover flex items-center gap-1 flex-shrink-0">

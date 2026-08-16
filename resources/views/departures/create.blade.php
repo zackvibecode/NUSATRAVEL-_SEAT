@@ -6,7 +6,7 @@
     <div class="max-w-xl mx-auto">
         <div class="flex items-end justify-between mb-8">
             <div>
-                <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Create Departure</h2>
+                <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">Create Departure</h2>
                 <p class="text-sm text-charcoal mt-2">One specific travel date under a package.</p>
             </div>
             <a href="{{ route('departures.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">
@@ -17,7 +17,7 @@
             </a>
         </div>
 
-        <form method="POST" action="{{ route('departures.store') }}" class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 space-y-6">
+        <form method="POST" action="{{ route('departures.store') }}" class="bg-white rounded-lg border border-line p-4 sm:p-6 space-y-6">
             @csrf
 
             <div>
@@ -116,7 +116,7 @@
 
             <div class="flex items-center gap-4 pt-2">
                 <button type="submit"
-                        class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
+                        class="bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">
                     Save Departure
                 </button>
                 <a href="{{ route('departures.index') }}" class="text-sm font-bold text-charcoal hover:text-ink">Cancel</a>

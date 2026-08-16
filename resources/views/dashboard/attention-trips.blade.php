@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <div>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Attention Trips</h2>
+            <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">Attention Trips</h2>
             <p class="text-sm text-charcoal mt-2">Open trips that still need more registrations, sorted by earliest month first.</p>
         </div>
         <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">
@@ -25,7 +25,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
                 </div>
-                <h3 class="font-bold text-lg tracking-tight">{{ $monthLabel }}</h3>
+                <h3 class="font-semibold text-base tracking-tight">{{ $monthLabel }}</h3>
                 <span class="text-xs font-bold text-charcoal bg-fog rounded-full px-3 py-1">{{ $departures->count() }} trips</span>
             </div>
 
