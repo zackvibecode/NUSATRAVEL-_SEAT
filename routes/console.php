@@ -11,3 +11,9 @@ Artisan::command('inspire', function () {
 // Nightly database backup at 02:00, cleanup old backups at 02:30 (Asia/Kuala_Lumpur).
 Schedule::command('backup:clean')->daily()->at('02:30')->timezone('Asia/Kuala_Lumpur');
 Schedule::command('backup:run')->daily()->at('02:00')->timezone('Asia/Kuala_Lumpur');
+
+// Daily capacity alert at 09:00 (Asia/Kuala_Lumpur) — skip weekends, office hours only.
+Schedule::command('seatweb:send-capacity-alerts')
+    ->dailyAt('09:00')
+    ->timezone('Asia/Kuala_Lumpur')
+    ->weekdays();

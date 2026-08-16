@@ -30,13 +30,25 @@ class HermesGuideController extends Controller
         return view('hermes.chat');
     }
 
-    public function updates(): View
+    public function updates(Request $request): View
     {
-        $activities = HermesSeatActivity::query()
-            ->latest()
-            ->paginate(30);
+        $query = HermesSeatActivity::query()->latest();
 
-        return view('hermes.updates', compact('activities'));
+        if ($request->filled('package')) {
+            $query->where('package_name', 'like', '%'.$request->string('package').'%');
+        }
+
+        if ($request->filled('month')) {
+            $query->whereMonth('departure_date', $request->integer('month'));
+        }
+
+        $activities = $query->paginate(30)->withQueryString();
+
+        return view('hermes.updates', [
+            'activities' => $activities,
+            'packageFilter' => $request->string('package')->toString(),
+            'monthFilter' => $request->integer('month'),
+        ]);
     }
 
     public function chatMessage(Request $request, HermesDataService $hermes): JsonResponse

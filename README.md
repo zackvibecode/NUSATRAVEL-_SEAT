@@ -1,58 +1,117 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SeatWeb — Trip Seat Availability
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Internal web app for NusaTravel staff to track tour packages, departures, seat capacity, and customer registrations. Data is synced automatically from Excel files via a Hermes agent.
 
-## About Laravel
+## What it does
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Dashboard** — upcoming trips, capacity summary, nearly-full alerts, recent Hermes seat changes
+- **Trips / Departures** — one departure = one travel date with its own seat capacity
+- **Packages** — group multiple departure dates under one package
+- **Participants** — registered customers per trip (one row can be a family of N pax)
+- **Hermes Update** — every seat change Hermes made: package, seat delta, travel date
+- **Hermes Chat** — ask questions / make changes via chatbot
+- **Reports** — monthly totals + CSV export
+- **Calendar** — month view of departures with seat status
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Core rules:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Available seats are **always calculated** (`total_seats` − `SUM(registrations.pax)`), never stored
+- One registration row can represent multiple pax
+- Status is derived: `cancelled` → `departed` → `full` (0 left) → `almost_full` (1–5) → `open`
 
-## Learning Laravel
+## Tech stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Laravel 13 (PHP 8.3), Blade, Tailwind CSS v4
+- PostgreSQL (Neon) in production, SQLite in tests
+- spatie/laravel-backup for nightly DB backups
+- Render for hosting
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Local setup
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/zackvibecode/NUSATRAVEL-_SEAT.git
+cd NUSATRAVEL-_SEAT
+composer install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate
+npm install && npm run build
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Create the first staff user with `php artisan tinker`:
 
-## Contributing
+```php
+App\Models\User::create([
+    'name' => 'Your Name',
+    'email' => 'you@company.com',
+    'password' => bcrypt('a-strong-password'),
+]);
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Environment variables
 
-## Code of Conduct
+| Variable | Purpose |
+|---|---|
+| `APP_URL` | Public URL, e.g. `https://nusatravel-seat.onrender.com` |
+| `DB_CONNECTION` / `DATABASE_URL` | `pgsql` + Neon connection string in production |
+| `IMPORT_API_TOKEN` | Bearer token for the Hermes import/CRUD API — generate with `php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"` |
+| `MAIL_MAILER` + SMTP vars | Needed for password reset, capacity alerts, backup notifications |
+| `MAIL_FROM_ADDRESS` | Sender for all app email |
+| `SEATWEB_ALERT_THRESHOLD` | Seats-left count that triggers the daily capacity email (default 5) |
+| `SEATWEB_ALERT_DAYS_AHEAD` | Only alert on trips departing within N days (default 30) |
+| `SEATWEB_BACKUP_MAIL_TO` | Recipient for backup success/failure emails |
+| `BACKUP_ARCHIVE_PASSWORD` | Optional AES encryption for backup zips |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Scheduled tasks
 
-## Security Vulnerabilities
+Registered in `routes/console.php` (run `php artisan schedule:work` locally; Render cron uses `php artisan schedule:run`):
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Task | Schedule (Asia/Kuala_Lumpur) |
+|---|---|
+| `backup:run` | Daily 02:00 |
+| `backup:clean` | Daily 02:30 |
+| `seatweb:send-capacity-alerts` | Weekdays 09:00 |
 
-## License
+## Hermes sync
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Hermes reads Excel from Dropbox `/SeatWeb/Incoming/`, converts rows to JSON, and POSTs to this app. Full contract: [docs/hermes-dropbox-sync.md](docs/hermes-dropbox-sync.md).
+
+```
+POST /api/imports/dropbox-excel        batch upsert (packages, departures, registrations)
+GET/POST/PUT/DELETE /api/hermes/*      CRUD + chat for the agent
+```
+
+All Hermes endpoints require `Authorization: Bearer <IMPORT_API_TOKEN>`.
+
+Every seat change is recorded in `hermes_seat_activities` (package name, signed seat delta, travel departure date) and shown on the dashboard and **Hermes Update** page.
+
+## Deploying to Render
+
+1. Push to `main` — Render auto-deploys
+2. Env vars are set in the Render dashboard; never commit real secrets
+3. After the first deploy of a new migration, run `php artisan migrate --force` (Render shell or a deploy hook)
+
+## Tests
+
+```bash
+php artisan test
+```
+
+CI runs the suite on every push via GitHub Actions (`.github/workflows/ci.yml`).
+
+## Project layout
+
+```
+app/
+  Console/Commands/   capacity alerts, keep-alive commands
+  Http/Controllers/   web + API (Hermes import, CRUD)
+  Mail/               capacity alert, password reset
+  Models/             Package, Departure, Registration, HermesSeatActivity, ImportRun
+  Services/           DropboxExcelImportService, HermesDataService, SeatMetricsService, HermesSeatActivityLogger
+database/migrations/  schema
+docs/                 Hermes sync contract + samples
+resources/views/      Blade UI
+routes/               web.php, api.php, console.php (schedule)
+```
