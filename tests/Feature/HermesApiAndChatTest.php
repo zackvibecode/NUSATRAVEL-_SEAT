@@ -82,7 +82,7 @@ class HermesApiAndChatTest extends TestCase
             ->assertSee('TRANSJAVA');
     }
 
-    public function test_chat_deletes_pax(): void
+    public function test_chat_destructive_commands_require_confirmation(): void
     {
         $user = User::factory()->create();
         $package = Package::create(['name' => 'X', 'destination' => 'Y', 'status' => 'active']);
@@ -99,12 +99,41 @@ class HermesApiAndChatTest extends TestCase
             'need_partner' => false,
         ]);
 
+        // Step 1: destructive intent without "confirm" must NOT delete anything.
         $this->actingAs($user)
             ->postJson(route('hermes.chat.message'), ['message' => 'padam pax '.$reg->id])
+            ->assertOk()
+            ->assertJsonPath('action', 'confirm_required');
+
+        $this->assertNotSoftDeleted('registrations', ['id' => $reg->id]);
+
+        // Step 2: explicit confirm executes the deletion.
+        $this->actingAs($user)
+            ->postJson(route('hermes.chat.message'), ['message' => 'confirm padam pax '.$reg->id])
             ->assertOk()
             ->assertJsonPath('action', 'delete_registration');
 
         $this->assertSoftDeleted('registrations', ['id' => $reg->id]);
+    }
+
+    public function test_chat_confirmed_package_delete_cascades(): void
+    {
+        $user = User::factory()->create();
+        $package = Package::create(['name' => 'Z', 'destination' => 'W', 'status' => 'active']);
+
+        $this->actingAs($user)
+            ->postJson(route('hermes.chat.message'), ['message' => 'delete package '.$package->id])
+            ->assertOk()
+            ->assertJsonPath('action', 'confirm_required');
+
+        $this->assertDatabaseHas('packages', ['id' => $package->id]);
+
+        $this->actingAs($user)
+            ->postJson(route('hermes.chat.message'), ['message' => 'confirm delete package '.$package->id])
+            ->assertOk()
+            ->assertJsonPath('action', 'delete_package');
+
+        $this->assertDatabaseMissing('packages', ['id' => $package->id]);
     }
 
     public function test_updating_total_seats_records_available_seat_activity(): void

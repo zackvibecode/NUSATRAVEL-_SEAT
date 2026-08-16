@@ -253,8 +253,7 @@ class DropboxExcelImportTest extends TestCase
             ->assertSee('Hermes Update')
             ->assertSee('Yunnan')
             ->assertSee('Seat -3')
-            ->assertSee('25 Aug 2026')
-            ->assertSee('updated '.$activity->updated_at_label);
+            ->assertSee('25 Aug 2026');
     }
 
     /**

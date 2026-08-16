@@ -218,7 +218,11 @@
                                         Edit
                                     </button>
                                     <button type="button"
-                                            onclick="copyWhatsApp('{{ addslashes($registration->name) }}', '{{ $registration->phone }}', '{{ addslashes($departure->package->name) }}', '{{ $departure->departure_date->format('d M Y') }}')"
+                                            data-wa-name="{{ $registration->name }}"
+                                            data-wa-pax="{{ $registration->pax }}"
+                                            data-wa-package="{{ $departure->package->name }}"
+                                            data-wa-date="{{ $departure->departure_date->format('d M Y') }}"
+                                            onclick="copyWhatsApp(this)"
                                             class="inline-flex items-center gap-1.5 text-positive hover:text-positive/80 text-sm font-semibold">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -494,8 +498,12 @@
         modal.classList.remove('flex');
     }
 
-    function copyWhatsApp(name, phone, packageName, date) {
-        const msg = `Hi ${name}, your booking for ${packageName} on ${date} is confirmed. Total pax: ${document.getElementById('reg_pax')?.value || 'N/A'}. Please reply YES to confirm.`;
+    function copyWhatsApp(btn) {
+        const name = btn.dataset.waName;
+        const packageName = btn.dataset.waPackage;
+        const date = btn.dataset.waDate;
+        const pax = btn.dataset.waPax;
+        const msg = `Hi ${name}, your booking for ${packageName} on ${date} is confirmed. Total pax: ${pax}. Please reply YES to confirm.`;
         navigator.clipboard.writeText(msg).then(() => {
             alert('WhatsApp message copied to clipboard!');
         }).catch(() => {

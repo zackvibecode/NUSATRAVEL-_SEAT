@@ -16,7 +16,7 @@ Route::redirect('/', '/login');
 
 // Public login / logout (PRD section 4.2)
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.attempt');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // All internal pages require authentication (PRD section 4.2)
@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard/attention-trips', [DashboardController::class, 'attentionTrips'])->name('dashboard.attention-trips');
     Route::get('hermes', [HermesGuideController::class, 'index'])->name('hermes.guide');
     Route::get('hermes/chat', [HermesGuideController::class, 'chat'])->name('hermes.chat');
-    Route::post('hermes/chat', [HermesGuideController::class, 'chatMessage'])->name('hermes.chat.message');
+    Route::post('hermes/chat', [HermesGuideController::class, 'chatMessage'])->middleware('throttle:30,1')->name('hermes.chat.message');
     Route::get('hermes/updates', [HermesGuideController::class, 'updates'])->name('hermes.updates');
 
     Route::resource('packages', PackageController::class)->except(['show']);

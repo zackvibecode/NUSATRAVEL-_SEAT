@@ -6,6 +6,7 @@ use App\Models\Departure;
 use App\Models\Registration;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RegistrationController extends Controller
 {
@@ -14,8 +15,6 @@ class RegistrationController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $departure = Departure::findOrFail($request->integer('departure_id'));
-
         $data = $request->validate([
             'departure_id' => ['required', 'exists:departures,id'],
             'name' => ['required', 'string', 'max:255'],
@@ -34,22 +33,28 @@ class RegistrationController extends Controller
                 ->withErrors(['partner_gender' => 'Partner gender is required when Need Partner is Yes.']);
         }
 
-        // Over-capacity check (PRD 9.2) — must reject on the server side
-        $available = $departure->available_seats;
-
-        if ($data['pax'] > $available) {
-            return back()
-                ->withInput()
-                ->withErrors([
-                    'pax' => "Only {$available} seats are currently available for this departure.",
-                ]);
-        }
-
         if (! $request->boolean('need_partner')) {
             $data['partner_gender'] = null;
         }
 
-        Registration::create($data);
+        try {
+            DB::transaction(function () use ($data, &$departure): void {
+                // Lock the departure row so concurrent submissions cannot overbook (PRD 9.2).
+                $departure = Departure::query()->lockForUpdate()->findOrFail((int) $data['departure_id']);
+
+                $available = $departure->available_seats;
+
+                if ($data['pax'] > $available) {
+                    throw new \RuntimeException("Only {$available} seats are currently available for this departure.");
+                }
+
+                Registration::create($data);
+            });
+        } catch (\RuntimeException $e) {
+            return back()
+                ->withInput()
+                ->withErrors(['pax' => $e->getMessage()]);
+        }
 
         return redirect()->route('departures.show', $departure)
             ->with('success', 'Registration added successfully.');
@@ -60,8 +65,6 @@ class RegistrationController extends Controller
      */
     public function update(Request $request, Registration $registration): RedirectResponse
     {
-        $departure = $registration->departure;
-
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
@@ -78,27 +81,34 @@ class RegistrationController extends Controller
                 ->withErrors(['partner_gender' => 'Partner gender is required when Need Partner is Yes.']);
         }
 
-        // Recalculate available seats excluding this registration's current pax
-        $otherPax = $departure->registrations()
-            ->where('id', '!=', $registration->id)
-            ->sum('pax');
-        $available = $departure->total_seats - $otherPax;
-
-        if ($data['pax'] > $available) {
-            return back()
-                ->withInput()
-                ->withErrors([
-                    'pax' => "Only {$available} seats are currently available for this departure.",
-                ]);
-        }
-
         if (! $request->boolean('need_partner')) {
             $data['partner_gender'] = null;
         }
 
-        $registration->update($data);
+        try {
+            DB::transaction(function () use ($data, $registration): void {
+                // Lock the departure row so concurrent edits cannot overbook.
+                $departure = Departure::query()->lockForUpdate()->findOrFail($registration->departure_id);
 
-        return redirect()->route('departures.show', $departure)
+                // Recalculate available seats excluding this registration's current pax
+                $otherPax = $departure->registrations()
+                    ->where('id', '!=', $registration->id)
+                    ->sum('pax');
+                $available = $departure->total_seats - $otherPax;
+
+                if ($data['pax'] > $available) {
+                    throw new \RuntimeException("Only {$available} seats are currently available for this departure.");
+                }
+
+                $registration->update($data);
+            });
+        } catch (\RuntimeException $e) {
+            return back()
+                ->withInput()
+                ->withErrors(['pax' => $e->getMessage()]);
+        }
+
+        return redirect()->route('departures.show', $registration->departure_id)
             ->with('success', 'Registration updated successfully.');
     }
 

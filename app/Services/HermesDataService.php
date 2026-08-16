@@ -5,11 +5,38 @@ namespace App\Services;
 use App\Models\Departure;
 use App\Models\Package;
 use App\Models\Registration;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class HermesDataService
 {
     public function __construct(private HermesSeatActivityLogger $activityLogger) {}
+
+    /**
+     * Destructive chat intents require an explicit "confirm <command>" follow-up
+     * so a misparsed or accidental message cannot delete live data.
+     *
+     * @return array{matched: bool, id: int}
+     */
+    private function parseDestructiveIntent(string $lower): array
+    {
+        if (preg_match('/\b(delete|padam|hapus|archive|arsib)\b.*\b(package|pakej)\s+(\d+)/u', $lower, $m)
+            || preg_match('/\b(package|pakej)\s+(\d+).*\b(delete|padam|hapus|archive|arsib)\b/u', $lower, $m2)) {
+            return ['matched' => true, 'id' => (int) ($m[3] ?? $m2[2] ?? 0)];
+        }
+
+        if (preg_match('/\b(cancel|batal)\b.*\b(trip|departure)\s+(\d+)/u', $lower, $m)
+            || preg_match('/\b(trip|departure)\s+(\d+).*\b(cancel|batal)\b/u', $lower, $m2)) {
+            return ['matched' => true, 'id' => (int) ($m[3] ?? $m2[2] ?? 0)];
+        }
+
+        if (preg_match('/\b(padam|delete|hapus)\b.*\b(pax|registration|customer)\s+(\d+)/u', $lower, $m)
+            || preg_match('/\b(pax|registration)\s+(\d+).*\b(padam|delete|hapus)\b/u', $lower, $m2)) {
+            return ['matched' => true, 'id' => (int) ($m[3] ?? $m2[2] ?? 0)];
+        }
+
+        return ['matched' => false, 'id' => 0];
+    }
 
     public function overview(): array
     {
@@ -201,32 +228,34 @@ class HermesDataService
      */
     public function createRegistration(array $data): Registration
     {
-        $departure = Departure::findOrFail((int) $data['departure_id']);
-        $pax = max(1, (int) ($data['pax'] ?? 1));
-        $needPartner = (bool) ($data['need_partner'] ?? false);
+        return DB::transaction(function () use ($data): Registration {
+            $departure = Departure::query()->lockForUpdate()->findOrFail((int) $data['departure_id']);
+            $pax = max(1, (int) ($data['pax'] ?? 1));
+            $needPartner = (bool) ($data['need_partner'] ?? false);
 
-        if ($pax > $departure->available_seats) {
-            throw new \RuntimeException('Only '.$departure->available_seats.' seats available.');
-        }
+            if ($pax > $departure->available_seats) {
+                throw new \RuntimeException('Only '.$departure->available_seats.' seats available.');
+            }
 
-        if ($needPartner && empty($data['partner_gender'])) {
-            throw new \RuntimeException('partner_gender is required when need_partner is true.');
-        }
+            if ($needPartner && empty($data['partner_gender'])) {
+                throw new \RuntimeException('partner_gender is required when need_partner is true.');
+            }
 
-        $registration = Registration::create([
-            'departure_id' => $departure->id,
-            'name' => trim((string) $data['name']),
-            'phone' => $data['phone'] ?? null,
-            'pax' => $pax,
-            'need_partner' => $needPartner,
-            'partner_gender' => $needPartner ? ($data['partner_gender'] ?? null) : null,
-            'notes' => $data['notes'] ?? null,
-        ]);
+            $registration = Registration::create([
+                'departure_id' => $departure->id,
+                'name' => trim((string) $data['name']),
+                'phone' => $data['phone'] ?? null,
+                'pax' => $pax,
+                'need_partner' => $needPartner,
+                'partner_gender' => $needPartner ? ($data['partner_gender'] ?? null) : null,
+                'notes' => $data['notes'] ?? null,
+            ]);
 
-        $departure->loadMissing('package');
-        $this->activityLogger->record($departure, -$pax);
+            $departure->loadMissing('package');
+            $this->activityLogger->record($departure, -$pax);
 
-        return $registration;
+            return $registration;
+        });
     }
 
     /**
@@ -234,41 +263,43 @@ class HermesDataService
      */
     public function updateRegistration(Registration $registration, array $data): Registration
     {
-        $departure = $registration->departure;
-        $pax = isset($data['pax']) ? max(1, (int) $data['pax']) : $registration->pax;
-        $available = $departure->available_seats + $registration->pax;
+        return DB::transaction(function () use ($registration, $data): Registration {
+            $departure = Departure::query()->lockForUpdate()->findOrFail($registration->departure_id);
+            $pax = isset($data['pax']) ? max(1, (int) $data['pax']) : $registration->pax;
+            $available = $departure->available_seats + $registration->pax;
 
-        if ($pax > $available) {
-            throw new \RuntimeException('Only '.$available.' seats available.');
-        }
+            if ($pax > $available) {
+                throw new \RuntimeException('Only '.$available.' seats available.');
+            }
 
-        $needPartner = array_key_exists('need_partner', $data)
-            ? (bool) $data['need_partner']
-            : $registration->need_partner;
+            $needPartner = array_key_exists('need_partner', $data)
+                ? (bool) $data['need_partner']
+                : $registration->need_partner;
 
-        $partnerGender = $needPartner
-            ? ($data['partner_gender'] ?? $registration->partner_gender)
-            : null;
+            $partnerGender = $needPartner
+                ? ($data['partner_gender'] ?? $registration->partner_gender)
+                : null;
 
-        if ($needPartner && ! in_array($partnerGender, ['male', 'female'], true)) {
-            throw new \RuntimeException('partner_gender is required when need_partner is true.');
-        }
+            if ($needPartner && ! in_array($partnerGender, ['male', 'female'], true)) {
+                throw new \RuntimeException('partner_gender is required when need_partner is true.');
+            }
 
-        $oldPax = $registration->pax;
+            $oldPax = $registration->pax;
 
-        $registration->update([
-            'name' => isset($data['name']) ? trim((string) $data['name']) : $registration->name,
-            'phone' => array_key_exists('phone', $data) ? $data['phone'] : $registration->phone,
-            'pax' => $pax,
-            'need_partner' => $needPartner,
-            'partner_gender' => $partnerGender,
-            'notes' => array_key_exists('notes', $data) ? $data['notes'] : $registration->notes,
-        ]);
+            $registration->update([
+                'name' => isset($data['name']) ? trim((string) $data['name']) : $registration->name,
+                'phone' => array_key_exists('phone', $data) ? $data['phone'] : $registration->phone,
+                'pax' => $pax,
+                'need_partner' => $needPartner,
+                'partner_gender' => $partnerGender,
+                'notes' => array_key_exists('notes', $data) ? $data['notes'] : $registration->notes,
+            ]);
 
-        $departure->loadMissing('package');
-        $this->activityLogger->record($departure, $oldPax - $pax);
+            $departure->loadMissing('package');
+            $this->activityLogger->record($departure, $oldPax - $pax);
 
-        return $registration->fresh();
+            return $registration->fresh();
+        });
     }
 
     public function deleteRegistration(Registration $registration): void
@@ -290,6 +321,23 @@ class HermesDataService
         $text = trim($message);
         $lower = Str::lower($text);
 
+        // Destructive intents require an explicit "confirm <command>" prefix (two-step safety).
+        $confirming = false;
+        if (preg_match('/^confirm\s+(.+)/u', $lower, $cm)) {
+            $confirming = true;
+            $lower = trim($cm[1]);
+        }
+
+        $destructive = $this->parseDestructiveIntent($lower);
+
+        if ($destructive['matched'] && ! $confirming) {
+            return [
+                'action' => 'confirm_required',
+                'reply' => "Amaran: arahan ini akan ubah data sebenar. Taip semula dengan **confirm** di depan untuk teruskan:\n\nconfirm {$lower}",
+                'data' => null,
+            ];
+        }
+
         if ($text === '' || preg_match('/\b(help|bantuan|apa kau boleh)\b/u', $lower)) {
             return [
                 'action' => 'help',
@@ -297,9 +345,9 @@ class HermesDataService
                     ."- list package / list trip / list pax\n"
                     ."- cari TRANSJAVA\n"
                     ."- berapa seat TRANSJAVA\n"
-                    ."- delete package 6 / padam pakej 6\n"
-                    ."- cancel trip 10\n"
-                    ."- padam pax 12\n"
+                    ."- delete package 6 / padam pakej 6 (perlu confirm)\n"
+                    ."- cancel trip 10 (perlu confirm)\n"
+                    ."- padam pax 12 (perlu confirm)\n"
                     ."- overview",
                 'data' => null,
             ];

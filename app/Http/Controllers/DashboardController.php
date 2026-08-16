@@ -39,10 +39,19 @@ class DashboardController extends Controller
         $trendData = $trendMonths->map(function ($month) {
             $departures = Departure::whereBetween('departure_date', [$month, $month->copy()->endOfMonth()])
                 ->withSum('registrations as registered_pax_sum', 'pax')
+                ->withSum(['registrations as paid_pax_sum' => fn ($q) => $q->where('payment_status', 'paid')], 'pax')
+                ->withSum(['registrations as deposit_pax_sum' => fn ($q) => $q->where('payment_status', 'deposit')], 'pax')
                 ->get();
 
+            // Recognised revenue: paid counts fully, deposit counts half, pending counts zero.
             $revenue = $departures->sum(function ($d) {
-                return $d->price ? $d->price * ($d->registered_pax_sum ?? 0) : 0;
+                if (! $d->price) {
+                    return 0;
+                }
+                $fullPax = (int) ($d->paid_pax_sum ?? 0);
+                $halfPax = (int) ($d->deposit_pax_sum ?? 0);
+
+                return $d->price * ($fullPax + ($halfPax / 2));
             });
 
             return [
