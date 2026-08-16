@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5">
         <div>
-            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Packages</h2>
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-none">Packages</h2>
             <p class="text-sm text-charcoal mt-2">Reusable travel products. One package can have many departure dates.</p>
         </div>
         <a href="{{ route('packages.create') }}"
@@ -17,11 +17,11 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-5 mb-4">
+    <div class="glass rounded-2xl p-4 sm:p-5 mb-4">
         @include('partials.trip-filters', ['filter' => $filter, 'showPackage' => false, 'showStatus' => true])
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden">
+    <div class="glass rounded-2xl overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>

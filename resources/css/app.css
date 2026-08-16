@@ -5,6 +5,7 @@
 
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Playfair Display', ui-serif, Georgia, 'Times New Roman', serif;
 
     /* Wise-inspired palette — red & white edition */
     --color-brand: #e4002b;        /* voltage red — primary CTA accent */
@@ -19,6 +20,37 @@
     --color-positive-soft: #e5f5ec;
     --color-warning: #a35b00;      /* amber for almost full */
     --color-warning-soft: #fff4e0;
+}
+
+/* Glassmorphism utilities */
+.glass {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 8px 32px rgba(20, 16, 15, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.glass-strong {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 12px 40px rgba(20, 16, 15, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* App canvas: subtle warm mesh so glass cards have depth to blur against */
+body {
+    background-image:
+        radial-gradient(at 0% 0%, rgba(228, 0, 43, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(255, 233, 237, 0.8) 0px, transparent 45%),
+        radial-gradient(at 100% 100%, rgba(228, 0, 43, 0.04) 0px, transparent 45%);
+    background-attachment: fixed;
+}
+
+/* Serif headings — luxury editorial accent */
+.font-serif {
+    font-family: var(--font-serif);
 }
 
 /* Visible keyboard focus on all interactive elements (a11y) */

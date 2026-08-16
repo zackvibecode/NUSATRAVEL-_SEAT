@@ -10,11 +10,11 @@
     </head>
     <body class="bg-fog text-ink antialiased">
         <div class="min-h-screen flex">
-            <!-- Sidebar -->
-            <aside class="w-64 bg-white border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen">
+            <!-- Sidebar — glass treatment -->
+            <aside class="w-64 flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen border-r border-white/40" style="background: rgba(255,255,255,0.65); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);">
                 <div class="px-6 py-6">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                        <span class="flex items-center justify-center w-10 h-10 rounded-full bg-brand text-white font-black text-lg shadow-sm">S</span>
+                        <span class="flex items-center justify-center w-10 h-10 rounded-2xl bg-brand text-white font-black text-lg shadow-md">S</span>
                         <div>
                             <span class="text-lg font-black tracking-tight leading-none block">SeatWeb</span>
                             <span class="text-[11px] text-charcoal font-medium mt-0.5 block">Trip Seat Availability</span>
@@ -96,14 +96,14 @@
                             $isActive = request()->routeIs($item['pattern']);
                         @endphp
                         <a href="{{ route($item['route']) }}"
-                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-150 {{ $isActive ? 'bg-brand text-white shadow-md' : 'text-ink hover:bg-brand-soft hover:text-brand' }}">
+                           class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-150 {{ $isActive ? 'bg-brand text-white shadow-md' : 'text-ink hover:bg-white/70 hover:text-brand' }}">
                             <span class="{{ $isActive ? 'text-white' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
                             <span>{{ $item['label'] }}</span>
                         </a>
                     @endforeach
                 </nav>
 
-                <div class="px-5 py-5 border-t border-line text-sm">
+                <div class="px-5 py-5 border-t border-white/50 text-sm">
                     <div class="flex items-center gap-3">
                         <span class="flex items-center justify-center w-10 h-10 rounded-full bg-brand-soft text-brand font-bold text-sm">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
@@ -116,7 +116,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="mt-4">
                         @csrf
                         <button type="submit"
-                                class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-ink hover:bg-brand-soft hover:text-brand transition-all duration-150">
+                                class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-ink hover:bg-white/70 hover:text-brand transition-all duration-150">
                             <svg class="w-5 h-5 text-charcoal" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                             </svg>
@@ -126,8 +126,8 @@
                 </div>
             </aside>
 
-            <!-- Mobile top bar -->
-            <div class="md:hidden fixed top-0 inset-x-0 z-20 bg-white border-b border-line px-4 py-3 flex items-center justify-between">
+            <!-- Mobile top bar — glass -->
+            <div class="md:hidden fixed top-0 inset-x-0 z-20 border-b border-white/40 px-4 py-3 flex items-center justify-between" style="background: rgba(255,255,255,0.75); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
                     <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand text-white font-black text-sm">S</span>
                     <span class="font-black tracking-tight">SeatWeb</span>
@@ -138,13 +138,13 @@
                 </form>
             </div>
 
-            <!-- Mobile bottom nav: 4 primary items + More drawer -->
+            <!-- Mobile bottom nav: 4 primary items + More drawer — glass -->
             @php
                 $primaryMobile = collect($navItems)->take(4)->all();
                 $secondaryMobile = collect($navItems)->slice(4)->values()->all();
                 $secondaryActive = collect($secondaryMobile)->contains(fn ($item) => request()->routeIs($item['pattern']));
             @endphp
-            <nav class="md:hidden fixed bottom-0 inset-x-0 z-20 bg-white border-t border-line flex items-center justify-around py-2 px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+            <nav class="md:hidden fixed bottom-0 inset-x-0 z-20 border-t border-white/40 flex items-center justify-around py-2 px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);">
                 @foreach ($primaryMobile as $item)
                     @php
                         $isActive = request()->routeIs($item['pattern']);
