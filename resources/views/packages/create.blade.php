@@ -29,8 +29,9 @@
                     value="{{ old('name') }}"
                     required
                     placeholder="e.g. Yunnan 8D6N"
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border @error('name') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
+                @include('partials.field-error', ['field' => 'name'])
             </div>
 
             <div>
@@ -42,8 +43,9 @@
                     value="{{ old('destination') }}"
                     required
                     placeholder="e.g. China"
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border @error('destination') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
+                @include('partials.field-error', ['field' => 'destination'])
             </div>
 
             <div>

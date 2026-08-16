@@ -33,6 +33,7 @@
                         <option value="{{ $package->id }}" @selected(old('package_id') == $package->id)>{{ $package->name }}</option>
                     @endforeach
                 </select>
+                @include('partials.field-error', ['field' => 'package_id'])
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -44,8 +45,9 @@
                         name="departure_date"
                         value="{{ old('departure_date') }}"
                         required
-                        class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('departure_date') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
+                    @include('partials.field-error', ['field' => 'departure_date'])
                 </div>
                 <div>
                     <label for="return_date" class="block text-sm font-semibold text-ink mb-2">Return Date *</label>
@@ -55,8 +57,9 @@
                         name="return_date"
                         value="{{ old('return_date') }}"
                         required
-                        class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('return_date') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
+                    @include('partials.field-error', ['field' => 'return_date'])
                 </div>
             </div>
 
@@ -70,8 +73,9 @@
                         value="{{ old('total_seats', 25) }}"
                         min="1"
                         required
-                        class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('total_seats') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
+                    @include('partials.field-error', ['field' => 'total_seats'])
                 </div>
                 <div>
                     <label for="price" class="block text-sm font-semibold text-ink mb-2">Price (RM)</label>
@@ -82,8 +86,9 @@
                         value="{{ old('price') }}"
                         min="0"
                         step="0.01"
-                        class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('price') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
+                    @include('partials.field-error', ['field' => 'price'])
                 </div>
             </div>
 

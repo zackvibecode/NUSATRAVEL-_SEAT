@@ -21,7 +21,7 @@
             @csrf
             <input id="hermes-input" type="text" autocomplete="off" placeholder="Contoh: list package"
                    class="flex-1 rounded-full border border-line px-5 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none">
-            <button type="submit" class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3">
+            <button type="submit" id="hermes-send" class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed">
                 Hantar
             </button>
         </form>
@@ -34,7 +34,13 @@
     const log = document.getElementById('hermes-log');
     const form = document.getElementById('hermes-form');
     const input = document.getElementById('hermes-input');
+    const button = document.getElementById('hermes-send');
     const token = document.querySelector('input[name="_token"]').value;
+    let busy = false;
+
+    function scrollDown() {
+        log.scrollTop = log.scrollHeight;
+    }
 
     function bubble(text, mine) {
         const div = document.createElement('div');
@@ -43,15 +49,43 @@
             : 'mr-12 text-sm bg-fog rounded-2xl px-4 py-3 whitespace-pre-wrap text-ink';
         div.textContent = text;
         log.appendChild(div);
-        log.scrollTop = log.scrollHeight;
+        scrollDown();
+        return div;
+    }
+
+    function typingBubble() {
+        const div = document.createElement('div');
+        div.className = 'mr-12 text-sm bg-fog rounded-2xl px-4 py-3 text-charcoal flex items-center gap-1.5';
+        div.setAttribute('aria-label', 'Hermes is typing');
+        for (let i = 0; i < 3; i++) {
+            const dot = document.createElement('span');
+            dot.className = 'w-2 h-2 rounded-full bg-charcoal/60 animate-bounce';
+            dot.style.animationDelay = (i * 0.15) + 's';
+            div.appendChild(dot);
+        }
+        log.appendChild(div);
+        scrollDown();
+        return div;
+    }
+
+    function setBusy(state) {
+        busy = state;
+        button.disabled = state;
+        input.disabled = state;
+        button.textContent = state ? 'Sending...' : 'Hantar';
+        button.classList.toggle('opacity-60', state);
+        button.classList.toggle('cursor-not-allowed', state);
     }
 
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
+        if (busy) return;
         const message = input.value.trim();
         if (!message) return;
         bubble(message, true);
         input.value = '';
+        setBusy(true);
+        const typing = typingBubble();
         try {
             const res = await fetch(@json(route('hermes.chat.message')), {
                 method: 'POST',
@@ -62,10 +96,21 @@
                 },
                 body: JSON.stringify({ message }),
             });
-            const data = await res.json();
-            bubble(data.reply || data.message || 'Error', false);
+            typing.remove();
+            if (res.status === 429) {
+                bubble('Terlalu banyak mesej. Tunggu sebentar dan cuba lagi.', false);
+            } else if (!res.ok) {
+                bubble('Server error (' + res.status + '). Cuba lagi.', false);
+            } else {
+                const data = await res.json();
+                bubble(data.reply || data.message || 'Error', false);
+            }
         } catch (err) {
-            bubble('Gagal connect. Cuba lagi.', false);
+            typing.remove();
+            bubble('Gagal connect. Semak internet dan cuba lagi.', false);
+        } finally {
+            setBusy(false);
+            input.focus();
         }
     });
 })();

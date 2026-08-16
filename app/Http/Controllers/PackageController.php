@@ -70,6 +70,6 @@ class PackageController extends Controller
         $package->delete();
 
         return redirect()->route('packages.index')
-            ->with('success', "Pakej \"{$name}\" telah dipadam dari database.");
+            ->with('success', "Package \"{$name}\" was deleted from the database. Related trips and registrations were removed.");
     }
 }

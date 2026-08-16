@@ -29,8 +29,9 @@
                     name="name"
                     value="{{ old('name', $package->name) }}"
                     required
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border @error('name') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
+                @include('partials.field-error', ['field' => 'name'])
             </div>
 
             <div>
@@ -41,8 +42,9 @@
                     name="destination"
                     value="{{ old('destination', $package->destination) }}"
                     required
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border @error('destination') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
+                @include('partials.field-error', ['field' => 'destination'])
             </div>
 
             <div>

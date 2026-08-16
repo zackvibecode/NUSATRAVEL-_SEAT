@@ -124,9 +124,10 @@
                                         autofocus
                                         autocomplete="email"
                                         placeholder="you@company.com"
-                                        class="w-full rounded-2xl border border-line bg-white pl-12 pr-4 py-3.5 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                                        class="w-full rounded-2xl border @error('email') border-red-400 @else border-line @enderror bg-white pl-12 pr-4 py-3.5 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                                     >
                                 </div>
+                                @include('partials.field-error', ['field' => 'email'])
                             </div>
 
                             <div>
@@ -144,9 +145,10 @@
                                         required
                                         autocomplete="current-password"
                                         placeholder="••••••••"
-                                        class="w-full rounded-2xl border border-line bg-white pl-12 pr-4 py-3.5 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                                        class="w-full rounded-2xl border @error('password') border-red-400 @else border-line @enderror bg-white pl-12 pr-4 py-3.5 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                                     >
                                 </div>
+                                @include('partials.field-error', ['field' => 'password'])
                             </div>
 
                             <button

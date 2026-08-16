@@ -202,6 +202,7 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-end gap-3">
                                     <button type="button"
+                                            data-edit-registration
                                             data-reg-id="{{ $registration->id }}"
                                             data-name="{{ $registration->name }}"
                                             data-phone="{{ $registration->phone }}"
@@ -210,7 +211,6 @@
                                             data-need-partner="{{ $registration->need_partner ? '1' : '0' }}"
                                             data-partner-gender="{{ $registration->partner_gender }}"
                                             data-notes="{{ $registration->notes }}"
-                                            onclick="openEditModal(this)"
                                             class="edit-btn inline-flex items-center gap-1.5 text-brand hover:text-brand-hover text-sm font-bold">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -218,11 +218,11 @@
                                         Edit
                                     </button>
                                     <button type="button"
+                                            data-copy-wa
                                             data-wa-name="{{ $registration->name }}"
                                             data-wa-pax="{{ $registration->pax }}"
                                             data-wa-package="{{ $departure->package->name }}"
                                             data-wa-date="{{ $departure->departure_date->format('d M Y') }}"
-                                            onclick="copyWhatsApp(this)"
                                             class="inline-flex items-center gap-1.5 text-positive hover:text-positive/80 text-sm font-semibold">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -283,8 +283,9 @@
                     name="name"
                     value="{{ old('name') }}"
                     required
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-2xl border @error('name') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
+                @include('partials.field-error', ['field' => 'name'])
             </div>
 
             <div>
@@ -295,8 +296,9 @@
                     name="phone"
                     value="{{ old('phone') }}"
                     placeholder="e.g. 012-3456789"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-2xl border @error('phone') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
+                @include('partials.field-error', ['field' => 'phone'])
             </div>
 
             <div>
@@ -308,8 +310,9 @@
                     value="{{ old('pax', 1) }}"
                     min="1"
                     required
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-2xl border @error('pax') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
+                @include('partials.field-error', ['field' => 'pax'])
             </div>
 
             <div>
@@ -372,11 +375,11 @@
     </div>
 
     <!-- Edit registration modal -->
-    <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
+    <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="font-bold text-lg tracking-tight">Edit Registration</h3>
-                <button type="button" onclick="closeEditModal()" class="text-charcoal hover:text-ink text-2xl leading-none font-medium">&times;</button>
+                <h3 id="editModalTitle" class="font-bold text-lg tracking-tight">Edit Registration</h3>
+                <button type="button" data-close-edit-modal aria-label="Close" class="text-charcoal hover:text-ink text-2xl leading-none font-medium">&times;</button>
             </div>
 
             <form id="editForm" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -441,7 +444,7 @@
                             class="bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-3 transition-all duration-150 hover:scale-[1.03] shadow-sm hover:shadow-md">
                         Update Registration
                     </button>
-                    <button type="button" onclick="closeEditModal()" class="text-sm font-bold text-charcoal hover:text-ink">Cancel</button>
+                    <button type="button" data-close-edit-modal class="text-sm font-bold text-charcoal hover:text-ink">Cancel</button>
                 </div>
             </form>
         </div>
@@ -450,82 +453,95 @@
 
 @section('scripts')
 <script>
-    function togglePartnerGender(select) {
-        const wrap = document.getElementById('reg_partner_gender_wrap');
-        if (select.value === '1') {
-            wrap.classList.remove('hidden');
-        } else {
-            wrap.classList.add('hidden');
-            document.getElementById('reg_partner_gender').value = '';
-        }
+(function () {
+    const editModal = document.getElementById('editModal');
+    const editForm = document.getElementById('editForm');
+    const addPartnerWrap = document.getElementById('reg_partner_gender_wrap');
+    const addPartnerSelect = document.getElementById('reg_partner_gender');
+    const editPartnerWrap = document.getElementById('edit_partner_gender_wrap');
+    const editPartnerSelect = document.getElementById('edit_partner_gender');
+
+    function setPartnerVisibility(wrap, select, show) {
+        wrap.classList.toggle('hidden', !show);
+        if (!show) select.value = '';
     }
 
-    function toggleEditPartnerGender(select) {
-        const wrap = document.getElementById('edit_partner_gender_wrap');
-        if (select.value === '1') {
-            wrap.classList.remove('hidden');
-        } else {
-            wrap.classList.add('hidden');
-            document.getElementById('edit_partner_gender').value = '';
-        }
-    }
+    document.getElementById('reg_need_partner')?.addEventListener('change', function () {
+        setPartnerVisibility(addPartnerWrap, addPartnerSelect, this.value === '1');
+    });
+
+    document.getElementById('edit_need_partner')?.addEventListener('change', function () {
+        setPartnerVisibility(editPartnerWrap, editPartnerSelect, this.value === '1');
+    });
 
     function openEditModal(btn) {
-        const id = btn.dataset.regId;
-        const form = document.getElementById('editForm');
-        form.action = '{{ url('/registrations') }}/' + id;
-        form.querySelector('#edit_name').value = btn.dataset.name;
-        form.querySelector('#edit_phone').value = btn.dataset.phone;
-        form.querySelector('#edit_pax').value = btn.dataset.pax;
-        form.querySelector('#edit_payment_status').value = btn.dataset.paymentStatus || 'pending';
-        form.querySelector('#edit_need_partner').value = btn.dataset.needPartner;
-        form.querySelector('#edit_partner_gender').value = btn.dataset.partnerGender;
-        form.querySelector('#edit_notes').value = btn.dataset.notes;
+        editForm.action = '{{ url('/registrations') }}/' + btn.dataset.regId;
+        editForm.querySelector('#edit_name').value = btn.dataset.name ?? '';
+        editForm.querySelector('#edit_phone').value = btn.dataset.phone ?? '';
+        editForm.querySelector('#edit_pax').value = btn.dataset.pax ?? 1;
+        editForm.querySelector('#edit_payment_status').value = btn.dataset.paymentStatus || 'pending';
+        editForm.querySelector('#edit_need_partner').value = btn.dataset.needPartner || '0';
+        editForm.querySelector('#edit_partner_gender').value = btn.dataset.partnerGender ?? '';
+        editForm.querySelector('#edit_notes').value = btn.dataset.notes ?? '';
 
-        if (btn.dataset.needPartner === '1') {
-            document.getElementById('edit_partner_gender_wrap').classList.remove('hidden');
-        } else {
-            document.getElementById('edit_partner_gender_wrap').classList.add('hidden');
-        }
+        setPartnerVisibility(editPartnerWrap, editPartnerSelect, btn.dataset.needPartner === '1');
 
-        document.getElementById('editModal').classList.remove('hidden');
-        document.getElementById('editModal').classList.add('flex');
+        editModal.classList.remove('hidden');
+        editModal.classList.add('flex');
+        editForm.querySelector('#edit_name').focus();
     }
 
     function closeEditModal() {
-        const modal = document.getElementById('editModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+        editModal.classList.add('hidden');
+        editModal.classList.remove('flex');
     }
 
-    function copyWhatsApp(btn) {
-        const name = btn.dataset.waName;
-        const packageName = btn.dataset.waPackage;
-        const date = btn.dataset.waDate;
-        const pax = btn.dataset.waPax;
-        const msg = `Hi ${name}, your booking for ${packageName} on ${date} is confirmed. Total pax: ${pax}. Please reply YES to confirm.`;
-        navigator.clipboard.writeText(msg).then(() => {
-            alert('WhatsApp message copied to clipboard!');
-        }).catch(() => {
-            // Fallback
-            const ta = document.createElement('textarea');
-            ta.value = msg;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-            alert('WhatsApp message copied to clipboard!');
+    document.querySelectorAll('[data-edit-registration]').forEach(function (btn) {
+        btn.addEventListener('click', function () { openEditModal(btn); });
+    });
+
+    document.querySelectorAll('[data-close-edit-modal]').forEach(function (btn) {
+        btn.addEventListener('click', closeEditModal);
+    });
+
+    editModal?.addEventListener('click', function (e) {
+        if (e.target === editModal) closeEditModal();
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !editModal.classList.contains('hidden')) closeEditModal();
+    });
+
+    document.querySelectorAll('[data-copy-wa]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const name = btn.dataset.waName;
+            const packageName = btn.dataset.waPackage;
+            const date = btn.dataset.waDate;
+            const pax = btn.dataset.waPax;
+            const msg = `Hi ${name}, your booking for ${packageName} on ${date} is confirmed. Total pax: ${pax}. Please reply YES to confirm.`;
+            navigator.clipboard.writeText(msg).then(function () {
+                alert('WhatsApp message copied to clipboard!');
+            }).catch(function () {
+                const ta = document.createElement('textarea');
+                ta.value = msg;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                alert('WhatsApp message copied to clipboard!');
+            });
         });
-    }
+    });
 
     // Disable submit buttons on form submit
-    document.getElementById('addRegForm')?.addEventListener('submit', function() {
+    document.getElementById('addRegForm')?.addEventListener('submit', function () {
         document.getElementById('saveRegBtn').disabled = true;
         document.getElementById('saveRegBtn').textContent = 'Saving...';
     });
-    document.getElementById('editForm')?.addEventListener('submit', function() {
+    document.getElementById('editForm')?.addEventListener('submit', function () {
         document.getElementById('updateRegBtn').disabled = true;
         document.getElementById('updateRegBtn').textContent = 'Updating...';
     });
+})();
 </script>
 @endsection
