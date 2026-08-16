@@ -151,6 +151,12 @@
                                 @include('partials.field-error', ['field' => 'password'])
                             </div>
 
+                            <div class="flex items-center justify-end mt-1">
+                                <a href="{{ route('password.request') }}" class="text-xs font-bold text-brand hover:text-brand-hover">
+                                    Forgot your password?
+                                </a>
+                            </div>
+
                             <button
                                 type="submit"
                                 class="w-full bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-6 py-4 transition-all duration-150 hover:scale-[1.02] shadow-md hover:shadow-lg flex items-center justify-center gap-2"

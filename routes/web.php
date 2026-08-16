@@ -7,6 +7,7 @@ use App\Http\Controllers\DepartureController;
 use App\Http\Controllers\HermesGuideController;
 use App\Http\Controllers\NeedPartnerController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ReportController;
@@ -18,6 +19,12 @@ Route::redirect('/', '/login');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.attempt');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Password reset (public)
+Route::get('/forgot-password', [PasswordResetController::class, 'requestForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->middleware('throttle:5,1')->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
 
 // All internal pages require authentication (PRD section 4.2)
 Route::middleware('auth')->group(function () {
