@@ -5,12 +5,12 @@
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5">
         <div>
-            <h2 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-none">Calendar</h2>
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Calendar</h2>
             <p class="text-sm text-charcoal mt-2">Monthly view of all departures.</p>
         </div>
     </div>
 
-    <div class="glass rounded-2xl overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden">
         <!-- Header with prev/next navigation -->
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div class="flex items-center gap-3">

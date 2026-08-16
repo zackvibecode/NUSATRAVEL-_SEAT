@@ -6,7 +6,7 @@
     <div class="max-w-xl mx-auto">
         <div class="flex items-end justify-between mb-8">
             <div>
-                <h2 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-none">Edit Package</h2>
+                <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Edit Package</h2>
                 <p class="text-sm text-charcoal mt-2">{{ $package->name }}</p>
             </div>
             <a href="{{ route('packages.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">
@@ -17,7 +17,7 @@
             </a>
         </div>
 
-        <form method="POST" action="{{ route('packages.update', $package) }}" class="glass rounded-2xl p-4 sm:p-6 space-y-6">
+        <form method="POST" action="{{ route('packages.update', $package) }}" class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 space-y-6">
             @csrf
             @method('PUT')
 

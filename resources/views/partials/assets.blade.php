@@ -4,11 +4,6 @@
 <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 
-{{-- Typography: Playfair Display (headings, serif) + Inter (body) — Classic Elegant pairing --}}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap">
-
 {{-- Load built assets without @vite (avoids ViteManifestNotFoundException 500) --}}
 @php
     $manifestPath = public_path('build/manifest.json');

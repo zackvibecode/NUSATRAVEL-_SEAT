@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <div>
-            <h2 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-none">Attention Trips</h2>
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Attention Trips</h2>
             <p class="text-sm text-charcoal mt-2">Open trips that still need more registrations, sorted by earliest month first.</p>
         </div>
         <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">

@@ -37,7 +37,7 @@
     </div>
 
     <!-- Trip header -->
-    <div class="glass rounded-2xl p-4 sm:p-6 mb-4">
+    <div class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 mb-4">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
                 <div class="flex items-center gap-3">
@@ -47,7 +47,7 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-none">{{ $departure->package->name }}</h2>
+                        <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">{{ $departure->package->name }}</h2>
                         <p class="text-sm text-charcoal font-medium mt-2 flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -150,7 +150,7 @@
     </div>
 
     <!-- Registrations table -->
-    <div class="glass rounded-2xl overflow-hidden mb-4">
+    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-4">
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
@@ -256,7 +256,7 @@
     </div>
 
     <!-- Add registration form -->
-    <div id="add-registration" class="glass rounded-2xl p-4 sm:p-6 mb-4">
+    <div id="add-registration" class="bg-white rounded-xl shadow-sm border border-line p-4 sm:p-6 mb-4">
         <div class="flex items-center gap-3 mb-6">
             <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                 <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">

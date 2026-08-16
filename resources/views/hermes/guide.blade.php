@@ -5,7 +5,7 @@
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <div>
-            <h2 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight leading-none">Hermes Sync</h2>
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight leading-none">Hermes Sync</h2>
             <p class="text-sm text-charcoal mt-2">
                 For Hermes Agent only — Dropbox baca Excel, SeatWeb yang ubah data.
             </p>
@@ -156,7 +156,7 @@ Jangan guna DATABASE_URL. Package delete = hard delete (cascades trips/pax). Tri
         </div>
     </div>
 
-    <div class="glass rounded-2xl overflow-hidden mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-8">
         <div class="px-6 py-4 border-b border-line flex items-center justify-between">
             <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal">Recent import runs</h3>
             <span class="text-xs text-charcoal">Dari table import_runs</span>
