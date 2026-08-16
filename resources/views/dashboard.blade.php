@@ -65,6 +65,51 @@
         </div>
     </div>
 
+    <!-- 6-month revenue & pax trend -->
+    <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-4">
+        <div class="px-4 sm:px-6 py-4 border-b border-line">
+            <h3 class="font-bold text-base sm:text-lg tracking-tight">Revenue &amp; Pax Trend</h3>
+            <p class="text-xs text-charcoal mt-0.5 font-medium">Last 6 months by departure month · paid in full, deposit at 50%</p>
+        </div>
+        <div class="p-4 sm:p-6">
+            @php
+                $maxRevenue = max(1, $trendData->max(fn ($t) => $t['revenue']));
+                $hasData = $trendData->contains(fn ($t) => $t['revenue'] > 0 || $t['pax'] > 0);
+            @endphp
+            @if ($hasData)
+                <div class="flex items-end gap-2 sm:gap-4 h-44 sm:h-52" role="img" aria-label="Bar chart of recognised revenue and pax for the last 6 months. Values: {{ $trendData->map(fn ($t) => $t['label'].' RM '.number_format($t['revenue'], 0).', '.$t['pax'].' pax')->implode('; ') }}.">
+                    @foreach ($trendData as $t)
+                        <div class="flex-1 flex flex-col items-center gap-2 group">
+                            <div class="w-full flex-1 flex items-end">
+                                <div class="w-full rounded-t-lg bg-brand/90 group-hover:bg-brand transition-colors duration-150 relative"
+                                     style="height: {{ max(2, (int) round(($t['revenue'] / $maxRevenue) * 100)) }}%">
+                                    <span class="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] sm:text-xs font-bold text-ink opacity-0 group-hover:opacity-100 transition-opacity">
+                                        RM {{ number_format($t['revenue'], 0) }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-[10px] sm:text-xs font-black text-brand leading-none">{{ number_format($t['revenue'] / 1000, 1) }}k</p>
+                                <p class="text-[10px] sm:text-xs font-semibold text-charcoal mt-1 leading-none">{{ $t['label'] }}</p>
+                                <p class="text-[9px] sm:text-[10px] text-charcoal/70 font-medium mt-0.5 leading-none">{{ $t['pax'] }} pax</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="py-12 text-center">
+                    <div class="w-12 h-12 rounded-2xl bg-brand-soft flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-semibold text-ink">No trend data yet</p>
+                    <p class="text-xs text-charcoal mt-1 font-medium">Charts appear once departures have registrations.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
     <!-- Hermes seat updates -->
     <div class="bg-white rounded-xl shadow-sm border border-line overflow-hidden mb-4">
         <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-line flex items-center justify-between gap-3">

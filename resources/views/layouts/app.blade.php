@@ -138,19 +138,65 @@
                 </form>
             </div>
 
-            <!-- Mobile bottom nav -->
-            <nav class="md:hidden fixed bottom-0 inset-x-0 z-20 bg-white border-t border-line flex items-center justify-around py-2 px-2">
-                @foreach ($navItems as $item)
+            <!-- Mobile bottom nav: 4 primary items + More drawer -->
+            @php
+                $primaryMobile = collect($navItems)->take(4)->all();
+                $secondaryMobile = collect($navItems)->slice(4)->values()->all();
+                $secondaryActive = collect($secondaryMobile)->contains(fn ($item) => request()->routeIs($item['pattern']));
+            @endphp
+            <nav class="md:hidden fixed bottom-0 inset-x-0 z-20 bg-white border-t border-line flex items-center justify-around py-2 px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+                @foreach ($primaryMobile as $item)
                     @php
                         $isActive = request()->routeIs($item['pattern']);
                     @endphp
                     <a href="{{ route($item['route']) }}"
-                       class="flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-[10px] font-semibold transition-colors {{ $isActive ? 'text-brand' : 'text-charcoal' }}">
+                       class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-semibold transition-colors {{ $isActive ? 'text-brand' : 'text-charcoal' }}">
                         <span class="{{ $isActive ? 'text-brand' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
                         <span>{{ $item['short'] ?? $item['label'] }}</span>
                     </a>
                 @endforeach
+                <button type="button" id="moreNavBtn" aria-haspopup="true" aria-expanded="false" aria-controls="moreNavDrawer"
+                        class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-semibold transition-colors {{ $secondaryActive ? 'text-brand' : 'text-charcoal' }}">
+                    <svg class="w-5 h-5 {{ $secondaryActive ? 'text-brand' : 'text-charcoal' }}" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <span>More</span>
+                </button>
             </nav>
+
+            <!-- Mobile More drawer -->
+            <div id="moreNavDrawer" class="md:hidden fixed inset-0 z-30 hidden" role="dialog" aria-modal="true" aria-label="More navigation">
+                <div id="moreNavBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+                <div class="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl border-t border-line max-h-[75vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
+                    <div class="sticky top-0 bg-white px-5 pt-4 pb-3 border-b border-line flex items-center justify-between">
+                        <h3 class="font-black tracking-tight">More</h3>
+                        <button type="button" id="moreNavClose" aria-label="Close menu" class="w-9 h-9 rounded-full bg-fog hover:bg-brand-soft text-charcoal hover:text-brand flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-3 grid grid-cols-2 gap-2">
+                        @foreach ($secondaryMobile as $item)
+                            @php
+                                $isActive = request()->routeIs($item['pattern']);
+                            @endphp
+                            <a href="{{ route($item['route']) }}"
+                               class="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-colors {{ $isActive ? 'bg-brand text-white' : 'bg-fog text-ink hover:bg-brand-soft hover:text-brand' }}">
+                                <span class="{{ $isActive ? 'text-white' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
+                                <span>{{ $item['label'] }}</span>
+                            </a>
+                        @endforeach
+                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('mobile-logout-form').submit();"
+                           class="col-span-2 flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-semibold bg-fog text-ink hover:bg-red-50 hover:text-red-600 transition-colors">
+                            <svg class="w-5 h-5 text-charcoal" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            </svg>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
             <!-- Main content -->
             <main class="flex-1 md:ml-0 px-4 md:px-8 py-6 md:py-8 pt-16 md:pt-8 pb-24 md:pb-8">
@@ -192,6 +238,40 @@
                     @yield('content')
                 </div>
             </main>
+            <!-- Hidden logout form for mobile drawer -->
+            <form method="POST" action="{{ route('logout') }}" id="mobile-logout-form" class="hidden">
+                @csrf
+            </form>
+
+            <script>
+                (function () {
+                    var drawer = document.getElementById('moreNavDrawer');
+                    var btn = document.getElementById('moreNavBtn');
+                    var closeBtn = document.getElementById('moreNavClose');
+                    var backdrop = document.getElementById('moreNavBackdrop');
+
+                    function openDrawer() {
+                        drawer.classList.remove('hidden');
+                        btn.setAttribute('aria-expanded', 'true');
+                        document.body.style.overflow = 'hidden';
+                        closeBtn.focus();
+                    }
+
+                    function closeDrawer() {
+                        drawer.classList.add('hidden');
+                        btn.setAttribute('aria-expanded', 'false');
+                        document.body.style.overflow = '';
+                        btn.focus();
+                    }
+
+                    btn?.addEventListener('click', openDrawer);
+                    closeBtn?.addEventListener('click', closeDrawer);
+                    backdrop?.addEventListener('click', closeDrawer);
+                    document.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape' && !drawer.classList.contains('hidden')) closeDrawer();
+                    });
+                })();
+            </script>
         </div>
 
         @yield('scripts')
