@@ -14,7 +14,7 @@
             <aside id="appSidebar" class="w-64 bg-white border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen overflow-x-hidden">
                 <div class="sidebar-header px-5 py-5 border-b border-line flex items-center justify-between gap-2">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 min-w-0" title="SeatWeb">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-md bg-ink text-white font-bold text-sm flex-shrink-0">S</span>
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand text-white font-black text-sm flex-shrink-0">S</span>
                         <span class="sidebar-label font-semibold tracking-tight whitespace-nowrap">SeatWeb</span>
                     </a>
                     <button type="button" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="true"
@@ -108,7 +108,7 @@
 
                 <div class="sidebar-footer px-5 py-5 border-t border-line text-sm">
                     <div class="sidebar-user flex items-center gap-3">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-md bg-ink text-white font-bold text-sm flex-shrink-0" title="{{ auth()->user()->name }}">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand-soft text-brand font-bold text-sm flex-shrink-0" title="{{ auth()->user()->name }}">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </span>
                         <div class="sidebar-user-info min-w-0">
@@ -132,7 +132,7 @@
             <!-- Mobile top bar -->
             <div class="md:hidden fixed top-0 inset-x-0 z-20 bg-white border-b border-line px-4 py-3 flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                    <span class="flex items-center justify-center w-7 h-7 rounded-md bg-ink text-white font-bold text-xs">S</span>
+                    <span class="flex items-center justify-center w-7 h-7 rounded-full bg-brand text-white font-black text-xs">S</span>
                     <span class="font-semibold tracking-tight text-sm">SeatWeb</span>
                 </a>
                 <form method="POST" action="{{ route('logout') }}">
