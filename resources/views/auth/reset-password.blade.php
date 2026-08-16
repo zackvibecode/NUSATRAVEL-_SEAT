@@ -8,7 +8,7 @@
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; background: #faf7f7; color: #14100f; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
         .card { background: #fff; border: 1px solid #e8e4e2; border-radius: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); padding: 2rem; width: 100%; max-width: 24rem; }
-        .logo { width: 40px; height: 40px; border-radius: 9999px; background: #e4002b; color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
+        .logo { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #ff1a3c 0%, #c40027 100%); color: #fff; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
         h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; margin: 0 0 0.5rem; text-align: center; }
         p.sub { color: #454245; font-size: 0.875rem; text-align: center; margin: 0 0 1.5rem; }
         label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; }
@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="card">
-        <div class="logo">S</div>
+        <div class="logo">SW</div>
         <h1>Reset password</h1>
         <p class="sub">Choose a new password for your account.</p>
 

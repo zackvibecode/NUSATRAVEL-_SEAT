@@ -14,7 +14,8 @@
             <aside id="appSidebar" class="w-64 bg-white border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen overflow-x-hidden">
                 <div class="sidebar-header px-5 py-5 border-b border-line flex items-center justify-between gap-2">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 min-w-0" title="WEBSEAT">
-                        <span class="flex items-center justify-center w-9 h-9 rounded-full bg-brand text-white font-black text-sm flex-shrink-0">S</span>
+                        <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-white font-bold text-xs tracking-wide shadow-sm flex-shrink-0 select-none"
+                              style="background: linear-gradient(135deg, #ff1a3c 0%, #c40027 100%);">SW</span>
                         <div class="sidebar-label leading-none min-w-0">
                             <span class="font-black tracking-tight whitespace-nowrap block">WEBSEAT</span>
                             <span class="text-[9px] font-bold tracking-[0.2em] text-charcoal/70 block mt-0.5">BY ZAQONE</span>
@@ -135,7 +136,8 @@
             <!-- Mobile top bar -->
             <div class="md:hidden fixed top-0 inset-x-0 z-20 bg-white border-b border-line px-4 py-3 flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                    <span class="flex items-center justify-center w-7 h-7 rounded-full bg-brand text-white font-black text-xs">S</span>
+                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg text-white font-bold text-[10px] tracking-wide shadow-sm select-none"
+                          style="background: linear-gradient(135deg, #ff1a3c 0%, #c40027 100%);">SW</span>
                     <span class="font-black tracking-tight text-sm">WEBSEAT</span>
                 </a>
                 <form method="POST" action="{{ route('logout') }}">
