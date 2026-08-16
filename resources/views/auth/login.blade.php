@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Login — SeatWeb</title>
+        <title>Login — WEBSEAT</title>
 
         @include('partials.assets')
     </head>
@@ -23,7 +23,10 @@
                 <div class="relative z-10">
                     <a href="#" class="flex items-center gap-3">
                         <span class="flex items-center justify-center w-12 h-12 rounded-full bg-white text-brand font-black text-xl shadow-lg">S</span>
-                        <span class="text-2xl font-black tracking-tight">SeatWeb</span>
+                        <div class="leading-none">
+                            <span class="text-2xl font-black tracking-tight block">WEBSEAT</span>
+                            <span class="text-[11px] font-bold tracking-[0.25em] text-white/70 block mt-1.5">BY ZAQONE</span>
+                        </div>
                     </a>
                 </div>
 
@@ -82,7 +85,8 @@
                 <div class="w-full max-w-md">
                     <div class="lg:hidden text-center mb-8">
                         <span class="flex items-center justify-center w-14 h-14 rounded-full bg-brand text-white font-black text-2xl mx-auto shadow-lg">S</span>
-                        <h1 class="text-3xl font-black tracking-tight mt-4">Trip Seat Availability</h1>
+                        <h1 class="text-3xl font-black tracking-tight mt-4">WEBSEAT</h1>
+                        <p class="text-xs font-bold tracking-[0.25em] text-charcoal mt-1.5">BY ZAQONE</p>
                     </div>
 
                     <div class="bg-white rounded-3xl p-8 shadow-sm border border-line">
