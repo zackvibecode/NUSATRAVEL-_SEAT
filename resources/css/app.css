@@ -45,6 +45,52 @@ button:disabled {
     cursor: not-allowed;
 }
 
+/* Collapsible sidebar (desktop) — state stored on <html class="sidebar-collapsed"> */
+#appSidebar {
+    transition: width 0.2s ease;
+}
+
+html.sidebar-collapsed #appSidebar {
+    width: 4.5rem;
+}
+
+html.sidebar-collapsed #appSidebar .sidebar-label,
+html.sidebar-collapsed #appSidebar .sidebar-user-info {
+    display: none;
+}
+
+html.sidebar-collapsed #appSidebar .sidebar-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-left: 0;
+    padding-right: 0;
+    align-items: center;
+}
+
+html.sidebar-collapsed #appSidebar nav a,
+html.sidebar-collapsed #appSidebar .sidebar-footer button {
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+html.sidebar-collapsed #appSidebar .sidebar-footer {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+html.sidebar-collapsed #appSidebar .sidebar-user {
+    justify-content: center;
+}
+
+#sidebarToggle svg {
+    transition: transform 0.2s ease;
+}
+
+html.sidebar-collapsed #sidebarToggle svg {
+    transform: rotate(180deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

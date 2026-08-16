@@ -10,13 +10,19 @@
     </head>
     <body class="bg-fog text-ink antialiased">
         <div class="min-h-screen flex">
-            <!-- Sidebar — Vercel clean -->
-            <aside class="w-64 bg-white border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen">
-                <div class="px-5 py-5 border-b border-line">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-md bg-ink text-white font-bold text-sm">S</span>
-                        <span class="font-semibold tracking-tight">SeatWeb</span>
+            <!-- Sidebar — Vercel clean, collapsible -->
+            <aside id="appSidebar" class="w-64 bg-white border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen overflow-x-hidden">
+                <div class="sidebar-header px-5 py-5 border-b border-line flex items-center justify-between gap-2">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 min-w-0" title="SeatWeb">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-md bg-ink text-white font-bold text-sm flex-shrink-0">S</span>
+                        <span class="sidebar-label font-semibold tracking-tight whitespace-nowrap">SeatWeb</span>
                     </a>
+                    <button type="button" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="true"
+                            class="w-8 h-8 rounded-md text-charcoal hover:bg-fog hover:text-ink flex items-center justify-center transition-colors flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                        </svg>
+                    </button>
                 </div>
 
                 <nav class="flex-1 px-3 py-3 space-y-0.5">
@@ -92,32 +98,32 @@
                         @php
                             $isActive = request()->routeIs($item['pattern']);
                         @endphp
-                        <a href="{{ route($item['route']) }}"
+                        <a href="{{ route($item['route']) }}" title="{{ $item['label'] }}"
                            class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors {{ $isActive ? 'bg-fog text-ink font-semibold' : 'text-charcoal hover:bg-fog hover:text-ink' }}">
-                            <span class="{{ $isActive ? 'text-ink' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
-                            <span>{{ $item['label'] }}</span>
+                            <span class="{{ $isActive ? 'text-ink' : 'text-charcoal' }} flex-shrink-0">{!! $item['icon'] !!}</span>
+                            <span class="sidebar-label whitespace-nowrap">{{ $item['label'] }}</span>
                         </a>
                     @endforeach
                 </nav>
 
-                <div class="px-5 py-5 border-t border-line text-sm">
-                    <div class="flex items-center gap-3">
-                        <span class="flex items-center justify-center w-8 h-8 rounded-md bg-ink text-white font-bold text-sm">
+                <div class="sidebar-footer px-5 py-5 border-t border-line text-sm">
+                    <div class="sidebar-user flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-md bg-ink text-white font-bold text-sm flex-shrink-0" title="{{ auth()->user()->name }}">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </span>
-                        <div class="min-w-0">
+                        <div class="sidebar-user-info min-w-0">
                             <div class="text-ink font-medium truncate">{{ auth()->user()->name }}</div>
                             <div class="text-xs text-charcoal truncate">{{ auth()->user()->email }}</div>
                         </div>
                     </div>
                     <form method="POST" action="{{ route('logout') }}" class="mt-3">
                         @csrf
-                        <button type="submit"
+                        <button type="submit" title="Logout"
                                 class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-charcoal hover:bg-fog hover:text-ink transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                             </svg>
-                            <span>Logout</span>
+                            <span class="sidebar-label whitespace-nowrap">Logout</span>
                         </button>
                     </form>
                 </div>
@@ -242,6 +248,20 @@
 
             <script>
                 (function () {
+                    // Sidebar collapse — persist across pages
+                    var toggle = document.getElementById('sidebarToggle');
+                    if (localStorage.getItem('sidebar-collapsed') === '1') {
+                        document.documentElement.classList.add('sidebar-collapsed');
+                        toggle?.setAttribute('aria-expanded', 'false');
+                    }
+
+                    toggle?.addEventListener('click', function () {
+                        var collapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+                        localStorage.setItem('sidebar-collapsed', collapsed ? '1' : '0');
+                        toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+                    });
+
+                    // Mobile More drawer
                     var drawer = document.getElementById('moreNavDrawer');
                     var btn = document.getElementById('moreNavBtn');
                     var closeBtn = document.getElementById('moreNavClose');
