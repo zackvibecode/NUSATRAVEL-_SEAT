@@ -72,14 +72,6 @@
                             {{ $departure->airline }}
                         </span>
                     @endif
-                    @if ($departure->price)
-                        <span class="flex items-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            RM {{ number_format($departure->price, 2) }}
-                        </span>
-                    @endif
                 </div>
             </div>
             <div class="flex items-center gap-2">
@@ -172,7 +164,6 @@
                         <th class="px-6 py-4 font-semibold">Name</th>
                         <th class="px-6 py-4 font-semibold">Phone</th>
                         <th class="px-6 py-4 font-semibold text-right">Pax</th>
-                        <th class="px-6 py-4 font-semibold">Payment</th>
                         <th class="px-6 py-4 font-semibold">Partner</th>
                         <th class="px-6 py-4 font-semibold">Notes</th>
                         <th class="px-6 py-4 font-semibold text-right">Actions</th>
@@ -184,11 +175,6 @@
                             <td class="px-6 py-4 font-bold">{{ $registration->name }}</td>
                             <td class="px-6 py-4 text-charcoal font-medium">{{ $registration->phone }}</td>
                             <td class="px-6 py-4 text-right font-bold">{{ $registration->pax }}</td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold {{ $registration->payment_color }}">
-                                    {{ $registration->payment_label }}
-                                </span>
-                            </td>
                             <td class="px-6 py-4">
                                 @if ($registration->need_partner)
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-warning-soft text-warning">
@@ -207,7 +193,6 @@
                                             data-name="{{ $registration->name }}"
                                             data-phone="{{ $registration->phone }}"
                                             data-pax="{{ $registration->pax }}"
-                                            data-payment-status="{{ $registration->payment_status }}"
                                             data-need-partner="{{ $registration->need_partner ? '1' : '0' }}"
                                             data-partner-gender="{{ $registration->partner_gender }}"
                                             data-notes="{{ $registration->notes }}"
@@ -245,7 +230,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center text-charcoal font-medium">
+                            <td colspan="6" class="px-6 py-12 text-center text-charcoal font-medium">
                                 No registrations yet. Add the first participant below.
                             </td>
                         </tr>
@@ -313,19 +298,6 @@
                     class="w-full rounded-2xl border @error('pax') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                 @include('partials.field-error', ['field' => 'pax'])
-            </div>
-
-            <div>
-                <label for="reg_payment_status" class="block text-sm font-semibold text-ink mb-2">Payment Status</label>
-                <select
-                    id="reg_payment_status"
-                    name="payment_status"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
-                >
-                    <option value="pending" @selected(old('payment_status', 'pending') === 'pending')>Pending</option>
-                    <option value="deposit" @selected(old('payment_status') === 'deposit')>Deposit</option>
-                    <option value="paid" @selected(old('payment_status') === 'paid')>Paid</option>
-                </select>
             </div>
 
             <div>
@@ -405,16 +377,6 @@
                 </div>
 
                 <div>
-                    <label for="edit_payment_status" class="block text-sm font-semibold text-ink mb-2">Payment Status</label>
-                    <select id="edit_payment_status" name="payment_status"
-                            class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
-                        <option value="pending">Pending</option>
-                        <option value="deposit">Deposit</option>
-                        <option value="paid">Paid</option>
-                    </select>
-                </div>
-
-                <div>
                     <label for="edit_need_partner" class="block text-sm font-semibold text-ink mb-2">Need Partner?</label>
                     <select id="edit_need_partner" name="need_partner" onchange="toggleEditPartnerGender(this)"
                             class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
@@ -479,7 +441,6 @@
         editForm.querySelector('#edit_name').value = btn.dataset.name ?? '';
         editForm.querySelector('#edit_phone').value = btn.dataset.phone ?? '';
         editForm.querySelector('#edit_pax').value = btn.dataset.pax ?? 1;
-        editForm.querySelector('#edit_payment_status').value = btn.dataset.paymentStatus || 'pending';
         editForm.querySelector('#edit_need_partner').value = btn.dataset.needPartner || '0';
         editForm.querySelector('#edit_partner_gender').value = btn.dataset.partnerGender ?? '';
         editForm.querySelector('#edit_notes').value = btn.dataset.notes ?? '';

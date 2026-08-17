@@ -69,22 +69,20 @@
         </div>
     </div>
 
-    <!-- 6-month revenue & pax trend — SVG line chart -->
+    <!-- 6-month pax trend — SVG line chart -->
     <div class="bg-white rounded-lg border border-line overflow-hidden mb-4">
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div>
-                <h3 class="font-semibold text-base tracking-tight">Revenue &amp; Pax Trend</h3>
-                <p class="text-xs text-charcoal mt-0.5 font-medium">Last 6 months · recognised: paid in full, deposit at 50%</p>
+                <h3 class="font-semibold text-base tracking-tight">Pax Trend</h3>
+                <p class="text-xs text-charcoal mt-0.5 font-medium">Last 6 months · registered pax</p>
             </div>
             <div class="hidden sm:flex items-center gap-4 text-xs font-semibold">
-                <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-brand rounded-full inline-block"></span>Revenue</span>
                 <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-charcoal rounded-full inline-block" style="opacity:.5"></span>Pax</span>
             </div>
         </div>
         <div class="p-4 sm:p-6">
             @php
-                $hasData = $trendData->contains(fn ($t) => $t['revenue'] > 0 || $t['pax'] > 0);
-                $maxRevenue = max(1, $trendData->max(fn ($t) => $t['revenue']));
+                $hasData = $trendData->contains(fn ($t) => $t['pax'] > 0);
                 $maxPax = max(1, $trendData->max(fn ($t) => $t['pax']));
                 $chartW = 600;
                 $chartH = 180;
@@ -94,22 +92,20 @@
                 $padB = 24;
                 $plotW = $chartW - $padL - $padR;
                 $plotH = $chartH - $padT - $padB;
-                $points = $trendData->values()->map(function ($t, $i) use ($trendData, $maxRevenue, $maxPax, $plotW, $plotH, $padL, $padT) {
+                $points = $trendData->values()->map(function ($t, $i) use ($trendData, $maxPax, $plotW, $plotH, $padL, $padT) {
                     $count = $trendData->count();
                     $x = $count > 1 ? $padL + ($plotW / ($count - 1)) * $i : $padL + $plotW / 2;
-                    $revY = $padT + $plotH - ($plotH * ($t['revenue'] / $maxRevenue));
                     $paxY = $padT + $plotH - ($plotH * ($t['pax'] / $maxPax));
-                    return ['x' => round($x, 1), 'revY' => round($revY, 1), 'paxY' => round($paxY, 1), 'label' => $t['label'], 'revenue' => $t['revenue'], 'pax' => $t['pax']];
+                    return ['x' => round($x, 1), 'paxY' => round($paxY, 1), 'label' => $t['label'], 'pax' => $t['pax']];
                 });
-                $revPath = $points->map(fn ($p, $i) => ($i === 0 ? 'M' : 'L').$p['x'].','.$p['revY'])->implode(' ');
                 $paxPath = $points->map(fn ($p, $i) => ($i === 0 ? 'M' : 'L').$p['x'].','.$p['paxY'])->implode(' ');
                 $gridLines = [0.25, 0.5, 0.75];
             @endphp
             @if ($hasData)
                 <div class="overflow-x-auto">
-                    <svg viewBox="0 0 {{ $chartW }} {{ $chartH }}" class="w-full min-w-[400px]" role="img" aria-label="Line chart of revenue and pax over the last 6 months. {{ $points->map(fn ($p) => $p['label'].': RM '.number_format($p['revenue'], 0).', '.$p['pax'].' pax')->implode('. ') }}">
-                        <title>Revenue and Pax Trend</title>
-                        <desc>6-month line chart showing recognised revenue and registered pax</desc>
+                    <svg viewBox="0 0 {{ $chartW }} {{ $chartH }}" class="w-full min-w-[400px]" role="img" aria-label="Line chart of registered pax over the last 6 months. {{ $points->map(fn ($p) => $p['label'].': '.$p['pax'].' pax')->implode('. ') }}">
+                        <title>Pax Trend</title>
+                        <desc>6-month line chart showing registered pax</desc>
                         @foreach ($gridLines as $g)
                             <line x1="{{ $padL }}" y1="{{ $padT + $plotH * (1 - $g) }}" x2="{{ $chartW - $padR }}" y2="{{ $padT + $plotH * (1 - $g) }}" stroke="#e8e4e2" stroke-width="1" stroke-dasharray="3 3"/>
                         @endforeach
@@ -117,25 +113,18 @@
                         @foreach ($points as $p)
                             <text x="{{ $p['x'] }}" y="{{ $chartH - 4 }}" text-anchor="middle" font-size="11" fill="#454245" font-weight="600">{{ $p['label'] }}</text>
                         @endforeach
-                        <path d="{{ $paxPath }}" fill="none" stroke="#454245" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+                        <path d="{{ $paxPath }}" fill="none" stroke="#454245" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                         @foreach ($points as $p)
-                            <circle cx="{{ $p['x'] }}" cy="{{ $p['paxY'] }}" r="4" fill="#454245" opacity="0.5">
+                            <circle cx="{{ $p['x'] }}" cy="{{ $p['paxY'] }}" r="4" fill="#454245">
                                 <title>{{ $p['label'] }}: {{ $p['pax'] }} pax</title>
                             </circle>
-                        @endforeach
-                        <path d="{{ $revPath }}" fill="none" stroke="#e4002b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        @foreach ($points as $p)
-                            <circle cx="{{ $p['x'] }}" cy="{{ $p['revY'] }}" r="4" fill="#e4002b">
-                                <title>{{ $p['label'] }}: RM {{ number_format($p['revenue'], 0) }}</title>
-                            </circle>
-                            @if ($p['revenue'] > 0)
-                                <text x="{{ $p['x'] }}" y="{{ $p['revY'] - 10 }}" text-anchor="middle" font-size="10" font-weight="700" fill="#e4002b">{{ number_format($p['revenue'] / 1000, 1) }}k</text>
+                            @if ($p['pax'] > 0)
+                                <text x="{{ $p['x'] }}" y="{{ $p['paxY'] - 10 }}" text-anchor="middle" font-size="10" font-weight="700" fill="#454245">{{ $p['pax'] }}</text>
                             @endif
                         @endforeach
                     </svg>
                 </div>
                 <div class="sm:hidden mt-3 flex items-center gap-4 text-xs font-semibold">
-                    <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-brand rounded-full inline-block"></span>Revenue</span>
                     <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-charcoal rounded-full inline-block" style="opacity:.5"></span>Pax</span>
                 </div>
             @else

@@ -77,19 +77,6 @@
                     >
                     @include('partials.field-error', ['field' => 'total_seats'])
                 </div>
-                <div>
-                    <label for="price" class="block text-sm font-semibold text-ink mb-2">Price (RM)</label>
-                    <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        value="{{ old('price') }}"
-                        min="0"
-                        step="0.01"
-                        class="w-full rounded-xl border @error('price') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
-                    >
-                    @include('partials.field-error', ['field' => 'price'])
-                </div>
             </div>
 
             <div>

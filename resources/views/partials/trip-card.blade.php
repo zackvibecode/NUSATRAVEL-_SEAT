@@ -22,8 +22,8 @@
             @include('partials.status-badge', ['status' => $status])
         </div>
 
-        <!-- Middle row: date + capacity + price (grid) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 items-center">
+        <!-- Middle row: date + capacity + action (grid) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 items-center">
             <!-- Departure date -->
             <div>
                 <p class="text-[10px] font-semibold text-charcoal uppercase tracking-wider mb-1">Departure</p>
@@ -55,13 +55,8 @@
                 </div>
             </div>
 
-            <!-- Price + action -->
+            <!-- Action -->
             <div class="flex flex-col sm:items-end gap-2">
-                @if ($departure->price)
-                    <p class="text-sm font-black text-ink">RM {{ number_format($departure->price, 0) }}<span class="text-xs font-medium text-charcoal"> /pax</span></p>
-                @else
-                    <span class="hidden sm:block">&nbsp;</span>
-                @endif
                 <a href="{{ route('departures.show', $departure) }}"
                    class="inline-flex items-center justify-center gap-1.5 bg-brand hover:bg-brand-hover text-white text-xs font-bold rounded-full px-4 py-2 transition-all duration-150 hover:scale-[1.03] shadow-sm whitespace-nowrap">
                     Manage

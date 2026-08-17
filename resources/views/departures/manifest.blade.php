@@ -56,7 +56,6 @@
                         <th class="text-left py-3 font-bold uppercase text-xs tracking-wider">Name</th>
                         <th class="text-left py-3 font-bold uppercase text-xs tracking-wider">Phone</th>
                         <th class="text-center py-3 font-bold uppercase text-xs tracking-wider">Pax</th>
-                        <th class="text-center py-3 font-bold uppercase text-xs tracking-wider">Payment</th>
                         <th class="text-left py-3 font-bold uppercase text-xs tracking-wider">Partner</th>
                         <th class="text-left py-3 font-bold uppercase text-xs tracking-wider">Notes</th>
                     </tr>
@@ -68,17 +67,12 @@
                             <td class="py-3 font-semibold">{{ $reg->name }}</td>
                             <td class="py-3 text-charcoal">{{ $reg->phone ?? '—' }}</td>
                             <td class="py-3 text-center font-bold">{{ $reg->pax }}</td>
-                            <td class="py-3 text-center">
-                                <span class="text-xs font-bold uppercase {{ $reg->payment_status === 'paid' ? 'text-positive' : ($reg->payment_status === 'deposit' ? 'text-warning' : 'text-brand') }}">
-                                    {{ $reg->payment_label }}
-                                </span>
-                            </td>
                             <td class="py-3 text-charcoal">{{ $reg->need_partner ? $reg->partner_label : '—' }}</td>
                             <td class="py-3 text-charcoal text-xs">{{ $reg->notes ?? '—' }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="py-8 text-center text-charcoal">No passengers registered.</td>
+                            <td colspan="6" class="py-8 text-center text-charcoal">No passengers registered.</td>
                         </tr>
                     @endforelse
                 </tbody>

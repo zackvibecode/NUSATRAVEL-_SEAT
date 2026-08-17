@@ -31,6 +31,7 @@
 
                 <nav class="flex-1 px-3 py-3 space-y-0.5">
                     @php
+                        $isAdmin = auth()->user()->isAdmin();
                         $navItems = [
                             [
                                 'route' => 'dashboard',
@@ -44,6 +45,7 @@
                                 'pattern' => 'hermes.chat',
                                 'label' => 'Hermes Chat',
                                 'short' => 'Hermes',
+                                'admin' => true,
                                 'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
                             ],
                             [
@@ -65,6 +67,7 @@
                                 'pattern' => 'packages.*',
                                 'label' => 'Packages',
                                 'short' => 'Pkg',
+                                'admin' => true,
                                 'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>',
                             ],
                             [
@@ -86,6 +89,7 @@
                                 'pattern' => 'reports.*',
                                 'label' => 'Reports',
                                 'short' => 'Report',
+                                'admin' => true,
                                 'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>',
                             ],
                             [
@@ -95,7 +99,17 @@
                                 'short' => 'Cal',
                                 'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
                             ],
+                            [
+                                'route' => 'users.index',
+                                'pattern' => 'users.*',
+                                'label' => 'Users',
+                                'short' => 'Users',
+                                'admin' => true,
+                                'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 008 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H2a2 2 0 010-4h.09A1.65 1.65 0 004.6 8a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V2a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H22a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
+                            ],
                         ];
+
+                        $navItems = array_filter($navItems, fn ($item) => ! ($item['admin'] ?? false) || $isAdmin);
                     @endphp
 
                     @foreach ($navItems as $item)

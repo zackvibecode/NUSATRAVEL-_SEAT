@@ -63,9 +63,7 @@ class ReportController extends Controller
 
         $query = Departure::query()
             ->with('package')
-            ->withSum('registrations as registered_pax_sum', 'pax')
-            ->withSum(['registrations as paid_pax_sum' => fn ($q) => $q->where('payment_status', 'paid')], 'pax')
-            ->withSum(['registrations as deposit_pax_sum' => fn ($q) => $q->where('payment_status', 'deposit')], 'pax');
+            ->withSum('registrations as registered_pax_sum', 'pax');
 
         $departures = $filter->applyToDepartureQuery($query)->get();
 
@@ -78,10 +76,9 @@ class ReportController extends Controller
         $csv = fopen('php://memory', 'r+');
         fputcsv($csv, ['SeatWeb Report', $periodLabel]);
         fputcsv($csv, []);
-        fputcsv($csv, ['Package', 'Departure Date', 'Total Seats', 'Registered Pax', 'Available Seats', 'Occupancy %', 'Price (RM)', 'Revenue (RM)']);
+        fputcsv($csv, ['Package', 'Departure Date', 'Total Seats', 'Registered Pax', 'Available Seats', 'Occupancy %']);
 
         foreach ($departures as $d) {
-            $revenue = $d->price ? $d->price * (($d->paid_pax_sum ?? 0) + (($d->deposit_pax_sum ?? 0) / 2)) : 0;
             fputcsv($csv, [
                 $d->package?->name ?? '—',
                 $d->departure_date->format('d M Y'),
@@ -89,8 +86,6 @@ class ReportController extends Controller
                 $d->registered_pax,
                 $d->available_seats,
                 $d->occupancy_percent,
-                $d->price ? number_format($d->price, 2) : '',
-                number_format($revenue, 2),
             ]);
         }
 
