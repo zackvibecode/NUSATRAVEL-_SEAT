@@ -37,6 +37,13 @@ class TripListFilter
 
     public string $dir;
 
+    /**
+     * When false, trips whose departure date has passed are hidden from
+     * departures/packages lists (real-time, date-only check). Report-style
+     * contexts keep history by default.
+     */
+    public bool $includePast;
+
     public function __construct(
         public string $context,
         public string $actionRoute,
@@ -48,6 +55,9 @@ class TripListFilter
         $this->packageId = isset($params['package_id']) && $params['package_id'] !== '' ? (int) $params['package_id'] : null;
         $this->status = filled($params['status'] ?? null) ? (string) $params['status'] : null;
         $this->search = filled($params['search'] ?? null) ? trim((string) $params['search']) : null;
+
+        $defaultIncludePast = in_array($context, ['reports', 'participants', 'need_partner'], true);
+        $this->includePast = ($params['past'] ?? null) === '1' || $defaultIncludePast;
 
         $defaults = self::defaultSort($context);
         $this->sort = self::allowedSort($context, $params['sort'] ?? null) ?? $defaults['sort'];
@@ -67,7 +77,7 @@ class TripListFilter
     public static function defaultSort(string $context): array
     {
         return match ($context) {
-            'departures' => ['sort' => 'departure_date', 'dir' => 'desc'],
+            'departures' => ['sort' => 'departure_date', 'dir' => 'asc'],
             'packages' => ['sort' => 'name', 'dir' => 'asc'],
             default => ['sort' => 'departure_date', 'dir' => 'asc'],
         };
@@ -107,6 +117,7 @@ class TripListFilter
             'package_id' => $this->packageId,
             'status' => $this->status,
             'search' => $this->search,
+            'past' => $this->includePast ? '1' : null,
             'sort' => $this->sort,
             'dir' => $this->dir,
         ], fn ($v) => $v !== null && $v !== '');
@@ -140,6 +151,8 @@ class TripListFilter
     {
         if ($upcomingOnly) {
             $query->upcoming();
+        } elseif ($this->context === 'departures' && ! $this->includePast) {
+            $query->notDeparted();
         }
 
         if ($this->month !== null) {
@@ -202,6 +215,14 @@ class TripListFilter
      */
     public function applyToPackageQuery(Builder $query): Builder
     {
+        if ($this->context === 'packages' && ! $this->includePast) {
+            // Keep packages with at least one not-yet-departed trip, plus
+            // brand-new packages that have no departures yet.
+            $query->where(fn (Builder $q) => $q
+                ->whereHas('departures', fn (Builder $d) => $d->notDeparted())
+                ->orDoesntHave('departures'));
+        }
+
         if ($this->destination !== null) {
             $query->where('destination', $this->destination);
         }

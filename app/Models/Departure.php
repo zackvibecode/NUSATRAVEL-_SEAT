@@ -105,4 +105,13 @@ class Departure extends Model
         return $query->notCancelled()
             ->where('departure_date', '>=', now()->toDateString());
     }
+
+    /**
+     * Date-only check: hides trips whose departure date has passed, but
+     * keeps manually cancelled trips visible (unlike scopeUpcoming).
+     */
+    public function scopeNotDeparted($query)
+    {
+        return $query->where('departure_date', '>=', now()->toDateString());
+    }
 }

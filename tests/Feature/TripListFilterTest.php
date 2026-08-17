@@ -236,6 +236,118 @@ class TripListFilterTest extends TestCase
         $this->assertSame('INDO TOUR', $results->first()->package->name);
     }
 
+    public function test_past_departures_are_hidden_by_default(): void
+    {
+        $past = $this->createDeparture('PAST TRIP', 'INDONESIA', now()->subDay()->toDateString());
+        $future = $this->createDeparture('FUTURE TRIP', 'INDONESIA', now()->addDays(10)->toDateString());
+
+        $response = $this->actingAs($this->user)->get(route('departures.index'));
+
+        $response->assertOk()
+            ->assertSee('FUTURE TRIP')
+            ->assertDontSee(route('departures.show', $past))
+            ->assertSee(route('departures.show', $future));
+
+        $this->assertDatabaseHas('departures', ['id' => $past->id]);
+    }
+
+    public function test_past_departures_visible_when_include_past_is_on(): void
+    {
+        $past = $this->createDeparture('PAST TRIP', 'INDONESIA', now()->subDay()->toDateString());
+
+        $response = $this->actingAs($this->user)
+            ->get(route('departures.index', ['past' => '1']));
+
+        $response->assertOk()
+            ->assertSee('PAST TRIP')
+            ->assertSee(route('departures.show', $past));
+    }
+
+    public function test_departures_default_sort_is_nearest_first(): void
+    {
+        $far = $this->createDeparture('FAR TRIP', 'INDONESIA', now()->addMonths(3)->toDateString());
+        $near = $this->createDeparture('NEAR TRIP', 'INDONESIA', now()->addDays(5)->toDateString());
+        $mid = $this->createDeparture('MID TRIP', 'INDONESIA', now()->addWeeks(3)->toDateString());
+
+        $this->actingAs($this->user)
+            ->get(route('departures.index'))
+            ->assertOk()
+            ->assertSeeInOrder(['NEAR TRIP', 'MID TRIP', 'FAR TRIP']);
+    }
+
+    public function test_packages_with_only_past_departures_are_hidden_by_default(): void
+    {
+        $pastOnly = Package::create(['name' => 'PAST ONLY PKG', 'destination' => 'INDONESIA', 'status' => 'active']);
+        Departure::create([
+            'package_id' => $pastOnly->id,
+            'departure_date' => now()->subWeek()->toDateString(),
+            'return_date' => now()->subDay()->toDateString(),
+            'total_seats' => 20,
+            'status' => 'open',
+        ]);
+
+        $this->actingAs($this->user)
+            ->get(route('packages.index'))
+            ->assertOk()
+            ->assertDontSee('PAST ONLY PKG');
+
+        $this->actingAs($this->user)
+            ->get(route('packages.index', ['past' => '1']))
+            ->assertOk()
+            ->assertSee('PAST ONLY PKG');
+    }
+
+    public function test_packages_with_no_departures_stay_visible(): void
+    {
+        Package::create(['name' => 'BRAND NEW PKG', 'destination' => 'China', 'status' => 'active']);
+
+        $this->actingAs($this->user)
+            ->get(route('packages.index'))
+            ->assertOk()
+            ->assertSee('BRAND NEW PKG');
+    }
+
+    public function test_package_departures_count_excludes_past_when_hidden(): void
+    {
+        $package = Package::create(['name' => 'COUNT PKG', 'destination' => 'INDONESIA', 'status' => 'active']);
+        Departure::create([
+            'package_id' => $package->id,
+            'departure_date' => now()->subWeek()->toDateString(),
+            'return_date' => now()->subDay()->toDateString(),
+            'total_seats' => 20,
+            'status' => 'open',
+        ]);
+        Departure::create([
+            'package_id' => $package->id,
+            'departure_date' => now()->addWeeks(2)->toDateString(),
+            'return_date' => now()->addWeeks(3)->toDateString(),
+            'total_seats' => 20,
+            'status' => 'open',
+        ]);
+
+        $hidden = $this->actingAs($this->user)->get(route('packages.index'));
+        $this->assertStringContainsString(
+            '<td class="px-6 py-4 text-center text-charcoal font-semibold">1</td>',
+            $hidden->getContent(),
+        );
+
+        $included = $this->actingAs($this->user)->get(route('packages.index', ['past' => '1']));
+        $this->assertStringContainsString(
+            '<td class="px-6 py-4 text-center text-charcoal font-semibold">2</td>',
+            $included->getContent(),
+        );
+    }
+
+    public function test_reports_still_show_past_departures(): void
+    {
+        $this->createDeparture('HISTORY TRIP', 'INDONESIA', now()->subMonth()->toDateString());
+
+        $response = $this->actingAs($this->user)
+            ->get(route('reports.index', ['month' => '', 'year' => '']));
+
+        $response->assertOk()->assertSee('HISTORY TRIP');
+    }
+
     private function createDeparture(string $name, string $destination, string $date): Departure
     {
         $package = Package::create([

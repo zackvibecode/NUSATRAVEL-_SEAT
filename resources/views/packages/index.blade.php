@@ -82,8 +82,16 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                                     </svg>
                                 </div>
-                                <p class="text-sm font-semibold text-ink">No packages yet</p>
-                                <p class="text-xs text-charcoal mt-1 font-medium">Create your first travel package to start managing trips.</p>
+                                <p class="text-sm font-semibold text-ink">No packages found</p>
+                                <p class="text-xs text-charcoal mt-1 font-medium">
+                                    @if ($filter->isActive())
+                                        Try clearing filters or adjusting your search.
+                                    @elseif (! $filter->includePast)
+                                        All package trips have departed. Turn on "Include past trips" above to see history.
+                                    @else
+                                        Create your first travel package to start managing trips.
+                                    @endif
+                                </p>
                                 <a href="{{ route('packages.create') }}" class="inline-flex items-center gap-2 mt-4 bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-5 py-2.5 transition-all duration-150">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>

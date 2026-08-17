@@ -14,7 +14,11 @@ class PackageController extends Controller
     {
         $filter = TripListFilter::fromRequest($request, 'packages', 'packages.index');
 
-        $query = Package::query()->withCount('departures');
+        $query = Package::query()->withCount(
+            $filter->includePast
+                ? 'departures'
+                : ['departures' => fn ($q) => $q->notDeparted()],
+        );
         $packages = $filter->applyToPackageQuery($query)->paginate(20);
 
         return view('packages.index', [

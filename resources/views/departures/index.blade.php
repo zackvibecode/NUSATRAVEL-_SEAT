@@ -37,6 +37,8 @@
                 <p class="text-xs text-charcoal mt-1 font-medium">
                     @if ($filter->isActive())
                         Try clearing filters or adjusting your search{{ $filter->search ? ' for "' . e($filter->search) . '"' : '' }}.
+                    @elseif (! $filter->includePast)
+                        No upcoming trips. Turn on "Include past trips" above to see departed history.
                     @else
                         Create your first departure to get started.
                     @endif

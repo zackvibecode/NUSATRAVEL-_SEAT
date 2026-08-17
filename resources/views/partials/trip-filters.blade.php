@@ -4,6 +4,7 @@
     $showSort = $showSort ?? true;
     $showStatus = $showStatus ?? false;
     $showSearch = $showSearch ?? ($filter->context === 'departures');
+    $showPastToggle = $showPastToggle ?? in_array($filter->context, ['departures', 'packages'], true);
     $extra = $extra ?? [];
 
     $selectClass = 'rounded-xl border border-line bg-white px-3 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all';
@@ -92,6 +93,20 @@
                 <option value="active" @selected($filter->status === 'active')>Active</option>
                 <option value="archived" @selected($filter->status === 'archived')>Archived</option>
             </select>
+        </div>
+    @endif
+
+    @if ($showPastToggle)
+        <div class="flex items-center pb-2">
+            <label for="past" class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox"
+                       name="past"
+                       id="past"
+                       value="1"
+                       @checked($filter->includePast)
+                       class="rounded border-line text-brand focus:ring-brand/20 w-4 h-4 cursor-pointer">
+                <span class="text-xs font-semibold text-charcoal">Include past trips</span>
+            </label>
         </div>
     @endif
 
@@ -194,9 +209,9 @@
             });
         }
 
-        // Auto-submit when any dropdown changes too (month/year/etc).
-        form.querySelectorAll('select').forEach(function (sel) {
-            sel.addEventListener('change', submitForm);
+        // Auto-submit when any dropdown or the past-trips toggle changes too.
+        form.querySelectorAll('select, input[type=checkbox]').forEach(function (el) {
+            el.addEventListener('change', submitForm);
         });
     })();
 </script>
