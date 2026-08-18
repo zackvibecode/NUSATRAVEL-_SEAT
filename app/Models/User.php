@@ -42,7 +42,7 @@ class User extends Authenticatable
 
     public function isSales(): bool
     {
-        return $this->role === 'sales';
+        return ! $this->isAdmin() && $this->role === 'sales';
     }
 
     /**

@@ -30,7 +30,7 @@ class GoogleAuthTest extends TestCase
         $abstractUser->shouldReceive('getEmail')->andReturn($email);
         $abstractUser->shouldReceive('getAvatar')->andReturn('https://lh3.googleusercontent.com/photo.jpg');
 
-        Socialite::shouldReceive('driver->user')->andReturn($abstractUser);
+        Socialite::shouldReceive('driver->stateless->redirectUrl->user')->andReturn($abstractUser);
     }
 
     public function test_new_google_user_is_created_as_sales(): void
@@ -84,7 +84,7 @@ class GoogleAuthTest extends TestCase
 
     public function test_callback_failure_redirects_to_login_with_error(): void
     {
-        Socialite::shouldReceive('driver->user')->andThrow(new \Exception('OAuth failed'));
+        Socialite::shouldReceive('driver->stateless->redirectUrl->user')->andThrow(new \Exception('OAuth failed'));
 
         $this->get(route('google.callback'))
             ->assertRedirect(route('login'))
@@ -105,6 +105,32 @@ class GoogleAuthTest extends TestCase
         $this->get(route('google.login'))
             ->assertRedirect()
             ->assertSee('accounts.google.com', false);
+    }
+
+    public function test_google_redirect_uri_uses_current_host_not_stale_env(): void
+    {
+        config([
+            'app.url' => 'https://nusatravel-seat.onrender.com',
+            'services.google.client_id' => 'test-id',
+            'services.google.client_secret' => 'test-secret',
+            // Stale Render env that used to poison production logins
+            'services.google.redirect' => 'http://localhost:8000/auth/google/callback',
+        ]);
+
+        $this->app['env'] = 'production';
+
+        $response = $this->get('/auth/google');
+
+        $response->assertRedirect();
+        $location = (string) $response->headers->get('Location');
+        $this->assertStringContainsString('accounts.google.com', $location);
+
+        parse_str((string) parse_url($location, PHP_URL_QUERY), $query);
+        $this->assertSame(
+            'https://nusatravel-seat.onrender.com/auth/google/callback',
+            $query['redirect_uri'] ?? null,
+        );
+        $this->assertStringNotContainsString('localhost', $query['redirect_uri'] ?? '');
     }
 
     public function test_owner_email_is_always_admin(): void
