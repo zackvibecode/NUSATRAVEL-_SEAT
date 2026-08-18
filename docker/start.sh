@@ -39,4 +39,4 @@ php artisan view:clear
 # "Server Error" on Render. php -S honours PHP_CLI_SERVER_WORKERS natively.
 export PHP_CLI_SERVER_WORKERS="${PHP_CLI_SERVER_WORKERS:-8}"
 echo "==> Starting server on port ${PORT:-10000} with ${PHP_CLI_SERVER_WORKERS} workers"
-exec php -S 0.0.0.0:"${PORT:-10000}" server.php
+exec php -S 0.0.0.0:"${PORT:-10000}" -t public server.php
