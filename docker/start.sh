@@ -21,7 +21,8 @@ if [ -n "${DB_URL:-}" ]; then
   export DB_CONNECTION="${DB_CONNECTION:-pgsql}"
   echo "==> Using Postgres (Neon/Render)"
 else
-  echo "==> Using default DB_CONNECTION=${DB_CONNECTION:-sqlite}"
+  export DB_CONNECTION="${DB_CONNECTION:-sqlite}"
+  echo "==> Using default DB_CONNECTION=${DB_CONNECTION}"
 fi
 
 echo "==> Checking assets"
@@ -34,9 +35,7 @@ php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 
-# Serve with multiple workers so parallel browser requests (HTML + CSS +
-# JS + images) are not dropped. Single-threaded serve caused intermittent
-# "Server Error" on Render. php -S honours PHP_CLI_SERVER_WORKERS natively.
-export PHP_CLI_SERVER_WORKERS="${PHP_CLI_SERVER_WORKERS:-8}"
-echo "==> Starting server on port ${PORT:-10000} with ${PHP_CLI_SERVER_WORKERS} workers"
-exec php -S 0.0.0.0:"${PORT:-10000}" -t public server.php
+# Apache (prefork + mod_php) handles parallel requests properly — the PHP
+# built-in server dropped connections under real browser concurrency.
+echo "==> Starting Apache on port ${PORT:-10000}"
+exec apachectl -D FOREGROUND
