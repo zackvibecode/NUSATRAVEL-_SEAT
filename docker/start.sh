@@ -34,5 +34,9 @@ php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 
-echo "==> Starting server on port ${PORT:-10000}"
+# Serve with multiple workers so parallel browser requests (HTML + CSS +
+# JS + images) are not dropped. Single-threaded serve caused intermittent
+# "Server Error" on Render.
+export PHP_CLI_SERVER_WORKERS="${PHP_CLI_SERVER_WORKERS:-8}"
+echo "==> Starting server on port ${PORT:-10000} with ${PHP_CLI_SERVER_WORKERS} workers"
 exec php artisan serve --host=0.0.0.0 --port="${PORT:-10000}"
