@@ -65,6 +65,22 @@
             @include('partials.field-error', ['field' => 'role'])
         </div>
 
+        <div>
+            <label for="pic_name" class="block text-sm font-semibold text-ink mb-2">PIC Name</label>
+            <input
+                type="text"
+                id="pic_name"
+                name="pic_name"
+                value="{{ old('pic_name') }}"
+                placeholder="e.g. the PIC name used in invoices"
+                class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+            >
+            <p class="text-xs text-charcoal mt-1.5 font-medium">
+                For sales users: matches Payment Alert records where this person is PIC Utama or PIC In House. Leave empty to use their full name.
+            </p>
+            @include('partials.field-error', ['field' => 'pic_name'])
+        </div>
+
         <div class="flex items-center gap-4 pt-2">
             <button type="submit"
                     class="bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">

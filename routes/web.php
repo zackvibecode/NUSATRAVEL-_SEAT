@@ -9,6 +9,7 @@ use App\Http\Controllers\NeedPartnerController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\PaymentAlertController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
@@ -47,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::get('participants', [ParticipantController::class, 'index'])->name('participants.index');
     Route::get('need-partner', [NeedPartnerController::class, 'index'])->name('need-partner.index');
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('payment-alerts', [PaymentAlertController::class, 'index'])->name('payment-alerts.index');
 
     // Admin-only area
     Route::middleware('admin')->group(function () {

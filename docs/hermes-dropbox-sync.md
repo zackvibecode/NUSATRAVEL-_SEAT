@@ -90,7 +90,23 @@ You can use **one sheet** or **three sheets** (`packages`, `departures`, `regist
 | Package / Package Name | `package_name` | yes (unless `departure_id`) |
 | Destination | `destination` | recommended |
 | Departure Date | `departure_date` | yes (unless `departure_id`) |
+| Invoice No. | `invoice_no` | no |
+| PIC Utama | `pic_utama` | no |
+| PIC In House | `pic_in_house` | no |
+| Invoice Status | `invoice_status` | no (`cancelled` marks the record Cancelled) |
+| Invoice Amount | `invoice_amount` | no |
+| Total Paid | `total_paid` | no |
+| Invoice URL | `invoice_url` | no (opens the existing invoice) |
 | Notes | `notes` | no |
+
+Payment status is **derived**, never stored as a separate status:
+
+- `Cancelled` — `invoice_status` is `cancelled`
+- `Belum Bayar` — `total_paid = 0` and balance (`invoice_amount - total_paid`) `> 0`
+- `Partial` — `total_paid > 0` and balance `> 0`
+- `Paid` — balance `<= 0`
+
+PIC filtering (Payment Alert page): sales users only see records where their PIC name matches `pic_utama` or `pic_in_house` (case-insensitive). Admin sees everything.
 
 ### Upsert keys (no duplicates on re-sync)
 

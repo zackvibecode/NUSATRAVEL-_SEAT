@@ -25,6 +25,7 @@
                         <th class="px-6 py-4 font-semibold">Name</th>
                         <th class="px-6 py-4 font-semibold">Email</th>
                         <th class="px-6 py-4 font-semibold">Role</th>
+                        <th class="px-6 py-4 font-semibold">PIC Name</th>
                         <th class="px-6 py-4 font-semibold text-right">Actions</th>
                     </tr>
                 </thead>
@@ -43,6 +44,13 @@
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-ink text-white">Admin</span>
                                 @else
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-brand-soft text-brand">Sales</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-charcoal font-medium">
+                                @if ($user->isAdmin())
+                                    <span class="text-charcoal/60">—</span>
+                                @else
+                                    {{ $user->pic_name ?: $user->name }}
                                 @endif
                             </td>
                             <td class="px-6 py-4">
@@ -68,7 +76,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-charcoal font-medium">
+                            <td colspan="5" class="px-6 py-12 text-center text-charcoal font-medium">
                                 No users yet.
                             </td>
                         </tr>

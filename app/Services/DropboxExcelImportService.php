@@ -499,6 +499,17 @@ class DropboxExcelImportService
             'need_partner' => $needPartner,
             'partner_gender' => $partnerGender,
             'notes' => $row['notes'] ?? null,
+            'invoice_no' => $this->nullIfBlank($row, 'invoice_no'),
+            'pic_utama' => $this->nullIfBlank($row, 'pic_utama'),
+            'pic_in_house' => $this->nullIfBlank($row, 'pic_in_house'),
+            'invoice_status' => $this->nullIfBlank($row, 'invoice_status'),
+            'invoice_amount' => isset($row['invoice_amount']) && $row['invoice_amount'] !== '' && is_numeric($row['invoice_amount'])
+                ? (float) $row['invoice_amount']
+                : ($existing?->invoice_amount ?? null),
+            'total_paid' => isset($row['total_paid']) && $row['total_paid'] !== '' && is_numeric($row['total_paid'])
+                ? (float) $row['total_paid']
+                : ($existing?->total_paid ?? null),
+            'invoice_url' => $this->nullIfBlank($row, 'invoice_url'),
         ];
 
         if ($existing) {
@@ -1009,6 +1020,17 @@ class DropboxExcelImportService
         }
 
         return preg_replace('/\D+/', '', $phone) ?? '';
+    }
+
+    /**
+     * Blank-ish strings ('', '  ', 'null', '-') become real nulls so the
+     * derived payment logic never treats placeholder text as data.
+     */
+    private function nullIfBlank(array $row, string $key): ?string
+    {
+        $value = trim((string) ($row[$key] ?? ''));
+
+        return $value === '' || strtolower($value) === 'null' ? null : $value;
     }
 
     private function toBool(mixed $value): bool

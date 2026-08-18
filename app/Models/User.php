@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['name', 'email', 'password', 'role', 'pic_name'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -25,6 +25,20 @@ class User extends Authenticatable
     public function isSales(): bool
     {
         return $this->role === 'sales';
+    }
+
+    /**
+     * PIC identity used for filtering payment records. Admins get null
+     * (no filter — they see every PIC). Sales users fall back to their
+     * display name when no explicit PIC name is configured.
+     */
+    public function picFilterName(): ?string
+    {
+        if ($this->isAdmin()) {
+            return null;
+        }
+
+        return filled($this->pic_name) ? trim((string) $this->pic_name) : trim((string) $this->name);
     }
 
     /**

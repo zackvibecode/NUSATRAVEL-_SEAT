@@ -30,6 +30,13 @@
       "package_name": "TRANSJAVA",
       "destination": "INDONESIA",
       "departure_date": "2026-09-15",
+      "invoice_no": "INV-2026-0001",
+      "pic_utama": "Zack",
+      "pic_in_house": "Aina",
+      "invoice_status": "active",
+      "invoice_amount": 5198,
+      "total_paid": 0,
+      "invoice_url": "https://invoice.example.com/INV-2026-0001",
       "notes": "Family"
     },
     {
@@ -40,7 +47,14 @@
       "partner_gender": "female",
       "package_name": "TRANSJAVA",
       "destination": "INDONESIA",
-      "departure_date": "2026-09-15"
+      "departure_date": "2026-09-15",
+      "invoice_no": "INV-2026-0002",
+      "pic_utama": "Zack",
+      "pic_in_house": "Farah",
+      "invoice_status": "active",
+      "invoice_amount": 2599,
+      "total_paid": 1000,
+      "invoice_url": "https://invoice.example.com/INV-2026-0002"
     }
   ]
 }

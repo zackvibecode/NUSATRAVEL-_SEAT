@@ -30,6 +30,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
             'role' => ['required', 'in:admin,sales'],
+            'pic_name' => ['nullable', 'string', 'max:255'],
         ]);
 
         User::create($data);

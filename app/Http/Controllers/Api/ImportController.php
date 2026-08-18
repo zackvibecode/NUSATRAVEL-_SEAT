@@ -43,6 +43,14 @@ class ImportController extends Controller
             'registrations.*.destination' => ['nullable', 'string', 'max:255'],
             'registrations.*.departure_date' => ['nullable', 'date'],
             'registrations.*.departure_id' => ['nullable', 'integer'],
+            // Invoice / payment / PIC fields (synced from source API)
+            'registrations.*.invoice_no' => ['nullable', 'string', 'max:255'],
+            'registrations.*.pic_utama' => ['nullable', 'string', 'max:255'],
+            'registrations.*.pic_in_house' => ['nullable', 'string', 'max:255'],
+            'registrations.*.invoice_status' => ['nullable', 'string', 'max:255'],
+            'registrations.*.invoice_amount' => ['nullable', 'numeric', 'min:0'],
+            'registrations.*.total_paid' => ['nullable', 'numeric', 'min:0'],
+            'registrations.*.invoice_url' => ['nullable', 'string', 'max:500'],
         ]);
 
         if (

@@ -32,6 +32,11 @@
                 <nav class="flex-1 px-3 py-3 space-y-0.5">
                     @php
                         $isAdmin = auth()->user()->isAdmin();
+                        // Badge counts Belum Bayar + Partial only (active payment follow-ups)
+                        $paymentAlertCount = \App\Models\Registration::query()
+                            ->forPic(auth()->user()->picFilterName())
+                            ->requiresPaymentFollowUp()
+                            ->count();
                         $navItems = [
                             [
                                 'route' => 'dashboard',
@@ -85,6 +90,14 @@
                                 'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
                             ],
                             [
+                                'route' => 'payment-alerts.index',
+                                'pattern' => 'payment-alerts.*',
+                                'label' => 'Payment Alert',
+                                'short' => 'Pay',
+                                'badge' => $paymentAlertCount,
+                                'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
+                            ],
+                            [
                                 'route' => 'reports.index',
                                 'pattern' => 'reports.*',
                                 'label' => 'Reports',
@@ -119,7 +132,12 @@
                         <a href="{{ route($item['route']) }}" title="{{ $item['label'] }}"
                            class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors {{ $isActive ? 'bg-fog text-ink font-semibold' : 'text-charcoal hover:bg-fog hover:text-ink' }}">
                             <span class="{{ $isActive ? 'text-ink' : 'text-charcoal' }} flex-shrink-0">{!! $item['icon'] !!}</span>
-                            <span class="sidebar-label whitespace-nowrap">{{ $item['label'] }}</span>
+                            <span class="sidebar-label whitespace-nowrap flex-1">{{ $item['label'] }}</span>
+                            @if (($item['badge'] ?? 0) > 0)
+                                <span class="sidebar-badge inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-brand text-white text-[10px] font-black flex-shrink-0">
+                                    {{ $item['badge'] > 99 ? '99+' : $item['badge'] }}
+                                </span>
+                            @endif
                         </a>
                     @endforeach
                 </nav>
@@ -173,7 +191,14 @@
                     @endphp
                     <a href="{{ route($item['route']) }}"
                        class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-[10px] font-semibold transition-colors {{ $isActive ? 'text-brand' : 'text-charcoal' }}">
-                        <span class="{{ $isActive ? 'text-brand' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
+                        <span class="relative {{ $isActive ? 'text-brand' : 'text-charcoal' }}">
+                            {!! $item['icon'] !!}
+                            @if (($item['badge'] ?? 0) > 0)
+                                <span class="absolute -top-1.5 -right-2 inline-flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-brand text-white text-[9px] font-black">
+                                    {{ $item['badge'] > 99 ? '99+' : $item['badge'] }}
+                                </span>
+                            @endif
+                        </span>
                         <span>{{ $item['short'] ?? $item['label'] }}</span>
                     </a>
                 @endforeach
@@ -206,7 +231,12 @@
                             <a href="{{ route($item['route']) }}"
                                class="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-colors {{ $isActive ? 'bg-brand text-white' : 'bg-fog text-ink hover:bg-brand-soft hover:text-brand' }}">
                                 <span class="{{ $isActive ? 'text-white' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
-                                <span>{{ $item['label'] }}</span>
+                                <span class="flex-1">{{ $item['label'] }}</span>
+                                @if (($item['badge'] ?? 0) > 0)
+                                    <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full {{ $isActive ? 'bg-white text-brand' : 'bg-brand text-white' }} text-[10px] font-black flex-shrink-0">
+                                        {{ $item['badge'] > 99 ? '99+' : $item['badge'] }}
+                                    </span>
+                                @endif
                             </a>
                         @endforeach
                         <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('mobile-logout-form').submit();"
