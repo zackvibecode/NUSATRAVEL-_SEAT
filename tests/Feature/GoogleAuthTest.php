@@ -106,4 +106,24 @@ class GoogleAuthTest extends TestCase
             ->assertRedirect()
             ->assertSee('accounts.google.com', false);
     }
+
+    public function test_owner_email_is_always_admin(): void
+    {
+        // Owner email must be admin even if the stored role says sales
+        $owner = User::factory()->create([
+            'email' => 'zarulzaqwan5678@gmail.com',
+            'role' => 'sales',
+        ]);
+
+        $this->assertTrue($owner->isAdmin());
+
+        // New Google sign-in with the owner email creates an admin account
+        $this->mockGoogleUser('zarulzaqwan5678@gmail.com', 'owner-1');
+
+        $this->get(route('google.callback'))->assertRedirect(route('dashboard'));
+
+        $owner->refresh();
+        $this->assertSame('admin', $owner->role);
+        $this->assertTrue($owner->isAdmin());
+    }
 }

@@ -27,7 +27,9 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        // Always remember the user so they stay logged in until they
+        // explicitly log out (persistent session requirement).
+        if (Auth::attempt($credentials, true)) {
             $request->session()->regenerate();
 
             return redirect()->intended(route('dashboard'));

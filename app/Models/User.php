@@ -19,7 +19,25 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return in_array(strtolower((string) $this->email), self::ADMIN_EMAILS, true) || $this->role === 'admin';
+    }
+
+    /**
+     * Email addresses that are always treated as admin regardless of the
+     * stored role value (owner accounts).
+     */
+    private const ADMIN_EMAILS = [
+        'zarulzaqwan5678@gmail.com',
+    ];
+
+    /**
+     * Public accessor for the always-admin email list (used by Google login).
+     *
+     * @return list<string>
+     */
+    public static function adminEmails(): array
+    {
+        return self::ADMIN_EMAILS;
     }
 
     public function isSales(): bool

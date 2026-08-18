@@ -10,14 +10,14 @@
     </head>
     <body class="bg-white text-ink antialiased min-h-screen">
         <div class="min-h-screen flex flex-col lg:flex-row">
-            <!-- Left panel — brand showcase with travel destination image -->
+            <!-- Left panel — brand showcase with airplane window view -->
             <div class="lg:w-1/2 relative overflow-hidden flex flex-col justify-between p-8 lg:p-12 text-white">
-                <!-- Background image with brand overlay -->
+                <!-- Background: airplane wing above clouds -->
                 <div class="absolute inset-0">
-                    <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1600&auto=format&fit=crop"
+                    <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1920&auto=format&fit=crop"
                          alt="" aria-hidden="true"
                          class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-brand/80"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-brand/75 via-brand/60 to-brand-ink/90"></div>
                 </div>
 
                 <div class="relative z-10">
@@ -31,45 +31,39 @@
                 </div>
 
                 <div class="relative z-10 max-w-md">
-                    <h1 class="text-5xl lg:text-6xl font-black tracking-tight leading-[0.95]">
-                        Trip Seat<br>Availability
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[0.95]">
+                        Fly Full.<br>Never Overbook.
                     </h1>
-                    <p class="text-white/85 text-lg mt-6 font-medium leading-relaxed">
-                        SeatWeb helps your travel agency track how many pax are registered and how many seats remain — manage tour capacity with clarity.
+                    <p class="text-white/85 text-base sm:text-lg mt-5 font-medium leading-relaxed">
+                        Track seats, pax, and payments for every departure — in one clean dashboard.
                     </p>
 
-                    <div class="mt-10 space-y-4">
-                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl p-4">
-                            <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
+                    <div class="mt-8 space-y-3">
+                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3">
+                            <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
                             <div>
                                 <p class="font-bold text-sm">Real-time seat tracking</p>
-                                <p class="text-white/75 text-xs mt-0.5">See capacity and occupancy instantly</p>
+                                <p class="text-white/75 text-xs mt-0.5">Capacity & occupancy at a glance</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl p-4">
-                            <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                </svg>
-                            </div>
+                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3">
+                            <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
                             <div>
-                                <p class="font-bold text-sm">Partner matching</p>
-                                <p class="text-white/75 text-xs mt-0.5">Find room-sharing partners easily</p>
+                                <p class="font-bold text-sm">Payment alerts</p>
+                                <p class="text-white/75 text-xs mt-0.5">Chase unpaid & partial invoices</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl p-4">
-                            <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                                </svg>
-                            </div>
+                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3">
+                            <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
                             <div>
                                 <p class="font-bold text-sm">Monthly reports</p>
-                                <p class="text-white/75 text-xs mt-0.5">Generate insights in one click</p>
+                                <p class="text-white/75 text-xs mt-0.5">One-click insights</p>
                             </div>
                         </div>
                     </div>
@@ -148,10 +142,12 @@
                             </div>
 
                             <div class="flex items-center justify-between">
-                                <label class="flex items-center gap-2 text-sm text-charcoal font-medium cursor-pointer">
-                                    <input type="checkbox" name="remember" class="rounded border-line text-brand focus:ring-brand/30">
-                                    Remember me
-                                </label>
+                                <span class="flex items-center gap-2 text-sm text-charcoal font-medium">
+                                    <svg class="w-4 h-4 text-positive" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Stay signed in
+                                </span>
                                 <a href="{{ route('password.request') }}" class="text-sm font-bold text-brand hover:text-brand-hover">
                                     Forgot password?
                                 </a>

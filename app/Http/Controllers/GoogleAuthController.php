@@ -44,13 +44,15 @@ class GoogleAuthController extends Controller
             ->orWhere('email', $email)
             ->first();
 
+        $shouldBeAdmin = in_array($email, User::adminEmails(), true);
+
         if (! $user) {
             // Any Gmail can sign in — but new accounts are always sales,
             // never admin. Admins promote trusted accounts manually.
             $user = User::create([
                 'name' => $googleUser->getName() ?: $email,
                 'email' => $email,
-                'role' => 'sales',
+                'role' => $shouldBeAdmin ? 'admin' : 'sales',
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar(),
                 'email_verified_at' => now(),
@@ -61,6 +63,8 @@ class GoogleAuthController extends Controller
                 'google_id' => $user->google_id ?: $googleUser->getId(),
                 'avatar' => $user->avatar ?: $googleUser->getAvatar(),
                 'email_verified_at' => $user->email_verified_at ?: now(),
+                // Owner account is forced back to admin if it was ever downgraded
+                'role' => $shouldBeAdmin && $user->role !== 'admin' ? 'admin' : $user->role,
             ]);
         }
 
