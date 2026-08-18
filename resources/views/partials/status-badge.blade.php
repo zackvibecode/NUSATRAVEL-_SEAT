@@ -4,7 +4,7 @@
         'almost_full' => 'bg-warning-soft text-warning',
         'full' => 'bg-brand text-white',
         'departed' => 'bg-gray-200 text-gray-700',
-        'cancelled' => 'bg-gray-100 text-gray-500 line-through',
+        'cancelled' => 'bg-brand text-white line-through',
         'active' => 'bg-positive-soft text-positive',
         'archived' => 'bg-gray-100 text-gray-500',
     ];

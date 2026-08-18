@@ -46,10 +46,10 @@ Route::middleware('auth')->group(function () {
     Route::get('need-partner', [NeedPartnerController::class, 'index'])->name('need-partner.index');
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('payment-alerts', [PaymentAlertController::class, 'index'])->name('payment-alerts.index');
+    Route::get('attention-trips', [DashboardController::class, 'attentionTrips'])->name('attention-trips.index');
 
     // Admin-only area
     Route::middleware('admin')->group(function () {
-        Route::get('dashboard/attention-trips', [DashboardController::class, 'attentionTrips'])->name('dashboard.attention-trips');
         Route::get('hermes', [HermesGuideController::class, 'index'])->name('hermes.guide');
         Route::get('hermes/chat', [HermesGuideController::class, 'chat'])->name('hermes.chat');
         Route::post('hermes/chat', [HermesGuideController::class, 'chatMessage'])->middleware('throttle:30,1')->name('hermes.chat.message');

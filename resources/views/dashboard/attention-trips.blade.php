@@ -8,7 +8,7 @@
             <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">Attention Trips</h2>
             <p class="text-sm text-charcoal mt-2">Open trips that still need more registrations, sorted by earliest month first.</p>
         </div>
-        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">
+        <a href="{{ route('attention-trips.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
             </svg>

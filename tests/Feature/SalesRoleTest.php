@@ -79,6 +79,48 @@ class SalesRoleTest extends TestCase
         $this->actingAs($this->sales)->get(route('calendar.index'))->assertOk();
     }
 
+    public function test_sales_can_view_attention_trips(): void
+    {
+        $package = Package::create(['name' => 'P', 'destination' => 'D', 'status' => 'active']);
+        $package->departures()->create([
+            'departure_date' => now()->addMonth(),
+            'return_date' => now()->addMonth()->addDays(4),
+            'total_seats' => 20,
+            'status' => 'open',
+        ]);
+
+        $response = $this->actingAs($this->sales)->get(route('attention-trips.index'));
+
+        $response->assertOk()
+            ->assertSee('Attention Trips')
+            ->assertSee('P');
+
+        // The sidebar shows the entry point for sales users too
+        $this->actingAs($this->sales)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('href="'.route('attention-trips.index').'"', false);
+    }
+
+    public function test_cancelled_trips_render_red_highlight(): void
+    {
+        $package = Package::create(['name' => 'Cancelled Trip PKG', 'destination' => 'D', 'status' => 'active']);
+        $package->departures()->create([
+            'departure_date' => now()->addMonth(),
+            'return_date' => now()->addMonth()->addDays(4),
+            'total_seats' => 20,
+            'status' => 'cancelled',
+        ]);
+
+        // Trip cards show the red cancelled treatment
+        $this->actingAs($this->sales)
+            ->get(route('departures.index', ['include_past' => 1]))
+            ->assertOk()
+            ->assertSee('Cancelled Trip PKG')
+            ->assertSee('border-brand') // red border on the card
+            ->assertSee('line-through'); // strikethrough badge/title
+    }
+
     public function test_sales_cannot_add_edit_or_delete_registrations(): void
     {
         $package = Package::create(['name' => 'P', 'destination' => 'D', 'status' => 'active']);

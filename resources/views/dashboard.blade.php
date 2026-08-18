@@ -180,7 +180,7 @@
         </div>
 
         <!-- Attention trips -->
-        <a href="{{ route('dashboard.attention-trips') }}"
+        <a href="{{ route('attention-trips.index') }}"
            class="block bg-white rounded-lg border border-line hover:shadow-md hover:border-brand/30 transition-all duration-150 group">
             <div class="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between h-full">
                 <div class="flex items-center gap-3 sm:gap-4 min-w-0">
