@@ -17,7 +17,8 @@
                     <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1920&auto=format&fit=crop"
                          alt="" aria-hidden="true"
                          class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-b from-brand/75 via-brand/60 to-brand-ink/90"></div>
+                    <!-- Strong dark overlay so white text always reads clearly -->
+                    <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(196,0,39,0.88) 0%, rgba(120,0,24,0.82) 50%, rgba(30,0,7,0.94) 100%);"></div>
                 </div>
 
                 <div class="relative z-10">
@@ -34,36 +35,36 @@
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[0.95]">
                         Fly Full.<br>Never Overbook.
                     </h1>
-                    <p class="text-white/85 text-base sm:text-lg mt-5 font-medium leading-relaxed">
+                    <p class="text-white/90 text-base sm:text-lg mt-5 font-medium leading-relaxed">
                         Track seats, pax, and payments for every departure — in one clean dashboard.
                     </p>
 
                     <div class="mt-8 space-y-3">
-                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3">
+                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20">
                             <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
                             <div>
                                 <p class="font-bold text-sm">Real-time seat tracking</p>
-                                <p class="text-white/75 text-xs mt-0.5">Capacity & occupancy at a glance</p>
+                                <p class="text-white/80 text-xs mt-0.5">Capacity & occupancy at a glance</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3">
+                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20">
                             <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
                             <div>
                                 <p class="font-bold text-sm">Payment alerts</p>
-                                <p class="text-white/75 text-xs mt-0.5">Chase unpaid & partial invoices</p>
+                                <p class="text-white/80 text-xs mt-0.5">Chase unpaid & partial invoices</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3">
+                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20">
                             <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                             </svg>
                             <div>
                                 <p class="font-bold text-sm">Monthly reports</p>
-                                <p class="text-white/75 text-xs mt-0.5">One-click insights</p>
+                                <p class="text-white/80 text-xs mt-0.5">One-click insights</p>
                             </div>
                         </div>
                     </div>
@@ -164,13 +165,10 @@
                             </button>
                         </form>
 
-                        <div class="relative my-6">
-                            <div class="absolute inset-0 flex items-center">
-                                <div class="w-full border-t border-line"></div>
-                            </div>
-                            <div class="relative flex justify-center text-xs">
-                                <span class="bg-white px-4 text-charcoal font-semibold uppercase tracking-wider">or</span>
-                            </div>
+                        <div class="flex items-center gap-4 my-6" role="separator" aria-label="or">
+                            <span class="h-px flex-1 bg-line"></span>
+                            <span class="text-xs font-semibold uppercase tracking-widest text-charcoal">or</span>
+                            <span class="h-px flex-1 bg-line"></span>
                         </div>
 
                         <a href="{{ route('google.login') }}"
