@@ -38,8 +38,14 @@ class DatabaseSeeder extends Seeder
 
         foreach (
             [
+                // 2026 trips
                 [now()->addDays(21), now()->addDays(25), 25, 3299, 'AirAsia'],
                 [now()->addDays(60), now()->addDays(64), 25, 3499, 'Garuda Indonesia'],
+                // 2027 trips — give the sales team next-year dates to sell early
+                ['2027-01-18', '2027-01-22', 25, 3499, 'AirAsia'],
+                ['2027-03-15', '2027-03-19', 25, 3599, 'Batik Air'],
+                ['2027-06-14', '2027-06-18', 25, 3799, 'Garuda Indonesia'],
+                ['2027-09-13', '2027-09-17', 25, 3599, 'AirAsia'],
             ] as [$departureDate, $returnDate, $seats, $price, $airline]
         ) {
             $departureIds[] = Departure::create([
