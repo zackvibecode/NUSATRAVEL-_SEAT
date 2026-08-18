@@ -105,6 +105,78 @@ class PaymentAlertTest extends TestCase
         $this->assertFalse($reg->requires_follow_up);
     }
 
+    public function test_manual_pending_registration_is_belum_bayar(): void
+    {
+        // No invoice data — created manually via the admin form
+        $reg = $this->registration([
+            'payment_status' => 'pending',
+        ]);
+
+        $this->assertSame('belum_bayar', $reg->derived_payment_status);
+        $this->assertTrue($reg->requires_follow_up);
+    }
+
+    public function test_manual_deposit_registration_is_partial(): void
+    {
+        $reg = $this->registration([
+            'payment_status' => 'deposit',
+        ]);
+
+        $this->assertSame('partial', $reg->derived_payment_status);
+        $this->assertTrue($reg->requires_follow_up);
+    }
+
+    public function test_manual_paid_registration_is_paid(): void
+    {
+        $reg = $this->registration([
+            'payment_status' => 'paid',
+        ]);
+
+        $this->assertSame('paid', $reg->derived_payment_status);
+        $this->assertFalse($reg->requires_follow_up);
+    }
+
+    public function test_status_filter_paid_excludes_manual_pending(): void
+    {
+        $this->registration(['name' => 'Manual Pending', 'payment_status' => 'pending']);
+        $this->registration(['name' => 'Invoice Paid', 'invoice_amount' => 500, 'total_paid' => 500]);
+
+        $response = $this->actingAs($this->admin)
+            ->get(route('payment-alerts.index', ['status' => 'paid']));
+
+        $response->assertOk()
+            ->assertSee('Invoice Paid')
+            ->assertDontSee('Manual Pending');
+    }
+
+    public function test_search_works_without_crashing(): void
+    {
+        $this->registration([
+            'name' => 'Zack Customer',
+            'pic_utama' => 'Zack',
+            'invoice_no' => 'INV-SEARCH-1',
+            'invoice_amount' => 500,
+            'total_paid' => 0,
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->get(route('payment-alerts.index', ['search' => 'zack']));
+
+        $response->assertOk()->assertSee('Zack Customer');
+    }
+
+    public function test_kpi_counts_manual_and_synced_records(): void
+    {
+        $this->registration(['name' => 'Manual Pending', 'payment_status' => 'pending']);
+        $this->registration(['name' => 'Synced Unpaid', 'invoice_amount' => 500, 'total_paid' => 0]);
+
+        $response = $this->actingAs($this->admin)->get(route('payment-alerts.index'));
+
+        $response->assertOk()
+            ->assertSee('Manual Pending')
+            ->assertSee('Synced Unpaid');
+    }
+
     public function test_admin_sees_all_pics_payment_records(): void
     {
         $this->registration([

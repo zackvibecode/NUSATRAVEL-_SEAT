@@ -10,7 +10,7 @@ class SeatMetricsService
     /**
      * Calculate metrics for a collection of departures.
      *
-     * @param Collection<int, Departure> $departures
+     * @param  Collection<int, Departure>  $departures
      * @return array{totalCapacity: int, registeredPax: int, availableSeats: int, overallOccupancy: float}
      */
     public function calculate(Collection $departures): array

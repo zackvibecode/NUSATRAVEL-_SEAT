@@ -22,16 +22,47 @@ class PaymentAlertController extends Controller
 
         if ($request->filled('status')) {
             match ($request->string('status')->toString()) {
-                'belum_bayar' => $query->whereRaw('COALESCE(total_paid, 0) = 0')
-                    ->whereRaw('COALESCE(invoice_amount, 0) - COALESCE(total_paid, 0) > 0')
-                    ->where(fn ($q) => $q->whereNull('invoice_status')
-                        ->orWhereRaw("LOWER(TRIM(invoice_status)) != 'cancelled'")),
-                'partial' => $query->whereRaw('COALESCE(total_paid, 0) > 0')
-                    ->whereRaw('COALESCE(invoice_amount, 0) - COALESCE(total_paid, 0) > 0')
-                    ->where(fn ($q) => $q->whereNull('invoice_status')
-                        ->orWhereRaw("LOWER(TRIM(invoice_status)) != 'cancelled'")),
-                'paid' => $query->whereRaw('COALESCE(invoice_amount, 0) - COALESCE(total_paid, 0) <= 0'),
-                'cancelled' => $query->whereRaw("LOWER(TRIM(invoice_status)) = 'cancelled'"),
+                'belum_bayar' => $query->where(function ($q) {
+                    // Invoice-synced: nothing paid, balance outstanding
+                    $q->where(function ($iq) {
+                        $iq->whereRaw(Registration::SQL_HAS_INVOICE)
+                            ->whereRaw(Registration::SQL_NOT_CANCELLED)
+                            ->whereRaw('COALESCE(total_paid, 0) = 0')
+                            ->whereRaw(Registration::SQL_BALANCE.' > 0');
+                    })
+                        // Manual: legacy status pending
+                        ->orWhere(function ($mq) {
+                            $mq->whereRaw(Registration::SQL_NO_INVOICE)
+                                ->where('payment_status', 'pending');
+                        });
+                }),
+                'partial' => $query->where(function ($q) {
+                    // Invoice-synced: something paid, balance outstanding
+                    $q->where(function ($iq) {
+                        $iq->whereRaw(Registration::SQL_HAS_INVOICE)
+                            ->whereRaw(Registration::SQL_NOT_CANCELLED)
+                            ->whereRaw('COALESCE(total_paid, 0) > 0')
+                            ->whereRaw(Registration::SQL_BALANCE.' > 0');
+                    })
+                        // Manual: legacy status deposit
+                        ->orWhere(function ($mq) {
+                            $mq->whereRaw(Registration::SQL_NO_INVOICE)
+                                ->where('payment_status', 'deposit');
+                        });
+                }),
+                'paid' => $query->where(function ($q) {
+                    // Invoice-synced: fully settled (or overpaid)
+                    $q->where(function ($iq) {
+                        $iq->whereRaw(Registration::SQL_HAS_INVOICE)
+                            ->whereRaw(Registration::SQL_BALANCE.' <= 0');
+                    })
+                        // Manual: legacy status paid
+                        ->orWhere(function ($mq) {
+                            $mq->whereRaw(Registration::SQL_NO_INVOICE)
+                                ->where('payment_status', 'paid');
+                        });
+                }),
+                'cancelled' => $query->whereRaw("LOWER(TRIM(COALESCE(invoice_status, ''))) = 'cancelled'"),
                 default => null,
             };
         }
@@ -41,36 +72,27 @@ class PaymentAlertController extends Controller
 
             $query->where(function ($q) use ($term) {
                 $q->whereRaw('LOWER(name) LIKE ?', [$term])
-                    ->orWhereRaw('LOWER(COALESCE(invoice_no, "")) LIKE ?', [$term])
-                    ->orWhereRaw('LOWER(COALESCE(pic_utama, "")) LIKE ?', [$term])
-                    ->orWhereRaw('LOWER(COALESCE(pic_in_house, "")) LIKE ?', [$term])
+                    ->orWhereRaw("LOWER(COALESCE(invoice_no, '')) LIKE ?", [$term])
+                    ->orWhereRaw("LOWER(COALESCE(pic_utama, '')) LIKE ?", [$term])
+                    ->orWhereRaw("LOWER(COALESCE(pic_in_house, '')) LIKE ?", [$term])
                     ->orWhereHas('departure.package', function ($p) use ($term) {
                         $p->whereRaw('LOWER(name) LIKE ?', [$term]);
                     });
             });
         }
 
-        // Status filter changes the population, so totals must be computed
-        // over the unfiltered PIC-scoped set for consistent KPI cards.
+        // KPI totals over the PIC-scoped set (not status/search filtered)
+        // so the cards stay consistent while filtering the table.
         $baseQuery = Registration::query()->forPic($picFilter);
 
-        $stats = (clone $baseQuery)->selectRaw("
+        $stats = (clone $baseQuery)->selectRaw('
                 COUNT(*) AS total,
-                SUM(CASE WHEN LOWER(TRIM(COALESCE(invoice_status, ''))) = 'cancelled' THEN 1 ELSE 0 END) AS cancelled,
-                SUM(CASE WHEN (invoice_no IS NOT NULL OR invoice_amount IS NOT NULL OR total_paid IS NOT NULL OR invoice_status IS NOT NULL)
-                          AND (invoice_status IS NULL OR LOWER(TRIM(invoice_status)) != 'cancelled')
-                          AND COALESCE(total_paid, 0) = 0
-                          AND COALESCE(invoice_amount, 0) - COALESCE(total_paid, 0) > 0 THEN 1 ELSE 0 END) AS belum_bayar,
-                SUM(CASE WHEN (invoice_no IS NOT NULL OR invoice_amount IS NOT NULL OR total_paid IS NOT NULL OR invoice_status IS NOT NULL)
-                          AND (invoice_status IS NULL OR LOWER(TRIM(invoice_status)) != 'cancelled')
-                          AND COALESCE(total_paid, 0) > 0
-                          AND COALESCE(invoice_amount, 0) - COALESCE(total_paid, 0) > 0 THEN 1 ELSE 0 END) AS partial,
-                SUM(CASE WHEN (invoice_no IS NOT NULL OR invoice_amount IS NOT NULL OR total_paid IS NOT NULL OR invoice_status IS NOT NULL)
-                          AND (invoice_status IS NULL OR LOWER(TRIM(invoice_status)) != 'cancelled')
-                          AND COALESCE(invoice_amount, 0) - COALESCE(total_paid, 0) <= 0 THEN 1 ELSE 0 END) AS paid,
-                SUM(CASE WHEN (invoice_status IS NULL OR LOWER(TRIM(invoice_status)) != 'cancelled')
-                          THEN COALESCE(invoice_amount, 0) - COALESCE(total_paid, 0) ELSE 0 END) AS outstanding
-            ")
+                '.$this->sumCase('cancelled').',
+                '.$this->sumCase('belum_bayar').',
+                '.$this->sumCase('partial').',
+                '.$this->sumCase('paid').',
+                '.$this->sumCase('outstanding').'
+            ')
             ->first();
 
         $payments = $query->orderByDesc('created_at')->paginate(20)->withQueryString();
@@ -90,5 +112,32 @@ class PaymentAlertController extends Controller
             'picScope' => $picFilter,
             'activeAlerts' => (clone $baseQuery)->requiresPaymentFollowUp()->count(),
         ]);
+    }
+
+    /**
+     * Build a SUM(CASE...) expression per status. Mirrors the model's
+     * derived_payment_status logic exactly, including the manual-record
+     * fallback to the legacy payment_status field.
+     */
+    private function sumCase(string $status): string
+    {
+        $hasInvoice = Registration::SQL_HAS_INVOICE;
+        $noInvoice = Registration::SQL_NO_INVOICE;
+        $notCancelled = Registration::SQL_NOT_CANCELLED;
+        $balance = Registration::SQL_BALANCE;
+
+        return match ($status) {
+            'cancelled' => "SUM(CASE WHEN LOWER(TRIM(COALESCE(invoice_status, ''))) = 'cancelled' THEN 1 ELSE 0 END) AS cancelled",
+            'belum_bayar' => "SUM(CASE WHEN ($hasInvoice AND $notCancelled AND COALESCE(total_paid, 0) = 0 AND $balance > 0)
+                    OR ($noInvoice AND payment_status = 'pending')
+                    THEN 1 ELSE 0 END) AS belum_bayar",
+            'partial' => "SUM(CASE WHEN ($hasInvoice AND $notCancelled AND COALESCE(total_paid, 0) > 0 AND $balance > 0)
+                    OR ($noInvoice AND payment_status = 'deposit')
+                    THEN 1 ELSE 0 END) AS partial",
+            'paid' => "SUM(CASE WHEN ($hasInvoice AND $balance <= 0)
+                    OR ($noInvoice AND payment_status = 'paid')
+                    THEN 1 ELSE 0 END) AS paid",
+            'outstanding' => "SUM(CASE WHEN $notCancelled THEN $balance ELSE 0 END) AS outstanding",
+        };
     }
 }

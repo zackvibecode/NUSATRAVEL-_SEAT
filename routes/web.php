@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
@@ -7,8 +8,8 @@ use App\Http\Controllers\DepartureController;
 use App\Http\Controllers\HermesGuideController;
 use App\Http\Controllers\NeedPartnerController;
 use App\Http\Controllers\PackageController;
-use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PaymentAlertController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ReportController;
@@ -34,16 +35,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('hermes/updates', [HermesGuideController::class, 'updates'])->name('hermes.updates');
 
-    // Sales can view trips and register customers
+    // Sales can view trips (read-only)
     Route::get('departures', [DepartureController::class, 'index'])->name('departures.index');
     Route::get('departures/{departure}', [DepartureController::class, 'show'])
         ->whereNumber('departure')->name('departures.show');
     Route::get('departures/{departure}/manifest', [DepartureController::class, 'manifest'])
         ->whereNumber('departure')->name('departures.manifest');
-
-    Route::post('registrations', [RegistrationController::class, 'store'])->name('registrations.store');
-    Route::put('registrations/{registration}', [RegistrationController::class, 'update'])->name('registrations.update');
-    Route::delete('registrations/{registration}', [RegistrationController::class, 'destroy'])->name('registrations.destroy');
 
     Route::get('participants', [ParticipantController::class, 'index'])->name('participants.index');
     Route::get('need-partner', [NeedPartnerController::class, 'index'])->name('need-partner.index');
@@ -64,12 +61,21 @@ Route::middleware('auth')->group(function () {
         Route::get('departures/{departure}/edit', [DepartureController::class, 'edit'])->name('departures.edit');
         Route::put('departures/{departure}', [DepartureController::class, 'update'])->name('departures.update');
 
+        // Adding / editing / deleting registrations is admin-only
+        Route::post('registrations', [RegistrationController::class, 'store'])->name('registrations.store');
+        Route::put('registrations/{registration}', [RegistrationController::class, 'update'])->name('registrations.update');
+        Route::delete('registrations/{registration}', [RegistrationController::class, 'destroy'])->name('registrations.destroy');
+
         Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
 
         Route::get('users', [UserController::class, 'index'])->name('users.index');
         Route::get('users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('users', [UserController::class, 'store'])->name('users.store');
+        Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+        Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
     });
 });

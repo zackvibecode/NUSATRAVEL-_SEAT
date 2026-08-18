@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Mail\CapacityAlertMail;
 use App\Models\Departure;
+use App\Models\HermesSeatActivity;
 use App\Models\Package;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,8 +39,8 @@ class CapacityAlertTest extends TestCase
 
         $this->artisan('seatweb:send-capacity-alerts')->assertExitCode(0);
 
-        Mail::assertSent(\App\Mail\CapacityAlertMail::class, 1);
-        Mail::assertSent(\App\Mail\CapacityAlertMail::class, function ($mail) use ($user) {
+        Mail::assertSent(CapacityAlertMail::class, 1);
+        Mail::assertSent(CapacityAlertMail::class, function ($mail) use ($user) {
             return $mail->hasTo($user->email) && $mail->trips->count() === 1
                 && $mail->trips->first()->id === Departure::where('total_seats', 10)->first()->id;
         });
@@ -58,12 +60,12 @@ class CapacityAlertTest extends TestCase
     {
         $user = User::factory()->create();
 
-        \App\Models\HermesSeatActivity::create([
+        HermesSeatActivity::create([
             'package_name' => 'Makassar',
             'departure_date' => '2026-08-20',
             'seat_delta' => 5,
         ]);
-        \App\Models\HermesSeatActivity::create([
+        HermesSeatActivity::create([
             'package_name' => 'Yunnan',
             'departure_date' => '2026-09-25',
             'seat_delta' => -3,

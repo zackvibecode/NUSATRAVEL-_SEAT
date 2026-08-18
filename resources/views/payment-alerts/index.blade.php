@@ -102,7 +102,7 @@
                         <tr class="transition-colors hover:bg-fog/50 {{ $payment->requires_follow_up ? 'bg-brand-soft/30' : '' }}">
                             <td class="px-5 py-4">
                                 <p class="font-bold">{{ $payment->name }}</p>
-                                <p class="text-xs text-charcoal font-medium mt-0.5">{{ $payment->phone }}</p>
+                                <p class="text-xs text-charcoal font-medium mt-0.5">{{ $payment->phone ?? '—' }}</p>
                             </td>
                             <td class="px-5 py-4 text-charcoal font-semibold">{{ $payment->invoice_no ?? '—' }}</td>
                             <td class="px-5 py-4 text-charcoal font-medium">

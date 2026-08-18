@@ -8,6 +8,7 @@ use App\Models\Registration;
 use App\Services\SeatMetricsService;
 use App\Support\TripListFilter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
@@ -71,7 +72,7 @@ class DashboardController extends Controller
     /**
      * Focused dashboard for the sales team: find a trip, check seats, register a customer.
      *
-     * @param  \Illuminate\Support\Collection<int, Departure>  $upcoming
+     * @param  Collection<int, Departure>  $upcoming
      */
     private function salesDashboard(TripListFilter $filter, $upcoming)
     {

@@ -11,6 +11,18 @@ class Registration extends Model
 {
     use SoftDeletes;
 
+    /**
+     * Shared SQL fragments — single quotes only, so they work on both
+     * SQLite (local) and PostgreSQL (production).
+     */
+    public const SQL_HAS_INVOICE = '(invoice_no IS NOT NULL OR invoice_amount IS NOT NULL OR total_paid IS NOT NULL OR invoice_status IS NOT NULL)';
+
+    public const SQL_NO_INVOICE = '(invoice_no IS NULL AND invoice_amount IS NULL AND total_paid IS NULL AND invoice_status IS NULL)';
+
+    public const SQL_NOT_CANCELLED = "LOWER(TRIM(COALESCE(invoice_status, ''))) != 'cancelled'";
+
+    public const SQL_BALANCE = 'COALESCE(invoice_amount, 0) - COALESCE(total_paid, 0)';
+
     protected $fillable = [
         'departure_id',
         'name',
@@ -96,16 +108,26 @@ class Registration extends Model
     }
 
     /**
-     * Payment status derived purely from source data:
+     * Payment status:
      * - cancelled   : invoice status is cancelled
      * - belum_bayar : total paid = 0 and balance > 0
      * - partial     : total paid > 0 and balance > 0
      * - paid        : balance <= 0
+     * Manual records (no invoice data synced yet) fall back to the
+     * legacy payment_status field (pending/deposit/paid).
      */
     public function getDerivedPaymentStatusAttribute(): string
     {
         if (strtolower(trim((string) $this->invoice_status)) === 'cancelled') {
             return 'cancelled';
+        }
+
+        if (! $this->has_invoice) {
+            return match ($this->payment_status) {
+                'paid' => 'paid',
+                'deposit' => 'partial',
+                default => 'belum_bayar',
+            };
         }
 
         $paid = (float) ($this->total_paid ?? 0);
@@ -154,22 +176,29 @@ class Registration extends Model
     }
 
     /**
-     * Invoice-synced records: not cancelled and balance still outstanding.
+     * Scope: records that still require payment follow-up —
+     * invoice-synced (Belum Bayar + Partial) and manual records
+     * still pending/deposit. Used for the alert badge count.
      */
     public function scopeRequiresPaymentFollowUp(Builder $query): Builder
     {
-        return $query
-            ->where(function (Builder $q) {
-                $q->whereNotNull('invoice_no')
-                    ->orWhereNotNull('invoice_amount')
-                    ->orWhereNotNull('total_paid')
-                    ->orWhereNotNull('invoice_status');
-            })
-            ->where(function (Builder $q) {
-                $q->whereNull('invoice_status')
-                    ->orWhereRaw("LOWER(TRIM(invoice_status)) != ?", ['cancelled']);
-            })
-            ->whereRaw("COALESCE(invoice_amount, 0) - COALESCE(total_paid, 0) > 0");
+        return $query->where(function (Builder $outer) {
+            // Invoice-synced: not cancelled with outstanding balance
+            $outer->where(function (Builder $q) {
+                $q->whereRaw(self::SQL_HAS_INVOICE)
+                    ->where(function (Builder $q2) {
+                        $q2->whereNull('invoice_status')
+                            ->orWhereRaw(self::SQL_NOT_CANCELLED);
+                    })
+                    ->whereRaw(self::SQL_BALANCE.' > 0');
+            });
+
+            // Manual (no invoice data): legacy status still pending/deposit
+            $outer->orWhere(function (Builder $q) {
+                $q->whereRaw(self::SQL_NO_INVOICE)
+                    ->whereIn('payment_status', ['pending', 'deposit']);
+            });
+        });
     }
 
     /**

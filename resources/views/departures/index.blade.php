@@ -3,18 +3,21 @@
 @section('title', 'Departures')
 
 @section('content')
+    @php $isAdmin = auth()->user()->isAdmin(); @endphp
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5">
         <div>
             <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">Trips / Departures</h2>
             <p class="text-sm text-charcoal mt-2">One specific travel date under a package, with its own seat capacity.</p>
         </div>
-        <a href="{{ route('departures.create') }}"
-           class="inline-flex items-center gap-2 bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-            </svg>
-            New Departure
-        </a>
+        @if ($isAdmin)
+            <a href="{{ route('departures.create') }}"
+               class="inline-flex items-center gap-2 bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                </svg>
+                New Departure
+            </a>
+        @endif
     </div>
 
     <!-- Filter toolbar -->
@@ -43,7 +46,7 @@
                         Create your first departure to get started.
                     @endif
                 </p>
-                @if (! $filter->isActive())
+                @if (! $filter->isActive() && $isAdmin)
                     <a href="{{ route('departures.create') }}" class="inline-flex items-center gap-2 mt-4 bg-brand hover:bg-brand-hover text-white text-sm font-bold rounded-full px-5 py-2.5 transition-all duration-150">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>

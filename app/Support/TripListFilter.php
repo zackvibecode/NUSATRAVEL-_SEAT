@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Departure;
 use App\Models\Package;
+use App\Models\Registration;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -241,7 +242,7 @@ class TripListFilter
     }
 
     /**
-     * @return Builder<\App\Models\Registration>
+     * @return Builder<Registration>
      */
     public function applyToRegistrationQuery(Builder $query): Builder
     {

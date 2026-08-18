@@ -7,7 +7,7 @@
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5">
         <div>
             <h2 class="text-xl sm:text-2xl font-semibold tracking-tight">Welcome back, {{ auth()->user()->name }}</h2>
-            <p class="text-sm text-charcoal mt-2">Find a trip, check seats, register customers.</p>
+            <p class="text-sm text-charcoal mt-2">Find a trip and check seats — registrations are handled by admin.</p>
         </div>
         <div class="flex items-center gap-2 text-sm text-charcoal font-medium">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -69,7 +69,7 @@
             <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
                 <div>
                     <h3 class="font-semibold text-base tracking-tight">Next Trips</h3>
-                    <p class="text-xs text-charcoal mt-0.5 font-medium">Closest departures first — open one to register a customer</p>
+                    <p class="text-xs text-charcoal mt-0.5 font-medium">Closest departures first — view seat availability</p>
                 </div>
                 <a href="{{ route('departures.index') }}" class="text-sm font-bold text-brand hover:text-brand-hover flex items-center gap-1 flex-shrink-0">
                     All trips

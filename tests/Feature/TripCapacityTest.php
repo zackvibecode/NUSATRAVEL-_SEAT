@@ -3,9 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Departure;
-use App\Models\HermesSeatActivity;
 use App\Models\Package;
-use App\Models\Registration;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

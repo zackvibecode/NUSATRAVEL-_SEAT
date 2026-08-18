@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
+use App\Services\ActivityLogger;
 use App\Support\TripListFilter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\View\View;
 
 class PackageController extends Controller
 {
+    public function __construct(private ActivityLogger $audit) {}
+
     public function index(Request $request): View
     {
         $filter = TripListFilter::fromRequest($request, 'packages', 'packages.index');
@@ -41,7 +44,13 @@ class PackageController extends Controller
             'status' => ['required', 'in:active,archived'],
         ]);
 
-        Package::create($data);
+        $package = Package::create($data);
+
+        $this->audit->log('created', $package, [
+            'name' => ['old' => null, 'new' => $data['name']],
+            'destination' => ['old' => null, 'new' => $data['destination']],
+            'status' => ['old' => null, 'new' => $data['status']],
+        ]);
 
         return redirect()->route('packages.index')->with('success', 'Package created successfully.');
     }
@@ -60,7 +69,11 @@ class PackageController extends Controller
             'status' => ['required', 'in:active,archived'],
         ]);
 
+        $original = $package->getRawOriginal();
+
         $package->update($data);
+
+        $this->audit->log('updated', $package, $this->audit->diff($original, $package));
 
         return redirect()->route('packages.index')->with('success', 'Package updated successfully.');
     }
@@ -71,6 +84,13 @@ class PackageController extends Controller
     public function destroy(Package $package): RedirectResponse
     {
         $name = $package->name;
+
+        $this->audit->log('deleted', $package, [
+            'name' => ['old' => $package->name, 'new' => null],
+            'destination' => ['old' => $package->destination, 'new' => null],
+            'status' => ['old' => $package->status, 'new' => null],
+        ]);
+
         $package->delete();
 
         return redirect()->route('packages.index')

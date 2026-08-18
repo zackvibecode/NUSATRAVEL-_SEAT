@@ -3,6 +3,7 @@
 @section('title', $departure->package->name)
 
 @section('content')
+    @php $canManageRegs = auth()->user()->isAdmin(); @endphp
     <!-- Breadcrumb / actions -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
         <a href="{{ route('departures.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-charcoal hover:text-ink transition-colors">
@@ -19,20 +20,22 @@
                 </svg>
                 Print Manifest
             </a>
-            <a href="{{ route('departures.edit', $departure) }}"
-               class="inline-flex items-center gap-2 bg-white shadow-sm border border-line hover:shadow-md text-ink text-sm font-bold rounded-full px-6 py-3 transition-all duration-150">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                </svg>
-                Edit Trip
-            </a>
-            <a href="#add-registration"
-               class="inline-flex items-center gap-2 bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                </svg>
-                Add Registration
-            </a>
+            @if ($canManageRegs)
+                <a href="{{ route('departures.edit', $departure) }}"
+                   class="inline-flex items-center gap-2 bg-white shadow-sm border border-line hover:shadow-md text-ink text-sm font-bold rounded-full px-6 py-3 transition-all duration-150">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Edit Trip
+                </a>
+                <a href="#add-registration"
+                   class="inline-flex items-center gap-2 bg-ink hover:bg-black text-white text-sm font-medium rounded-lg px-5 py-2.5 transition-colors duration-150">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add Registration
+                </a>
+            @endif
         </div>
     </div>
 
@@ -157,89 +160,82 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="text-left text-charcoal border-b border-line bg-fog/50">
-                        <th class="px-6 py-4 font-semibold">Name</th>
-                        <th class="px-6 py-4 font-semibold">Phone</th>
-                        <th class="px-6 py-4 font-semibold text-right">Pax</th>
-                        <th class="px-6 py-4 font-semibold">Partner</th>
-                        <th class="px-6 py-4 font-semibold">Notes</th>
-                        <th class="px-6 py-4 font-semibold text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-line">
-                    @forelse ($registrations as $registration)
-                        <tr class="transition-colors hover:bg-fog/50">
-                            <td class="px-6 py-4 font-bold">{{ $registration->name }}</td>
-                            <td class="px-6 py-4 text-charcoal font-medium">{{ $registration->phone }}</td>
-                            <td class="px-6 py-4 text-right font-bold">{{ $registration->pax }}</td>
-                            <td class="px-6 py-4">
-                                @if ($registration->need_partner)
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-warning-soft text-warning">
-                                        {{ $registration->partner_label }}
-                                    </span>
-                                @else
-                                    <span class="text-charcoal font-medium">No</span>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-charcoal border-b border-line bg-fog/50">
+                                <th class="px-6 py-4 font-semibold">Name</th>
+                                <th class="px-6 py-4 font-semibold">Phone</th>
+                                <th class="px-6 py-4 font-semibold text-right">Pax</th>
+                                <th class="px-6 py-4 font-semibold">Partner</th>
+                                <th class="px-6 py-4 font-semibold">Notes</th>
+                                @if ($canManageRegs)
+                                    <th class="px-6 py-4 font-semibold text-right">Actions</th>
                                 @endif
-                            </td>
-                            <td class="px-6 py-4 text-charcoal max-w-xs truncate">{{ $registration->notes }}</td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center justify-end gap-3">
-                                    <button type="button"
-                                            data-edit-registration
-                                            data-reg-id="{{ $registration->id }}"
-                                            data-name="{{ $registration->name }}"
-                                            data-phone="{{ $registration->phone }}"
-                                            data-pax="{{ $registration->pax }}"
-                                            data-need-partner="{{ $registration->need_partner ? '1' : '0' }}"
-                                            data-partner-gender="{{ $registration->partner_gender }}"
-                                            data-notes="{{ $registration->notes }}"
-                                            class="edit-btn inline-flex items-center gap-1.5 text-brand hover:text-brand-hover text-sm font-bold">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                        </svg>
-                                        Edit
-                                    </button>
-                                    <button type="button"
-                                            data-copy-wa
-                                            data-wa-name="{{ $registration->name }}"
-                                            data-wa-pax="{{ $registration->pax }}"
-                                            data-wa-package="{{ $departure->package->name }}"
-                                            data-wa-date="{{ $departure->departure_date->format('d M Y') }}"
-                                            class="inline-flex items-center gap-1.5 text-positive hover:text-positive/80 text-sm font-semibold">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                        </svg>
-                                        WA
-                                    </button>
-                                    <form method="POST" action="{{ route('registrations.destroy', $registration) }}"
-                                          onsubmit="return confirm('Delete this registration? Seat availability will be recalculated.');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 text-sm font-bold rounded-full px-4 py-2 transition-all duration-150 border border-red-200">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                            </svg>
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-charcoal font-medium">
-                                No registrations yet. Add the first participant below.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-line">
+                            @forelse ($registrations as $registration)
+                                <tr class="transition-colors hover:bg-fog/50">
+                                    <td class="px-6 py-4 font-bold">{{ $registration->name }}</td>
+                                    <td class="px-6 py-4 text-charcoal font-medium">{{ $registration->phone ?? '—' }}</td>
+                                    <td class="px-6 py-4 text-right font-bold">{{ $registration->pax }}</td>
+                                    <td class="px-6 py-4">
+                                        @if ($registration->need_partner)
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-warning-soft text-warning">
+                                                {{ $registration->partner_label }}
+                                            </span>
+                                        @else
+                                            <span class="text-charcoal font-medium">No</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 text-charcoal max-w-xs truncate">{{ $registration->notes }}</td>
+                                    @if ($canManageRegs)
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center justify-end gap-3">
+                                                <button type="button"
+                                                        data-edit-registration
+                                                        data-reg-id="{{ $registration->id }}"
+                                                        data-name="{{ $registration->name }}"
+                                                        data-phone="{{ $registration->phone }}"
+                                                        data-pax="{{ $registration->pax }}"
+                                                        data-need-partner="{{ $registration->need_partner ? '1' : '0' }}"
+                                                        data-partner-gender="{{ $registration->partner_gender }}"
+                                                        data-notes="{{ $registration->notes }}"
+                                                        class="edit-btn inline-flex items-center gap-1.5 text-brand hover:text-brand-hover text-sm font-bold">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                    </svg>
+                                                    Edit
+                                                </button>
+                                                <form method="POST" action="{{ route('registrations.destroy', $registration) }}"
+                                                      onsubmit="return confirm('Delete this registration? Seat availability will be recalculated.');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="inline-flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 text-sm font-bold rounded-full px-4 py-2 transition-all duration-150 border border-red-200">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="{{ $canManageRegs ? 6 : 5 }}" class="px-6 py-12 text-center text-charcoal font-medium">
+                                        No registrations yet.{{ $canManageRegs ? ' Add the first participant below.' : '' }}
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
     </div>
 
+    @if ($canManageRegs)
     <!-- Add registration form -->
     <div id="add-registration" class="bg-white rounded-lg border border-line p-4 sm:p-6 mb-4">
         <div class="flex items-center gap-3 mb-6">
@@ -305,7 +301,6 @@
                 <select
                     id="reg_need_partner"
                     name="need_partner"
-                    onchange="togglePartnerGender(this)"
                     class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     <option value="0" @selected(old('need_partner', '0') === '0')>No</option>
@@ -345,7 +340,9 @@
             </div>
         </form>
     </div>
+    @endif
 
+    @if ($canManageRegs)
     <!-- Edit registration modal -->
     <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8">
@@ -411,9 +408,11 @@
             </form>
         </div>
     </div>
+    @endif
 @endsection
 
 @section('scripts')
+@if ($canManageRegs)
 <script>
 (function () {
     const editModal = document.getElementById('editModal');
@@ -473,36 +472,16 @@
         if (e.key === 'Escape' && !editModal.classList.contains('hidden')) closeEditModal();
     });
 
-    document.querySelectorAll('[data-copy-wa]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            const name = btn.dataset.waName;
-            const packageName = btn.dataset.waPackage;
-            const date = btn.dataset.waDate;
-            const pax = btn.dataset.waPax;
-            const msg = `Hi ${name}, your booking for ${packageName} on ${date} is confirmed. Total pax: ${pax}. Please reply YES to confirm.`;
-            navigator.clipboard.writeText(msg).then(function () {
-                alert('WhatsApp message copied to clipboard!');
-            }).catch(function () {
-                const ta = document.createElement('textarea');
-                ta.value = msg;
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                alert('WhatsApp message copied to clipboard!');
-            });
-        });
-    });
-
-    // Disable submit buttons on form submit
+    // Disable submit buttons on form submit (only when forms exist)
     document.getElementById('addRegForm')?.addEventListener('submit', function () {
-        document.getElementById('saveRegBtn').disabled = true;
-        document.getElementById('saveRegBtn').textContent = 'Saving...';
+        const btn = document.getElementById('saveRegBtn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
     });
     document.getElementById('editForm')?.addEventListener('submit', function () {
-        document.getElementById('updateRegBtn').disabled = true;
-        document.getElementById('updateRegBtn').textContent = 'Updating...';
+        const btn = document.getElementById('updateRegBtn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Updating...'; }
     });
 })();
 </script>
+@endif
 @endsection

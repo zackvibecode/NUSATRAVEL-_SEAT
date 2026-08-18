@@ -348,7 +348,7 @@ class HermesDataService
                     ."- delete package 6 / padam pakej 6 (perlu confirm)\n"
                     ."- cancel trip 10 (perlu confirm)\n"
                     ."- padam pax 12 (perlu confirm)\n"
-                    ."- overview",
+                    .'- overview',
                 'data' => null,
             ];
         }
@@ -493,7 +493,7 @@ class HermesDataService
 
         return [
             'action' => 'unknown',
-            'reply' => "Tak faham. Taip **help**. Contoh: list package, cari TRANSJAVA, padam pax 12.",
+            'reply' => 'Tak faham. Taip **help**. Contoh: list package, cari TRANSJAVA, padam pax 12.',
             'data' => null,
         ];
     }

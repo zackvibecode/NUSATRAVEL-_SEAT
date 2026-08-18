@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ResetPasswordMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -38,7 +40,7 @@ class PasswordResetController extends Controller
                 ['token' => Hash::make($token), 'created_at' => now()],
             );
 
-            Mail::to($user->email)->send(new \App\Mail\ResetPasswordMail($token, $user->email));
+            Mail::to($user->email)->send(new ResetPasswordMail($token, $user->email));
         }
 
         return back()->with('status', 'If that email exists in our system, a reset link has been sent. Check your inbox.');
@@ -70,7 +72,7 @@ class PasswordResetController extends Controller
 
         $valid = $record
             && Hash::check($data['token'], $record->token)
-            && \Illuminate\Support\Carbon::parse($record->created_at)->gt(now()->subHour());
+            && Carbon::parse($record->created_at)->gt(now()->subHour());
 
         if (! $valid) {
             return back()->withInput()->withErrors(['email' => 'This password reset link is invalid or has expired.']);

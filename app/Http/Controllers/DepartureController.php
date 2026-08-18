@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Departure;
 use App\Models\Package;
+use App\Services\ActivityLogger;
 use App\Support\TripListFilter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,6 +12,8 @@ use Illuminate\View\View;
 
 class DepartureController extends Controller
 {
+    public function __construct(private ActivityLogger $audit) {}
+
     public function index(Request $request): View
     {
         $filter = TripListFilter::fromRequest($request, 'departures', 'departures.index');
@@ -49,7 +52,13 @@ class DepartureController extends Controller
 
         $data['status'] ??= 'open';
 
-        Departure::create($data);
+        $departure = Departure::create($data);
+
+        $this->audit->log('created', $departure, [
+            'departure_date' => ['old' => null, 'new' => $departure->departure_date?->format('d M Y')],
+            'total_seats' => ['old' => null, 'new' => $departure->total_seats],
+            'status' => ['old' => null, 'new' => $departure->status],
+        ]);
 
         return redirect()->route('departures.index')->with('success', 'Departure created successfully.');
     }
@@ -84,7 +93,11 @@ class DepartureController extends Controller
             'notes' => ['nullable', 'string'],
         ]);
 
+        $original = $departure->getRawOriginal();
+
         $departure->update($data);
+
+        $this->audit->log('updated', $departure, $this->audit->diff($original, $departure));
 
         return redirect()->route('departures.show', $departure)->with('success', 'Departure updated successfully.');
     }
