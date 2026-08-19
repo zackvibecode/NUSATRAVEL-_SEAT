@@ -103,6 +103,26 @@ class DepartureController extends Controller
     }
 
     /**
+     * Hard-delete the departure. Related registrations cascade.
+     */
+    public function destroy(Departure $departure): RedirectResponse
+    {
+        $label = $departure->package->name.' — '.$departure->departure_date->format('d M Y');
+
+        $this->audit->log('deleted', $departure, [
+            'departure_date' => ['old' => $departure->departure_date?->format('d M Y'), 'new' => null],
+            'total_seats' => ['old' => $departure->total_seats, 'new' => null],
+            'status' => ['old' => $departure->status, 'new' => null],
+            'registrations_removed' => ['old' => (string) $departure->registrations()->count(), 'new' => null],
+        ]);
+
+        $departure->delete();
+
+        return redirect()->route('departures.index')
+            ->with('success', "Trip \"{$label}\" was deleted. Its registrations were removed too.");
+    }
+
+    /**
      * Print-friendly manifest for tour guides.
      */
     public function manifest(Departure $departure): View

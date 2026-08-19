@@ -178,7 +178,9 @@ class SalesRoleTest extends TestCase
         $response->assertOk()
             ->assertDontSee('Add Registration')
             ->assertDontSee('Edit Trip')
+            ->assertDontSee('Delete Trip')
             ->assertDontSee('data-edit-registration')
+            ->assertDontSee('data-delete-trip')
             ->assertDontSee('registrations.destroy')
             ->assertSee('Customer'); // still view-only data
 
@@ -204,7 +206,75 @@ class SalesRoleTest extends TestCase
         $response->assertOk()
             ->assertSee('Add Registration')
             ->assertSee('Edit Trip')
+            ->assertSee('Delete Trip')
             ->assertSee('data-edit-registration');
+    }
+
+    public function test_admin_can_delete_trip_with_registrations(): void
+    {
+        $package = Package::create(['name' => 'P', 'destination' => 'D', 'status' => 'active']);
+        $departure = $package->departures()->create([
+            'departure_date' => now()->addMonth(),
+            'return_date' => now()->addMonth()->addDays(4),
+            'total_seats' => 10,
+            'status' => 'open',
+        ]);
+        Registration::create(['departure_id' => $departure->id, 'name' => 'A', 'pax' => 2]);
+        Registration::create(['departure_id' => $departure->id, 'name' => 'B', 'pax' => 3]);
+
+        $this->actingAs($this->admin)
+            ->delete(route('departures.destroy', $departure))
+            ->assertRedirect(route('departures.index'));
+
+        $this->assertDatabaseMissing('departures', ['id' => $departure->id]);
+        $this->assertDatabaseMissing('registrations', ['departure_id' => $departure->id]);
+        // Package survives — only the trip is deleted
+        $this->assertDatabaseHas('packages', ['id' => $package->id]);
+
+        // The delete was audit-logged
+        $this->assertDatabaseHas('activity_logs', [
+            'action' => 'deleted',
+            'subject_type' => 'departure',
+        ]);
+    }
+
+    public function test_sales_cannot_delete_trip(): void
+    {
+        $package = Package::create(['name' => 'P', 'destination' => 'D', 'status' => 'active']);
+        $departure = $package->departures()->create([
+            'departure_date' => now()->addMonth(),
+            'return_date' => now()->addMonth()->addDays(4),
+            'total_seats' => 10,
+            'status' => 'open',
+        ]);
+
+        $this->actingAs($this->sales)
+            ->delete(route('departures.destroy', $departure))
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('departures', ['id' => $departure->id]);
+    }
+
+    public function test_sales_trip_list_hides_delete_button(): void
+    {
+        $package = Package::create(['name' => 'P', 'destination' => 'D', 'status' => 'active']);
+        $package->departures()->create([
+            'departure_date' => now()->addMonth(),
+            'return_date' => now()->addMonth()->addDays(4),
+            'total_seats' => 10,
+            'status' => 'open',
+        ]);
+
+        $this->actingAs($this->sales)
+            ->get(route('departures.index'))
+            ->assertOk()
+            ->assertDontSee('data-delete-trip');
+
+        // Admin sees the delete button on the same page
+        $this->actingAs($this->admin)
+            ->get(route('departures.index'))
+            ->assertOk()
+            ->assertSee('data-delete-trip');
     }
 
     public function test_sales_sidebar_hides_admin_links(): void

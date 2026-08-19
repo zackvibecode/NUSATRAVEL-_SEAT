@@ -65,6 +65,8 @@ Route::middleware('auth')->group(function () {
         Route::post('departures', [DepartureController::class, 'store'])->name('departures.store');
         Route::get('departures/{departure}/edit', [DepartureController::class, 'edit'])->name('departures.edit');
         Route::put('departures/{departure}', [DepartureController::class, 'update'])->name('departures.update');
+        Route::delete('departures/{departure}', [DepartureController::class, 'destroy'])
+            ->whereNumber('departure')->name('departures.destroy');
 
         // Adding / editing / deleting registrations is admin-only
         Route::post('registrations', [RegistrationController::class, 'store'])->name('registrations.store');

@@ -2,6 +2,7 @@
     /** @var \App\Models\Departure $departure */
     $status = $departure->status_label;
     $isCancelled = $status === 'cancelled';
+    $isAdmin = auth()->check() && auth()->user()->isAdmin();
 @endphp
 
 <div class="group relative bg-white {{ $isCancelled ? 'bg-brand-soft border-brand' : 'border-line hover:border-brand/40' }} border rounded-xl {{ $isCancelled ? '' : 'transition-all duration-150' }}">
@@ -61,7 +62,7 @@
             </div>
 
             <!-- Action -->
-            <div class="sm:justify-self-end">
+            <div class="sm:justify-self-end flex items-center gap-2">
                 <a href="{{ route('departures.show', $departure) }}"
                    class="inline-flex items-center gap-1 border {{ $isCancelled ? 'border-brand/40 text-brand/70 hover:bg-brand hover:text-white hover:border-brand' : 'border-brand text-brand hover:bg-brand hover:text-white' }} text-xs font-semibold rounded-full px-3.5 py-1.5 transition-colors duration-150 whitespace-nowrap">
                     {{ $isCancelled ? 'View' : 'Manage' }}
@@ -69,6 +70,20 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
                     </svg>
                 </a>
+                @if ($isAdmin)
+                    <button type="button"
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-red-500 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors duration-150"
+                            title="Delete trip"
+                            aria-label="Delete trip {{ $departure->package->name }}"
+                            data-delete-trip
+                            data-delete-url="{{ route('departures.destroy', $departure) }}"
+                            data-trip-label="{{ $departure->package->name }} — {{ $departure->departure_date->format('d M Y') }}"
+                            data-trip-registrations="{{ $departure->registered_pax }}">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </button>
+                @endif
             </div>
         </div>
     </div>

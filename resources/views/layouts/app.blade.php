@@ -364,5 +364,95 @@
         </div>
 
         @yield('scripts')
+
+        {{-- Global delete-trip confirm modal (admin only, used by trip cards) --}}
+        @if (auth()->user()->isAdmin())
+            <div id="deleteTripModal"
+                 class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-ink/40 backdrop-blur-[2px]"
+                 role="dialog"
+                 aria-modal="true"
+                 aria-labelledby="deleteTripTitle">
+                <div class="bg-white rounded-3xl shadow-xl border border-line w-full max-w-md p-6 sm:p-8">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-11 h-11 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h3 id="deleteTripTitle" class="text-lg font-semibold tracking-tight text-ink">Padam trip ini?</h3>
+                            <p class="text-sm text-charcoal mt-2 leading-relaxed">
+                                Trip <span id="deleteTripLabel" class="font-bold text-ink"></span> akan
+                                <strong>hilang dari database</strong>.
+                            </p>
+                            <p id="deleteTripMeta" class="text-xs text-charcoal/80 mt-2"></p>
+                        </div>
+                    </div>
+
+                    <form id="deleteTripForm" method="POST" class="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button"
+                                id="deleteTripCancel"
+                                class="inline-flex justify-center items-center rounded-full px-5 py-2.5 text-sm font-semibold text-charcoal border border-line hover:bg-fog transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit"
+                                class="inline-flex justify-center items-center rounded-full px-5 py-2.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 transition-colors">
+                            Ya, padam
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+                (function () {
+                    const modal = document.getElementById('deleteTripModal');
+                    const form = document.getElementById('deleteTripForm');
+                    const labelEl = document.getElementById('deleteTripLabel');
+                    const metaEl = document.getElementById('deleteTripMeta');
+                    const cancelBtn = document.getElementById('deleteTripCancel');
+
+                    if (!modal || !form) return;
+
+                    function openModal(url, label, registrations) {
+                        form.action = url;
+                        labelEl.textContent = label;
+                        const count = Number(registrations) || 0;
+                        metaEl.textContent = count > 0
+                            ? `Trip ini ada ${count} pax berdaftar — semua akan dipadam sekali.`
+                            : 'Trip ini tiada pax berdaftar.';
+                        modal.classList.remove('hidden');
+                        modal.classList.add('flex');
+                    }
+
+                    function closeModal() {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        form.action = '';
+                    }
+
+                    document.addEventListener('click', function (e) {
+                        const btn = e.target.closest('[data-delete-trip]');
+                        if (btn) {
+                            e.preventDefault();
+                            openModal(
+                                btn.getAttribute('data-delete-url'),
+                                btn.getAttribute('data-trip-label') || 'trip ini',
+                                btn.getAttribute('data-trip-registrations')
+                            );
+                        }
+                    });
+
+                    cancelBtn?.addEventListener('click', closeModal);
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) closeModal();
+                    });
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+                    });
+                })();
+            </script>
+        @endif
     </body>
 </html>
