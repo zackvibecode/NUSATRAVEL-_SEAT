@@ -74,9 +74,22 @@ class SalesRoleTest extends TestCase
     public function test_sales_can_view_trips_and_updates(): void
     {
         $this->actingAs($this->sales)->get(route('departures.index'))->assertOk();
-        $this->actingAs($this->sales)->get(route('hermes.updates'))->assertOk();
-        $this->actingAs($this->sales)->get(route('participants.index'))->assertOk();
         $this->actingAs($this->sales)->get(route('calendar.index'))->assertOk();
+    }
+
+    public function test_sales_cannot_access_hermes_updates(): void
+    {
+        $this->actingAs($this->sales)->get(route('hermes.updates'))->assertForbidden();
+    }
+
+    public function test_sales_cannot_access_participants(): void
+    {
+        $this->actingAs($this->sales)->get(route('participants.index'))->assertForbidden();
+    }
+
+    public function test_sales_cannot_access_payment_alerts(): void
+    {
+        $this->actingAs($this->sales)->get(route('payment-alerts.index'))->assertForbidden();
     }
 
     public function test_sales_can_view_attention_trips(): void
@@ -285,7 +298,10 @@ class SalesRoleTest extends TestCase
             ->assertDontSee('href="'.route('reports.index').'"', false)
             ->assertDontSee('href="'.route('users.index').'"', false)
             ->assertDontSee('href="'.route('packages.index').'"', false)
-            ->assertDontSee('href="'.route('hermes.chat').'"', false);
+            ->assertDontSee('href="'.route('hermes.chat').'"', false)
+            ->assertDontSee('href="'.route('hermes.updates').'"', false)
+            ->assertDontSee('href="'.route('participants.index').'"', false)
+            ->assertDontSee('href="'.route('payment-alerts.index').'"', false);
     }
 
     public function test_admin_sidebar_shows_admin_links(): void
@@ -294,7 +310,10 @@ class SalesRoleTest extends TestCase
 
         $response->assertOk()
             ->assertSee('href="'.route('reports.index').'"', false)
-            ->assertSee('href="'.route('users.index').'"', false);
+            ->assertSee('href="'.route('users.index').'"', false)
+            ->assertSee('href="'.route('hermes.updates').'"', false)
+            ->assertSee('href="'.route('participants.index').'"', false)
+            ->assertSee('href="'.route('payment-alerts.index').'"', false);
     }
 
     public function test_admin_can_create_sales_user(): void

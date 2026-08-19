@@ -17,8 +17,6 @@ class PaymentAlertTest extends TestCase
 
     private User $picZack;
 
-    private User $picAina;
-
     private Departure $departure;
 
     protected function setUp(): void
@@ -27,7 +25,6 @@ class PaymentAlertTest extends TestCase
 
         $this->admin = User::factory()->create(['role' => 'admin']);
         $this->picZack = User::factory()->create(['role' => 'sales', 'pic_name' => 'Zack']);
-        $this->picAina = User::factory()->create(['role' => 'sales', 'name' => 'Aina Kamal']);
 
         $package = Package::create([
             'name' => 'Makassar 5D4N',
@@ -227,16 +224,21 @@ class PaymentAlertTest extends TestCase
             'total_paid' => 0,
         ]);
 
-        $response = $this->actingAs($this->picZack)->get(route('payment-alerts.index'));
+        // Payment alerts is admin-only; sales users cannot access the page.
+        $this->actingAs($this->picZack)->get(route('payment-alerts.index'))->assertForbidden();
 
-        $response->assertOk()
+        // Admins see every PIC's records.
+        $this->actingAs($this->admin)->get(route('payment-alerts.index'))
+            ->assertOk()
             ->assertSee('Zack Customer')
-            ->assertDontSee('Aina Customer')
-            ->assertDontSee('Other Customer');
+            ->assertSee('Aina Customer')
+            ->assertSee('Other Customer');
     }
 
     public function test_pic_matching_is_case_insensitive(): void
     {
+        // The forPic scope (used for the admin badge count and model-level
+        // scoping) matches case-insensitively against PIC Utama / In House.
         $this->registration([
             'name' => 'Aina Customer',
             'pic_in_house' => 'aina kamal',
@@ -244,10 +246,10 @@ class PaymentAlertTest extends TestCase
             'total_paid' => 0,
         ]);
 
-        // picAina has no pic_name set — falls back to their display name
-        $response = $this->actingAs($this->picAina)->get(route('payment-alerts.index'));
-
-        $response->assertOk()->assertSee('Aina Customer');
+        $this->assertSame(
+            1,
+            (clone Registration::query())->forPic('Aina Kamal')->count()
+        );
     }
 
     public function test_badge_counts_only_belum_bayar_and_partial(): void

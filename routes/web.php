@@ -38,8 +38,6 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middl
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('hermes/updates', [HermesGuideController::class, 'updates'])->name('hermes.updates');
-
     // Sales can view trips (read-only)
     Route::get('departures', [DepartureController::class, 'index'])->name('departures.index');
     Route::get('departures/{departure}', [DepartureController::class, 'show'])
@@ -47,17 +45,19 @@ Route::middleware('auth')->group(function () {
     Route::get('departures/{departure}/manifest', [DepartureController::class, 'manifest'])
         ->whereNumber('departure')->name('departures.manifest');
 
-    Route::get('participants', [ParticipantController::class, 'index'])->name('participants.index');
     Route::get('need-partner', [NeedPartnerController::class, 'index'])->name('need-partner.index');
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
-    Route::get('payment-alerts', [PaymentAlertController::class, 'index'])->name('payment-alerts.index');
     Route::get('attention-trips', [DashboardController::class, 'attentionTrips'])->name('attention-trips.index');
 
     // Admin-only area
     Route::middleware('admin')->group(function () {
         Route::get('hermes', [HermesGuideController::class, 'index'])->name('hermes.guide');
+        Route::get('hermes/updates', [HermesGuideController::class, 'updates'])->name('hermes.updates');
         Route::get('hermes/chat', [HermesGuideController::class, 'chat'])->name('hermes.chat');
         Route::post('hermes/chat', [HermesGuideController::class, 'chatMessage'])->middleware('throttle:30,1')->name('hermes.chat.message');
+
+        Route::get('participants', [ParticipantController::class, 'index'])->name('participants.index');
+        Route::get('payment-alerts', [PaymentAlertController::class, 'index'])->name('payment-alerts.index');
 
         Route::resource('packages', PackageController::class)->except(['show']);
 
