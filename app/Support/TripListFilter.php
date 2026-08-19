@@ -29,6 +29,13 @@ class TripListFilter
     public ?string $status = null;
 
     /**
+     * Seat availability filter for departures: 'full' (0 seats),
+     * 'almost_full' (1-5 seats), 'available' (>5 seats). Derived from
+     * total_seats minus the sum of registered pax.
+     */
+    public ?string $seat = null;
+
+    /**
      * Free-text search across package name, destination, airline and
      * registered customer/participant name (PRD section 15).
      */
@@ -55,6 +62,7 @@ class TripListFilter
         $this->destination = filled($params['destination'] ?? null) ? (string) $params['destination'] : null;
         $this->packageId = isset($params['package_id']) && $params['package_id'] !== '' ? (int) $params['package_id'] : null;
         $this->status = filled($params['status'] ?? null) ? (string) $params['status'] : null;
+        $this->seat = filled($params['seat'] ?? null) ? (string) $params['seat'] : null;
         $this->search = filled($params['search'] ?? null) ? trim((string) $params['search']) : null;
 
         $defaultIncludePast = in_array($context, ['reports', 'participants', 'need_partner'], true);
@@ -102,6 +110,7 @@ class TripListFilter
             || $this->destination !== null
             || $this->packageId !== null
             || $this->search !== null
+            || $this->seat !== null
             || ($this->status !== null && $this->context === 'packages');
     }
 
@@ -117,6 +126,7 @@ class TripListFilter
             'destination' => $this->destination,
             'package_id' => $this->packageId,
             'status' => $this->status,
+            'seat' => $this->seat,
             'search' => $this->search,
             'past' => $this->includePast ? '1' : null,
             'sort' => $this->sort,
@@ -187,7 +197,45 @@ class TripListFilter
             });
         }
 
+        if ($this->seat !== null) {
+            $this->applySeatFilter($query);
+        }
+
         return $this->orderDepartureQuery($query);
+    }
+
+    /**
+     * Filter departures by derived seat availability. Because available seats
+     * is a computed value (total_seats minus the sum of registered pax), we
+     * express it with a correlated subquery so it composes safely with any
+     * other joins/subqueries in the surrounding query (search, destination,
+     * sorting, etc.). Trips with zero registrations sum to 0, so they still
+     * show as "available".
+     *
+     * @param  Builder<Departure>  $query
+     */
+    protected function applySeatFilter(Builder $query): void
+    {
+        // Only departures context supports seat filtering.
+        if ($this->context !== 'departures') {
+            return;
+        }
+
+        // available_seats = total_seats - COALESCE(SUM(registrations.pax), 0)
+        $paxSub = Registration::query()
+            ->selectRaw('COALESCE(SUM(registrations.pax), 0)')
+            ->whereColumn('registrations.departure_id', 'departures.id');
+
+        $query->whereRaw('departures.status != ?', ['cancelled']);
+
+        $availableExpr = 'departures.total_seats - ('.$paxSub->toSql().')';
+
+        match ($this->seat) {
+            'full' => $query->whereRaw("({$availableExpr}) <= 0", $paxSub->getBindings()),
+            'almost_full' => $query->whereRaw("({$availableExpr}) BETWEEN 1 AND 5", $paxSub->getBindings()),
+            'available' => $query->whereRaw("({$availableExpr}) > 5", $paxSub->getBindings()),
+            default => null,
+        };
     }
 
     /**

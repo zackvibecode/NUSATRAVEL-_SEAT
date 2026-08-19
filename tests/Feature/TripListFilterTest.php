@@ -348,6 +348,99 @@ class TripListFilterTest extends TestCase
         $response->assertOk()->assertSee('HISTORY TRIP');
     }
 
+    public function test_departures_can_be_filtered_by_seat_availability(): void
+    {
+        $available = $this->createDeparture('OPEN SEATS TRIP', 'INDONESIA', '2026-09-15'); // 0 pax, 30 seats
+        $almostFull = $this->createDeparture('ALMOST FULL TRIP', 'INDONESIA', '2026-09-15'); // 28 pax -> 2 seats
+        $full = $this->createDeparture('FULL TRIP', 'INDONESIA', '2026-09-15'); // 30 pax -> 0 seats
+
+        // 28 pax -> 2 seats remaining (almost full)
+        Registration::create([
+            'departure_id' => $almostFull->id,
+            'name' => 'Group A',
+            'phone' => '0123456789',
+            'pax' => 28,
+            'need_partner' => false,
+        ]);
+
+        // 30 pax -> 0 seats remaining (full)
+        Registration::create([
+            'departure_id' => $full->id,
+            'name' => 'Group B',
+            'phone' => '0198765432',
+            'pax' => 30,
+            'need_partner' => false,
+        ]);
+
+        $this->actingAs($this->user)
+            ->get(route('departures.index', ['seat' => 'full']))
+            ->assertOk()
+            ->assertSee('FULL TRIP')
+            ->assertDontSee(route('departures.show', $almostFull))
+            ->assertDontSee(route('departures.show', $available));
+
+        $this->actingAs($this->user)
+            ->get(route('departures.index', ['seat' => 'almost_full']))
+            ->assertOk()
+            ->assertSee('ALMOST FULL TRIP')
+            ->assertDontSee(route('departures.show', $full))
+            ->assertDontSee(route('departures.show', $available));
+
+        $this->actingAs($this->user)
+            ->get(route('departures.index', ['seat' => 'available']))
+            ->assertOk()
+            ->assertSee('OPEN SEATS TRIP')
+            ->assertDontSee(route('departures.show', $almostFull))
+            ->assertDontSee(route('departures.show', $full));
+    }
+
+    public function test_seat_filter_excludes_cancelled_trips(): void
+    {
+        $cancelled = $this->createDeparture('CANCELLED TRIP', 'INDONESIA', '2026-09-15');
+        $cancelled->update(['status' => 'cancelled']);
+
+        $this->actingAs($this->user)
+            ->get(route('departures.index', ['seat' => 'available']))
+            ->assertOk()
+            ->assertDontSee(route('departures.show', $cancelled));
+    }
+
+    public function test_trip_list_filter_helper_applies_seat_filter(): void
+    {
+        $pkg = Package::create(['name' => 'SEAT PKG', 'destination' => 'INDONESIA', 'status' => 'active']);
+
+        $full = Departure::create([
+            'package_id' => $pkg->id,
+            'departure_date' => '2026-09-01',
+            'return_date' => '2026-09-08',
+            'total_seats' => 10,
+            'status' => 'open',
+        ]);
+
+        $open = Departure::create([
+            'package_id' => $pkg->id,
+            'departure_date' => '2026-09-02',
+            'return_date' => '2026-09-09',
+            'total_seats' => 10,
+            'status' => 'open',
+        ]);
+
+        Registration::create([
+            'departure_id' => $full->id,
+            'name' => 'Full Group',
+            'phone' => '0123456789',
+            'pax' => 10,
+            'need_partner' => false,
+        ]);
+
+        $filter = new TripListFilter('departures', 'departures.index', ['seat' => 'full']);
+
+        $results = $filter->applyToDepartureQuery(Departure::query())->get();
+
+        $this->assertCount(1, $results);
+        $this->assertSame($full->id, $results->first()->id);
+    }
+
     private function createDeparture(string $name, string $destination, string $date): Departure
     {
         $package = Package::create([

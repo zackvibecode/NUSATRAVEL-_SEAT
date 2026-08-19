@@ -96,6 +96,18 @@
         </div>
     @endif
 
+    @if ($showSeat ?? ($filter->context === 'departures'))
+        <div>
+            <label for="seat" class="{{ $labelClass }}">Seats</label>
+            <select name="seat" id="seat" class="{{ $selectClass }} min-w-[8rem]">
+                <option value="" @selected($filter->seat === null)>All Seats</option>
+                <option value="available" @selected($filter->seat === 'available')>Available</option>
+                <option value="almost_full" @selected($filter->seat === 'almost_full')>Almost Full</option>
+                <option value="full" @selected($filter->seat === 'full')>Full</option>
+            </select>
+        </div>
+    @endif
+
     @if ($showPastToggle)
         <div class="flex items-center pb-2">
             <label for="past" class="flex items-center gap-2 cursor-pointer select-none">
