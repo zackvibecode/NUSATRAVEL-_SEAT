@@ -10,7 +10,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-lg border border-line overflow-hidden">
+    <div class="bg-surface rounded-lg border border-line overflow-hidden">
         <!-- Header with prev/next navigation -->
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -67,7 +67,7 @@
                     @php
                         $isToday = $cell && $cell['date']->isToday();
                     @endphp
-                    <div class="min-h-[80px] sm:min-h-[100px] border-r border-line last:border-r-0 p-1 sm:p-2 {{ $cell ? 'bg-white' : 'bg-fog/30' }} {{ $isToday ? 'ring-2 ring-brand ring-inset' : '' }}">
+                    <div class="min-h-[80px] sm:min-h-[100px] border-r border-line last:border-r-0 p-1 sm:p-2 {{ $cell ? 'bg-surface' : 'bg-fog/30' }} {{ $isToday ? 'ring-2 ring-brand ring-inset' : '' }}">
                         @if ($cell)
                             <div class="text-xs font-bold {{ $isToday ? 'text-brand' : 'text-charcoal' }} mb-1 flex items-center justify-between">
                                 <span>{{ $cell['day'] }}</span>

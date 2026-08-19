@@ -11,7 +11,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-lg border border-line p-4 sm:p-5 mb-4">
+    <div class="bg-surface rounded-lg border border-line p-4 sm:p-5 mb-4">
         <form method="GET" action="{{ route('activity-logs.index') }}" class="flex flex-wrap items-end gap-3">
             <div class="flex-1 min-w-[240px]">
                 <label for="search" class="block text-[11px] font-semibold text-charcoal mb-1.5">Search</label>
@@ -21,12 +21,12 @@
                     name="search"
                     value="{{ $searchFilter }}"
                     placeholder="Search user or record..."
-                    class="w-full rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
             <div>
                 <label for="action" class="block text-[11px] font-semibold text-charcoal mb-1.5">Action</label>
-                <select name="action" id="action" class="rounded-xl border border-line bg-white px-3 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all min-w-[8rem]">
+                <select name="action" id="action" class="rounded-xl border border-line bg-surface px-3 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all min-w-[8rem]">
                     <option value="" @selected($actionFilter === '')>All Actions</option>
                     <option value="created" @selected($actionFilter === 'created')>Created</option>
                     <option value="updated" @selected($actionFilter === 'updated')>Updated</option>
@@ -35,7 +35,7 @@
             </div>
             <div>
                 <label for="subject" class="block text-[11px] font-semibold text-charcoal mb-1.5">Record Type</label>
-                <select name="subject" id="subject" class="rounded-xl border border-line bg-white px-3 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all min-w-[9rem]">
+                <select name="subject" id="subject" class="rounded-xl border border-line bg-surface px-3 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all min-w-[9rem]">
                     <option value="" @selected($subjectFilter === '')>All Types</option>
                     <option value="registration" @selected($subjectFilter === 'registration')>Registration</option>
                     <option value="departure" @selected($subjectFilter === 'departure')>Departure</option>
@@ -52,7 +52,7 @@
     </div>
 
     <!-- Log table -->
-    <div class="bg-white rounded-lg border border-line overflow-hidden">
+    <div class="bg-surface rounded-lg border border-line overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm min-w-[800px]">
                 <thead>
@@ -114,7 +114,7 @@
     </div>
 
     @if ($logs->hasPages())
-        <div class="bg-white rounded-lg border border-line px-6 py-4 mt-4">
+        <div class="bg-surface rounded-lg border border-line px-6 py-4 mt-4">
             {{ $logs->links() }}
         </div>
     @endif

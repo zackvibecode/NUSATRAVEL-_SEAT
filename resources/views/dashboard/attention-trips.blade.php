@@ -37,7 +37,7 @@
             </div>
         </div>
     @empty
-        <div class="bg-white rounded-2xl border border-line px-6 py-12 text-center text-charcoal font-medium">
+        <div class="bg-surface rounded-2xl border border-line px-6 py-12 text-center text-charcoal font-medium">
             No trips need attention right now.
         </div>
     @endforelse

@@ -17,7 +17,7 @@
             </a>
         </div>
 
-        <form method="POST" action="{{ route('departures.update', $departure) }}" class="bg-white rounded-lg border border-line p-4 sm:p-6 space-y-6">
+        <form method="POST" action="{{ route('departures.update', $departure) }}" class="bg-surface rounded-lg border border-line p-4 sm:p-6 space-y-6">
             @csrf
             @method('PUT')
 
@@ -27,7 +27,7 @@
                     id="package_id"
                     name="package_id"
                     required
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     @foreach ($packages as $package)
                         <option value="{{ $package->id }}" @selected(old('package_id', $departure->package_id) == $package->id)>{{ $package->name }}</option>
@@ -45,7 +45,7 @@
                         name="departure_date"
                         value="{{ old('departure_date', $departure->departure_date->format('Y-m-d')) }}"
                         required
-                        class="w-full rounded-xl border @error('departure_date') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('departure_date') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                     @include('partials.field-error', ['field' => 'departure_date'])
                 </div>
@@ -57,7 +57,7 @@
                         name="return_date"
                         value="{{ old('return_date', $departure->return_date->format('Y-m-d')) }}"
                         required
-                        class="w-full rounded-xl border @error('return_date') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('return_date') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                     @include('partials.field-error', ['field' => 'return_date'])
                 </div>
@@ -73,7 +73,7 @@
                         value="{{ old('total_seats', $departure->total_seats) }}"
                         min="1"
                         required
-                        class="w-full rounded-xl border @error('total_seats') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('total_seats') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                     @include('partials.field-error', ['field' => 'total_seats'])
                 </div>
@@ -86,7 +86,7 @@
                     id="airline"
                     name="airline"
                     value="{{ old('airline', $departure->airline) }}"
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
 
@@ -95,7 +95,7 @@
                 <select
                     id="status"
                     name="status"
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     <option value="open" @selected(old('status', $departure->status) !== 'cancelled')>
                         Automatic (Open / Almost Full / Full / Departed)
@@ -111,7 +111,7 @@
                     id="notes"
                     name="notes"
                     rows="3"
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >{{ old('notes', $departure->notes) }}</textarea>
             </div>
 

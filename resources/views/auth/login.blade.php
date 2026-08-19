@@ -8,7 +8,7 @@
 
         @include('partials.assets')
     </head>
-    <body class="bg-white text-ink antialiased min-h-screen">
+    <body class="bg-surface text-ink antialiased min-h-screen">
         <div class="min-h-screen flex flex-col lg:flex-row">
             <!-- Left panel — brand showcase with airplane window view -->
             <div class="lg:w-1/2 relative overflow-hidden flex flex-col justify-between p-8 lg:p-12 text-white">
@@ -40,7 +40,7 @@
                     </p>
 
                     <div class="mt-8 space-y-3">
-                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20">
+                        <div class="flex items-center gap-4 bg-surface/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20">
                             <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
@@ -49,7 +49,7 @@
                                 <p class="text-white/80 text-xs mt-0.5">Capacity & occupancy at a glance</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20">
+                        <div class="flex items-center gap-4 bg-surface/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20">
                             <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
@@ -58,7 +58,7 @@
                                 <p class="text-white/80 text-xs mt-0.5">Chase unpaid & partial invoices</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20">
+                        <div class="flex items-center gap-4 bg-surface/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20">
                             <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                             </svg>
@@ -84,8 +84,11 @@
                         <p class="text-xs font-bold tracking-[0.25em] text-charcoal mt-1.5">TRIP SEAT</p>
                     </div>
 
-                    <div class="bg-white rounded-3xl p-8 shadow-sm border border-line">
-                        <div class="mb-8">
+                    <div class="bg-surface rounded-3xl p-8 shadow-sm border border-line">
+                        <div class="flex justify-end mb-4 lg:mb-0">
+                        @include('partials.theme-toggle', ['compact' => true])
+                    </div>
+                    <div class="mb-8">
                             @include('partials.brand-mark', ['size' => 'w-14 h-14 mb-6 hidden lg:inline-flex'])
                             <h2 class="text-2xl font-black tracking-tight">Welcome back</h2>
                             <p class="text-charcoal text-sm mt-1.5">Enter your credentials to access the dashboard.</p>
@@ -121,7 +124,7 @@
                                     autofocus
                                     autocomplete="email"
                                     placeholder="you@company.com"
-                                    class="w-full rounded-2xl border @error('email') border-red-400 @else border-line @enderror bg-white px-4 py-3.5 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                                    class="w-full rounded-2xl border @error('email') border-red-400 @else border-line @enderror bg-surface px-4 py-3.5 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                                 >
                                 @include('partials.field-error', ['field' => 'email'])
                             </div>
@@ -135,7 +138,7 @@
                                     required
                                     autocomplete="current-password"
                                     placeholder="••••••••"
-                                    class="w-full rounded-2xl border @error('password') border-red-400 @else border-line @enderror bg-white px-4 py-3.5 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                                    class="w-full rounded-2xl border @error('password') border-red-400 @else border-line @enderror bg-surface px-4 py-3.5 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                                 >
                                 @include('partials.field-error', ['field' => 'password'])
                             </div>
@@ -170,7 +173,7 @@
                         </div>
 
                         <a href="{{ route('google.login') }}"
-                           class="w-full bg-white hover:bg-fog border border-line hover:border-charcoal/30 text-ink text-sm font-bold rounded-full px-6 py-4 transition-all duration-150 hover:scale-[1.02] shadow-sm flex items-center justify-center gap-3">
+                           class="w-full bg-surface hover:bg-fog border border-line hover:border-charcoal/30 text-ink text-sm font-bold rounded-full px-6 py-4 transition-all duration-150 hover:scale-[1.02] shadow-sm flex items-center justify-center gap-3">
                             <svg class="w-5 h-5" viewBox="0 0 24 24">
                                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>

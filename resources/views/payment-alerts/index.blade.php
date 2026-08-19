@@ -18,22 +18,22 @@
 
     <!-- KPI cards -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <p class="text-xs font-semibold text-charcoal uppercase tracking-wider leading-tight mb-3">Belum Bayar</p>
             <p class="text-2xl font-semibold leading-none tracking-tight text-brand">{{ $stats['belum_bayar'] }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">no payment yet</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <p class="text-xs font-semibold text-charcoal uppercase tracking-wider leading-tight mb-3">Partial</p>
             <p class="text-2xl font-semibold leading-none tracking-tight text-warning">{{ $stats['partial'] }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">deposit paid, balance left</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <p class="text-xs font-semibold text-charcoal uppercase tracking-wider leading-tight mb-3">Paid</p>
             <p class="text-2xl font-semibold leading-none tracking-tight text-positive">{{ $stats['paid'] }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">fully settled</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <p class="text-xs font-semibold text-charcoal uppercase tracking-wider leading-tight mb-3">Total Outstanding</p>
             <p class="text-2xl font-semibold leading-none tracking-tight">RM {{ number_format($stats['outstanding'], 2) }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">{{ $activeAlerts }} record(s) need follow-up</p>
@@ -41,7 +41,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-lg border border-line p-4 sm:p-5 mb-4">
+    <div class="bg-surface rounded-lg border border-line p-4 sm:p-5 mb-4">
         <form method="GET" action="{{ route('payment-alerts.index') }}" class="flex flex-wrap items-end gap-3">
             <div class="flex-1 min-w-[240px]">
                 <label for="search" class="block text-[11px] font-semibold text-charcoal mb-1.5">Search</label>
@@ -57,13 +57,13 @@
                         name="search"
                         value="{{ $searchFilter }}"
                         placeholder="Search customer, invoice, PIC, package..."
-                        class="w-full rounded-xl border border-line bg-white pl-9 pr-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border border-line bg-surface pl-9 pr-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                 </div>
             </div>
             <div>
                 <label for="status" class="block text-[11px] font-semibold text-charcoal mb-1.5">Status</label>
-                <select name="status" id="status" class="rounded-xl border border-line bg-white px-3 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all min-w-[10rem]">
+                <select name="status" id="status" class="rounded-xl border border-line bg-surface px-3 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all min-w-[10rem]">
                     <option value="" @selected($statusFilter === '')>All Statuses</option>
                     <option value="belum_bayar" @selected($statusFilter === 'belum_bayar')>Belum Bayar</option>
                     <option value="partial" @selected($statusFilter === 'partial')>Partial</option>
@@ -80,7 +80,7 @@
     </div>
 
     <!-- Payment table -->
-    <div class="bg-white rounded-lg border border-line overflow-hidden">
+    <div class="bg-surface rounded-lg border border-line overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm min-w-[900px]">
                 <thead>
@@ -152,7 +152,7 @@
     </div>
 
     @if ($payments->hasPages())
-        <div class="bg-white rounded-lg border border-line px-6 py-4 mt-4">
+        <div class="bg-surface rounded-lg border border-line px-6 py-4 mt-4">
             {{ $payments->links() }}
         </div>
     @endif

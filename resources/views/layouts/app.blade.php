@@ -11,7 +11,7 @@
     <body class="bg-fog text-ink antialiased">
         <div class="min-h-screen flex">
             <!-- Sidebar — Vercel clean, collapsible -->
-            <aside id="appSidebar" class="w-64 bg-white border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen overflow-x-hidden">
+            <aside id="appSidebar" class="w-64 bg-surface border-r border-line flex-shrink-0 hidden md:flex flex-col sticky top-0 h-screen overflow-x-hidden">
                 <div class="sidebar-header px-5 py-5 border-b border-line flex items-center justify-between gap-2">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 min-w-0" title="Nusa Travel">
                         @include('partials.brand-mark', ['size' => 'w-9 h-9'])
@@ -177,7 +177,10 @@
                             <div class="text-xs text-charcoal truncate">{{ auth()->user()->email }}</div>
                         </div>
                     </div>
-                    <form method="POST" action="{{ route('logout') }}" class="mt-3">
+                    <div class="mt-3">
+                        @include('partials.theme-toggle')
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}" class="mt-1">
                         @csrf
                         <button type="submit" title="Logout"
                                 class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-charcoal hover:bg-fog hover:text-ink transition-colors">
@@ -191,15 +194,18 @@
             </aside>
 
             <!-- Mobile top bar -->
-            <div class="md:hidden fixed top-0 inset-x-0 z-20 bg-white border-b border-line px-4 py-3 flex items-center justify-between">
+            <div class="md:hidden fixed top-0 inset-x-0 z-20 bg-surface border-b border-line px-4 py-3 flex items-center justify-between">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
                     @include('partials.brand-mark', ['size' => 'w-7 h-7'])
                     <span class="font-black tracking-tight text-sm">nusa<span class="text-brand">travel</span></span>
                 </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="text-ink text-sm font-medium">Logout</button>
-                </form>
+                <div class="flex items-center gap-2">
+                    @include('partials.theme-toggle', ['compact' => true])
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="text-ink text-sm font-medium">Logout</button>
+                    </form>
+                </div>
             </div>
 
             <!-- Mobile bottom nav: 4 primary items + More drawer -->
@@ -208,7 +214,7 @@
                 $secondaryMobile = collect($navItems)->slice(4)->values()->all();
                 $secondaryActive = collect($secondaryMobile)->contains(fn ($item) => request()->routeIs($item['pattern']));
             @endphp
-            <nav class="md:hidden fixed bottom-0 inset-x-0 z-20 bg-white border-t border-line flex items-center justify-around py-2 px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+            <nav class="md:hidden fixed bottom-0 inset-x-0 z-20 bg-surface border-t border-line flex items-center justify-around py-2 px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
                 @foreach ($primaryMobile as $item)
                     @php
                         $isActive = request()->routeIs($item['pattern']);
@@ -238,8 +244,8 @@
             <!-- Mobile More drawer -->
             <div id="moreNavDrawer" class="md:hidden fixed inset-0 z-30 hidden" role="dialog" aria-modal="true" aria-label="More navigation">
                 <div id="moreNavBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-                <div class="absolute bottom-0 inset-x-0 bg-white rounded-t-3xl border-t border-line max-h-[75vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
-                    <div class="sticky top-0 bg-white px-5 pt-4 pb-3 border-b border-line flex items-center justify-between">
+                <div class="absolute bottom-0 inset-x-0 bg-surface rounded-t-3xl border-t border-line max-h-[75vh] overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]">
+                    <div class="sticky top-0 bg-surface px-5 pt-4 pb-3 border-b border-line flex items-center justify-between">
                         <h3 class="font-black tracking-tight">More</h3>
                         <button type="button" id="moreNavClose" aria-label="Close menu" class="w-9 h-9 rounded-full bg-fog hover:bg-brand-soft text-charcoal hover:text-brand flex items-center justify-center transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -257,7 +263,7 @@
                                 <span class="{{ $isActive ? 'text-white' : 'text-charcoal' }}">{!! $item['icon'] !!}</span>
                                 <span class="flex-1">{{ $item['label'] }}</span>
                                 @if (($item['badge'] ?? 0) > 0)
-                                    <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full {{ $isActive ? 'bg-white text-brand' : 'bg-brand text-white' }} text-[10px] font-black flex-shrink-0">
+                                    <span class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full {{ $isActive ? 'bg-surface text-brand' : 'bg-brand text-white' }} text-[10px] font-black flex-shrink-0">
                                         {{ $item['badge'] > 99 ? '99+' : $item['badge'] }}
                                     </span>
                                 @endif
@@ -373,7 +379,7 @@
                  role="dialog"
                  aria-modal="true"
                  aria-labelledby="deleteTripTitle">
-                <div class="bg-white rounded-3xl shadow-xl border border-line w-full max-w-md p-6 sm:p-8">
+                <div class="bg-surface rounded-3xl shadow-xl border border-line w-full max-w-md p-6 sm:p-8">
                     <div class="flex items-start gap-4">
                         <div class="flex-shrink-0 w-11 h-11 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

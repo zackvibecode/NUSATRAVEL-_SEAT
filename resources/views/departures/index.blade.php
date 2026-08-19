@@ -21,7 +21,7 @@
     </div>
 
     <!-- Filter toolbar -->
-    <div class="bg-white rounded-lg border border-line p-4 sm:p-5 mb-4">
+    <div class="bg-surface rounded-lg border border-line p-4 sm:p-5 mb-4">
         @include('partials.trip-filters', ['filter' => $filter])
     </div>
 
@@ -30,7 +30,7 @@
         @forelse ($departures as $departure)
             @include('partials.trip-card', ['departure' => $departure])
         @empty
-            <div class="bg-white rounded-lg border border-line px-6 py-12 text-center">
+            <div class="bg-surface rounded-lg border border-line px-6 py-12 text-center">
                 <div class="w-12 h-12 rounded-2xl bg-brand-soft flex items-center justify-center mx-auto mb-3">
                     <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -59,7 +59,7 @@
     </div>
 
     @if ($departures->hasPages())
-        <div class="bg-white rounded-lg border border-line px-6 py-4 mt-4">
+        <div class="bg-surface rounded-lg border border-line px-6 py-4 mt-4">
             {{ $departures->links() }}
         </div>
     @endif

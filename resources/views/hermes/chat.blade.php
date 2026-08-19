@@ -11,7 +11,7 @@
         <a href="{{ route('hermes.guide') }}" class="text-sm font-semibold text-brand hover:underline">API guide →</a>
     </div>
 
-    <div class="bg-white rounded-lg border border-line overflow-hidden flex flex-col" style="min-height: 28rem;">
+    <div class="bg-surface rounded-lg border border-line overflow-hidden flex flex-col" style="min-height: 28rem;">
         <div id="hermes-log" class="flex-1 p-4 sm:p-5 space-y-4 overflow-y-auto max-h-[60vh]">
             <div class="mr-12 text-sm bg-fog rounded-2xl px-4 py-3 whitespace-pre-wrap text-ink">
                 Hi. Type <strong>help</strong> for commands. I can list data, search, delete package, cancel trip, delete pax.

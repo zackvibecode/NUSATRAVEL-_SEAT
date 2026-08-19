@@ -19,7 +19,7 @@
 
     <!-- KPI cards -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4">
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -31,7 +31,7 @@
             <p class="text-2xl font-semibold leading-none tracking-tight">{{ $upcomingTrips }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">still open for selling</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-positive-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-positive" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@
             <p class="text-2xl font-semibold leading-none tracking-tight text-positive">{{ $availableSeats }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">across all upcoming trips</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-warning-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-warning" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -58,14 +58,14 @@
     </div>
 
     <!-- Search / filter trips -->
-    <div class="bg-white rounded-xl border border-line p-4 sm:p-5 mb-4">
+    <div class="bg-surface rounded-xl border border-line p-4 sm:p-5 mb-4">
         @include('partials.trip-filters', ['filter' => $filter, 'showSearch' => true, 'showSort' => false])
     </div>
 
     <!-- Two-column: Nearest trips + Hermes feed -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
         <!-- Nearest trips -->
-        <div class="lg:col-span-2 bg-white rounded-lg border border-line overflow-hidden">
+        <div class="lg:col-span-2 bg-surface rounded-lg border border-line overflow-hidden">
             <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
                 <div>
                     <h3 class="font-semibold text-base tracking-tight">Next Trips</h3>
@@ -98,7 +98,7 @@
         <!-- Right column: Hermes feed + Recent customers -->
         <div class="space-y-4">
             <!-- Hermes seat updates -->
-            <div class="bg-white rounded-lg border border-line overflow-hidden">
+            <div class="bg-surface rounded-lg border border-line overflow-hidden">
                 <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-line flex items-center justify-between gap-3">
                     <h3 class="font-semibold text-base tracking-tight">Hermes Update</h3>
                 </div>
@@ -128,7 +128,7 @@
             </div>
 
             <!-- Recent customers -->
-            <div class="bg-white rounded-lg border border-line overflow-hidden">
+            <div class="bg-surface rounded-lg border border-line overflow-hidden">
                 <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-line flex items-center justify-between gap-3">
                     <h3 class="font-semibold text-base tracking-tight">Recent Customers</h3>
                 </div>

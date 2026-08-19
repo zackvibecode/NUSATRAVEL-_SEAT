@@ -11,7 +11,7 @@
     </div>
 
     <!-- Search -->
-    <div class="bg-white rounded-lg border border-line p-4 sm:p-5 mb-4">
+    <div class="bg-surface rounded-lg border border-line p-4 sm:p-5 mb-4">
         <form method="GET" action="{{ route('participants.index') }}" class="flex flex-wrap items-end gap-3">
             <div class="flex-1 min-w-[280px] sm:min-w-[360px]">
                 <label for="search" class="block text-[11px] font-semibold text-charcoal mb-1.5">Search</label>
@@ -27,7 +27,7 @@
                         name="search"
                         value="{{ $search }}"
                         placeholder="Search by name, phone, or package..."
-                        class="w-full rounded-xl border border-line bg-white pl-9 pr-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border border-line bg-surface pl-9 pr-4 py-2.5 text-sm font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                 </div>
             </div>
@@ -44,7 +44,7 @@
     <!-- Participant cards -->
     <div class="space-y-3">
         @forelse ($registrations as $registration)
-            <div class="bg-white rounded-lg border border-line hover:shadow-md hover:border-brand/30 transition-all duration-150">
+            <div class="bg-surface rounded-lg border border-line hover:shadow-md hover:border-brand/30 transition-all duration-150">
                 <div class="p-4 sm:p-5">
                     <div class="flex items-start justify-between gap-3 mb-3">
                         <div class="min-w-0">
@@ -78,7 +78,7 @@
                 </div>
             </div>
         @empty
-            <div class="bg-white rounded-lg border border-line px-6 py-16 text-center">
+            <div class="bg-surface rounded-lg border border-line px-6 py-16 text-center">
                 <div class="w-12 h-12 rounded-xl bg-fog flex items-center justify-center mx-auto mb-4">
                     <svg class="w-6 h-6 text-charcoal" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -96,7 +96,7 @@
     </div>
 
     @if ($registrations->hasPages())
-        <div class="bg-white rounded-lg border border-line px-6 py-4 mt-4">
+        <div class="bg-surface rounded-lg border border-line px-6 py-4 mt-4">
             {{ $registrations->links() }}
         </div>
     @endif

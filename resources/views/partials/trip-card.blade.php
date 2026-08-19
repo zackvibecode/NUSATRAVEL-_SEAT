@@ -5,7 +5,7 @@
     $isAdmin = auth()->check() && auth()->user()->isAdmin();
 @endphp
 
-<div class="group relative bg-white {{ $isCancelled ? 'bg-brand-soft border-brand' : 'border-line hover:border-brand/40' }} border rounded-xl {{ $isCancelled ? '' : 'transition-all duration-150' }}">
+<div class="group relative bg-surface {{ $isCancelled ? 'bg-brand-soft border-brand' : 'border-line hover:border-brand/40' }} border rounded-xl {{ $isCancelled ? '' : 'transition-all duration-150' }}">
     @if ($isCancelled)
         <div class="absolute top-0 left-0 right-0 h-1 bg-brand rounded-t-xl"></div>
     @endif

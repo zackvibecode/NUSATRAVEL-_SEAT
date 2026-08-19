@@ -8,7 +8,7 @@
         <p class="text-sm text-charcoal mt-2">Create an admin or sales team account.</p>
     </div>
 
-    <form method="POST" action="{{ route('users.store') }}" class="bg-white rounded-lg border border-line p-4 sm:p-6 space-y-6 max-w-2xl">
+    <form method="POST" action="{{ route('users.store') }}" class="bg-surface rounded-lg border border-line p-4 sm:p-6 space-y-6 max-w-2xl">
         @csrf
 
         <div>
@@ -19,7 +19,7 @@
                 name="name"
                 value="{{ old('name') }}"
                 required
-                class="w-full rounded-xl border @error('name') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border @error('name') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
             @include('partials.field-error', ['field' => 'name'])
         </div>
@@ -32,7 +32,7 @@
                 name="email"
                 value="{{ old('email') }}"
                 required
-                class="w-full rounded-xl border @error('email') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border @error('email') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
             @include('partials.field-error', ['field' => 'email'])
         </div>
@@ -45,7 +45,7 @@
                 name="password"
                 required
                 minlength="8"
-                class="w-full rounded-xl border @error('password') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border @error('password') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
             <p class="text-xs text-charcoal mt-1.5 font-medium">Minimum 8 characters.</p>
             @include('partials.field-error', ['field' => 'password'])
@@ -57,7 +57,7 @@
                 id="role"
                 name="role"
                 required
-                class="w-full rounded-xl border @error('role') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border @error('role') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
                 <option value="sales" @selected(old('role', 'sales') === 'sales')>Sales — dashboard + trips + register customers</option>
                 <option value="admin" @selected(old('role') === 'admin')>Admin — full access including reports & packages</option>
@@ -73,7 +73,7 @@
                 name="pic_name"
                 value="{{ old('pic_name') }}"
                 placeholder="e.g. the PIC name used in invoices"
-                class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
             <p class="text-xs text-charcoal mt-1.5 font-medium">
                 For sales users: matches Payment Alert records where this person is PIC Utama or PIC In House. Leave empty to use their full name.

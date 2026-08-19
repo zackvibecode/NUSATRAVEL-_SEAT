@@ -14,7 +14,7 @@
         </a>
         <div class="flex items-center gap-3">
             <a href="{{ route('departures.manifest', $departure) }}" target="_blank"
-               class="inline-flex items-center gap-2 bg-white shadow-sm border border-line hover:shadow-md text-ink text-sm font-bold rounded-full px-6 py-3 transition-all duration-150">
+               class="inline-flex items-center gap-2 bg-surface shadow-sm border border-line hover:shadow-md text-ink text-sm font-bold rounded-full px-6 py-3 transition-all duration-150">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                 </svg>
@@ -22,7 +22,7 @@
             </a>
             @if ($canManageRegs)
                 <a href="{{ route('departures.edit', $departure) }}"
-                   class="inline-flex items-center gap-2 bg-white shadow-sm border border-line hover:shadow-md text-ink text-sm font-bold rounded-full px-6 py-3 transition-all duration-150">
+                   class="inline-flex items-center gap-2 bg-surface shadow-sm border border-line hover:shadow-md text-ink text-sm font-bold rounded-full px-6 py-3 transition-all duration-150">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Trip header -->
-    <div class="bg-white rounded-lg border border-line p-4 sm:p-6 mb-4">
+    <div class="bg-surface rounded-lg border border-line p-4 sm:p-6 mb-4">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
                 <div class="flex items-center gap-3">
@@ -105,7 +105,7 @@
 
     <!-- Seat summary -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                     <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -116,7 +116,7 @@
             </div>
             <p class="text-2xl sm:text-3xl font-black leading-none">{{ $departure->total_seats }}</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                     <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@
             </div>
             <p class="text-2xl sm:text-3xl font-black leading-none">{{ $departure->registered_pax }}</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl {{ $departure->available_seats <= 0 ? 'bg-brand' : 'bg-positive-soft' }} flex items-center justify-center">
                     <svg class="w-5 h-5 {{ $departure->available_seats <= 0 ? 'text-white' : 'text-positive' }}" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@
             </div>
             <p class="text-2xl sm:text-3xl font-black leading-none {{ $departure->available_seats <= 0 ? 'text-brand' : 'text-positive' }}">{{ $departure->available_seats }}</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-3 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                     <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -156,7 +156,7 @@
     </div>
 
     <!-- Registrations table -->
-    <div class="bg-white rounded-lg border border-line overflow-hidden mb-4">
+    <div class="bg-surface rounded-lg border border-line overflow-hidden mb-4">
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
@@ -248,7 +248,7 @@
 
     @if ($canManageRegs)
     <!-- Add registration form -->
-    <div id="add-registration" class="bg-white rounded-lg border border-line p-4 sm:p-6 mb-4">
+    <div id="add-registration" class="bg-surface rounded-lg border border-line p-4 sm:p-6 mb-4">
         <div class="flex items-center gap-3 mb-6">
             <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-brand-soft flex items-center justify-center">
                 <svg class="w-5 h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -275,7 +275,7 @@
                     name="name"
                     value="{{ old('name') }}"
                     required
-                    class="w-full rounded-2xl border @error('name') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-2xl border @error('name') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                 @include('partials.field-error', ['field' => 'name'])
             </div>
@@ -288,7 +288,7 @@
                     name="phone"
                     value="{{ old('phone') }}"
                     placeholder="e.g. 012-3456789"
-                    class="w-full rounded-2xl border @error('phone') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-2xl border @error('phone') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                 @include('partials.field-error', ['field' => 'phone'])
             </div>
@@ -302,7 +302,7 @@
                     value="{{ old('pax', 1) }}"
                     min="1"
                     required
-                    class="w-full rounded-2xl border @error('pax') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-2xl border @error('pax') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                 @include('partials.field-error', ['field' => 'pax'])
             </div>
@@ -312,7 +312,7 @@
                 <select
                     id="reg_need_partner"
                     name="need_partner"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-2xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     <option value="0" @selected(old('need_partner', '0') === '0')>No</option>
                     <option value="1" @selected(old('need_partner') === '1')>Yes</option>
@@ -324,7 +324,7 @@
                 <select
                     id="reg_partner_gender"
                     name="partner_gender"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-2xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     <option value="">Select gender...</option>
                     <option value="male" @selected(old('partner_gender') === 'male')>Male</option>
@@ -339,7 +339,7 @@
                     id="reg_notes"
                     name="notes"
                     value="{{ old('notes') }}"
-                    class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-2xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
 
@@ -356,7 +356,7 @@
     @if ($canManageRegs)
     <!-- Edit registration modal -->
     <div id="editModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8">
+        <div class="bg-surface rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-8">
             <div class="flex items-center justify-between mb-6">
                 <h3 id="editModalTitle" class="font-bold text-lg tracking-tight">Edit Registration</h3>
                 <button type="button" data-close-edit-modal aria-label="Close" class="text-charcoal hover:text-ink text-2xl leading-none font-medium">&times;</button>
@@ -369,25 +369,25 @@
                 <div>
                     <label for="edit_name" class="block text-sm font-semibold text-ink mb-2">Participant Name *</label>
                     <input type="text" id="edit_name" name="name" required
-                           class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
+                           class="w-full rounded-2xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
                 </div>
 
                 <div>
                     <label for="edit_phone" class="block text-sm font-semibold text-ink mb-2">Phone Number</label>
                     <input type="text" id="edit_phone" name="phone"
-                           class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
+                           class="w-full rounded-2xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
                 </div>
 
                 <div>
                     <label for="edit_pax" class="block text-sm font-semibold text-ink mb-2">Number of Pax *</label>
                     <input type="number" id="edit_pax" name="pax" min="1" required
-                           class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
+                           class="w-full rounded-2xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
                 </div>
 
                 <div>
                     <label for="edit_need_partner" class="block text-sm font-semibold text-ink mb-2">Need Partner?</label>
                     <select id="edit_need_partner" name="need_partner" onchange="toggleEditPartnerGender(this)"
-                            class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
+                            class="w-full rounded-2xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
                         <option value="0">No</option>
                         <option value="1">Yes</option>
                     </select>
@@ -396,7 +396,7 @@
                 <div id="edit_partner_gender_wrap" class="hidden">
                     <label for="edit_partner_gender" class="block text-sm font-semibold text-ink mb-2">Partner Gender *</label>
                     <select id="edit_partner_gender" name="partner_gender"
-                            class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
+                            class="w-full rounded-2xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
                         <option value="">Select gender...</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -406,7 +406,7 @@
                 <div>
                     <label for="edit_notes" class="block text-sm font-semibold text-ink mb-2">Notes</label>
                     <input type="text" id="edit_notes" name="notes"
-                           class="w-full rounded-2xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
+                           class="w-full rounded-2xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
                 </div>
 
                 <div class="md:col-span-2 flex items-center gap-4 pt-2">

@@ -14,7 +14,7 @@
             @page { margin: 1cm; }
         </style>
     </head>
-    <body class="bg-white text-ink antialiased">
+    <body class="bg-surface text-ink antialiased">
         <div class="max-w-4xl mx-auto p-6">
             <!-- Header -->
             <div class="flex items-center justify-between mb-8 pb-6 border-b-2 border-ink">

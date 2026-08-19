@@ -17,7 +17,7 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-lg border border-line overflow-hidden">
+    <div class="bg-surface rounded-lg border border-line overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>

@@ -20,7 +20,7 @@
     </div>
 
     <!-- Filters -->
-    <form method="GET" class="bg-white rounded-2xl shadow-sm border border-line px-4 sm:px-6 py-4 mb-4 flex flex-wrap items-end gap-x-4 gap-y-3">
+    <form method="GET" class="bg-surface rounded-2xl shadow-sm border border-line px-4 sm:px-6 py-4 mb-4 flex flex-wrap items-end gap-x-4 gap-y-3">
         <div class="flex-1 min-w-[12rem]">
             <label for="package" class="block text-[11px] font-semibold text-charcoal mb-1.5">Package</label>
             <input type="text"
@@ -29,11 +29,11 @@
                    value="{{ $packageFilter }}"
                    placeholder="Package name..."
                    autocomplete="off"
-                   class="w-full rounded-xl border border-line bg-white px-3 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
+                   class="w-full rounded-xl border border-line bg-surface px-3 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all">
         </div>
         <div>
             <label for="month" class="block text-[11px] font-semibold text-charcoal mb-1.5">Month</label>
-            <select name="month" id="month" class="rounded-xl border border-line bg-white px-3 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all min-w-[8.5rem]">
+            <select name="month" id="month" class="rounded-xl border border-line bg-surface px-3 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all min-w-[8.5rem]">
                 <option value="">All Months</option>
                 @foreach (\App\Support\TripListFilter::months() as $num => $label)
                     <option value="{{ $num }}" @selected($monthFilter === $num)>{{ $label }}</option>
@@ -50,7 +50,7 @@
     </form>
 
     <!-- Activity feed -->
-    <div class="bg-white rounded-3xl shadow-sm border border-line overflow-hidden">
+    <div class="bg-surface rounded-3xl shadow-sm border border-line overflow-hidden">
         <div class="divide-y divide-line">
             @forelse ($activities as $activity)
                 @php

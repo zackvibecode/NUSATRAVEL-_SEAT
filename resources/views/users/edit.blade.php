@@ -8,7 +8,7 @@
         <p class="text-sm text-charcoal mt-2">Update account details, role, or PIC name.</p>
     </div>
 
-    <form method="POST" action="{{ route('users.update', $user) }}" class="bg-white rounded-lg border border-line p-4 sm:p-6 space-y-6 max-w-2xl">
+    <form method="POST" action="{{ route('users.update', $user) }}" class="bg-surface rounded-lg border border-line p-4 sm:p-6 space-y-6 max-w-2xl">
         @csrf
         @method('PUT')
 
@@ -20,7 +20,7 @@
                 name="name"
                 value="{{ old('name', $user->name) }}"
                 required
-                class="w-full rounded-xl border @error('name') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border @error('name') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
             @include('partials.field-error', ['field' => 'name'])
         </div>
@@ -33,7 +33,7 @@
                 name="email"
                 value="{{ old('email', $user->email) }}"
                 required
-                class="w-full rounded-xl border @error('email') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border @error('email') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
             @include('partials.field-error', ['field' => 'email'])
         </div>
@@ -46,7 +46,7 @@
                 name="password"
                 minlength="8"
                 autocomplete="new-password"
-                class="w-full rounded-xl border @error('password') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border @error('password') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
             <p class="text-xs text-charcoal mt-1.5 font-medium">Leave blank to keep the current password.</p>
             @include('partials.field-error', ['field' => 'password'])
@@ -58,7 +58,7 @@
                 id="role"
                 name="role"
                 required
-                class="w-full rounded-xl border @error('role') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border @error('role') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
                 <option value="sales" @selected(old('role', $user->role) === 'sales')>Sales — dashboard + trips (view only)</option>
                 <option value="admin" @selected(old('role', $user->role) === 'admin')>Admin — full access</option>
@@ -74,7 +74,7 @@
                 name="pic_name"
                 value="{{ old('pic_name', $user->pic_name) }}"
                 placeholder="e.g. the PIC name used in invoices"
-                class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
             >
             <p class="text-xs text-charcoal mt-1.5 font-medium">
                 For sales users: matches Payment Alert records where this person is PIC Utama or PIC In House. Leave empty to use their full name.

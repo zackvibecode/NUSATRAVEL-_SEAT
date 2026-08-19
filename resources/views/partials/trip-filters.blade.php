@@ -7,7 +7,7 @@
     $showPastToggle = $showPastToggle ?? in_array($filter->context, ['departures', 'packages'], true);
     $extra = $extra ?? [];
 
-    $selectClass = 'rounded-xl border border-line bg-white px-3 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all';
+    $selectClass = 'rounded-xl border border-line bg-surface px-3 py-2 text-xs font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all';
     $labelClass = 'block text-[11px] font-semibold text-charcoal mb-1.5';
 @endphp
 
@@ -36,7 +36,7 @@
                     value="{{ $filter->search }}"
                     placeholder="Search package, destination, airline, or customer..."
                     autocomplete="off"
-                    class="w-full rounded-xl border border-line bg-white pl-12 pr-4 py-3 text-base font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface pl-12 pr-4 py-3 text-base font-medium focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
             <p class="text-[11px] text-charcoal mt-1.5 font-medium">Case-insensitive · results update as you type</p>

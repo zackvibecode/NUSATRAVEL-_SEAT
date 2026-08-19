@@ -17,7 +17,7 @@
             </a>
         </div>
 
-        <form method="POST" action="{{ route('packages.store') }}" class="bg-white rounded-lg border border-line p-4 sm:p-6 space-y-6">
+        <form method="POST" action="{{ route('packages.store') }}" class="bg-surface rounded-lg border border-line p-4 sm:p-6 space-y-6">
             @csrf
 
             <div>
@@ -29,7 +29,7 @@
                     value="{{ old('name') }}"
                     required
                     placeholder="e.g. Yunnan 8D6N"
-                    class="w-full rounded-xl border @error('name') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border @error('name') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                 @include('partials.field-error', ['field' => 'name'])
             </div>
@@ -43,7 +43,7 @@
                     value="{{ old('destination') }}"
                     required
                     placeholder="e.g. China"
-                    class="w-full rounded-xl border @error('destination') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border @error('destination') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                 @include('partials.field-error', ['field' => 'destination'])
             </div>
@@ -55,7 +55,7 @@
                     name="description"
                     rows="3"
                     placeholder="Optional. e.g. Kunming, Dali, Lijiang, Shangri-La"
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >{{ old('description') }}</textarea>
             </div>
 
@@ -64,7 +64,7 @@
                 <select
                     id="status"
                     name="status"
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     <option value="active" @selected(old('status', 'active') === 'active')>Active</option>
                     <option value="archived" @selected(old('status') === 'archived')>Archived</option>

@@ -17,7 +17,7 @@
             </a>
         </div>
 
-        <form method="POST" action="{{ route('departures.store') }}" class="bg-white rounded-lg border border-line p-4 sm:p-6 space-y-6">
+        <form method="POST" action="{{ route('departures.store') }}" class="bg-surface rounded-lg border border-line p-4 sm:p-6 space-y-6">
             @csrf
 
             <div>
@@ -26,7 +26,7 @@
                     id="package_id"
                     name="package_id"
                     required
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
                     <option value="">Select an active package...</option>
                     @foreach ($packages as $package)
@@ -45,7 +45,7 @@
                         name="departure_date"
                         value="{{ old('departure_date') }}"
                         required
-                        class="w-full rounded-xl border @error('departure_date') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('departure_date') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                     @include('partials.field-error', ['field' => 'departure_date'])
                 </div>
@@ -57,7 +57,7 @@
                         name="return_date"
                         value="{{ old('return_date') }}"
                         required
-                        class="w-full rounded-xl border @error('return_date') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('return_date') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                     @include('partials.field-error', ['field' => 'return_date'])
                 </div>
@@ -73,7 +73,7 @@
                         value="{{ old('total_seats', 25) }}"
                         min="1"
                         required
-                        class="w-full rounded-xl border @error('total_seats') border-red-400 @else border-line @enderror bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                        class="w-full rounded-xl border @error('total_seats') border-red-400 @else border-line @enderror bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                     >
                     @include('partials.field-error', ['field' => 'total_seats'])
                 </div>
@@ -87,7 +87,7 @@
                     name="airline"
                     value="{{ old('airline') }}"
                     placeholder="e.g. AirAsia"
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >
             </div>
 
@@ -97,7 +97,7 @@
                     id="notes"
                     name="notes"
                     rows="3"
-                    class="w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
+                    class="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none transition-all"
                 >{{ old('notes') }}</textarea>
             </div>
 

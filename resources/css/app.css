@@ -2,24 +2,60 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
 
 @theme {
     --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
 
-    /* Vercel-inspired palette — clean black/white + brand red accent */
-    --color-brand: #e4002b;        /* voltage red — primary CTA accent */
-    --color-brand-hover: #c40027;  /* deeper red on hover */
-    --color-brand-soft: #fff1f2;   /* light red surface / badges */
-    --color-brand-ink: #3d000a;    /* dark red ink — button text on red */
-    --color-fog: #fafafa;          /* Vercel light gray canvas */
-    --color-ink: #171717;          /* near-black text (gray-1000) */
-    --color-charcoal: #666666;     /* secondary text (gray-600) */
-    --color-line: #eaeaea;         /* hairline borders */
-    --color-positive: #16a34a;     /* green for available / open */
-    --color-positive-soft: #f0fdf4;
-    --color-warning: #d97706;      /* amber for almost full */
-    --color-warning-soft: #fffbeb;
+    --color-brand: var(--app-brand);
+    --color-brand-hover: var(--app-brand-hover);
+    --color-brand-soft: var(--app-brand-soft);
+    --color-brand-ink: var(--app-brand-ink);
+    --color-fog: var(--app-fog);
+    --color-surface: var(--app-surface);
+    --color-ink: var(--app-ink);
+    --color-charcoal: var(--app-charcoal);
+    --color-line: var(--app-line);
+    --color-positive: var(--app-positive);
+    --color-positive-soft: var(--app-positive-soft);
+    --color-warning: var(--app-warning);
+    --color-warning-soft: var(--app-warning-soft);
+}
+
+:root {
+    --app-fog: #fafafa;
+    --app-surface: #ffffff;
+    --app-ink: #171717;
+    --app-charcoal: #666666;
+    --app-line: #eaeaea;
+    --app-brand: #e4002b;
+    --app-brand-hover: #c40027;
+    --app-brand-soft: #fff1f2;
+    --app-brand-ink: #3d000a;
+    --app-positive: #16a34a;
+    --app-positive-soft: #f0fdf4;
+    --app-warning: #d97706;
+    --app-warning-soft: #fffbeb;
+    color-scheme: light;
+}
+
+html.dark {
+    /* Dark navy — not black */
+    --app-fog: #07111f;
+    --app-surface: #0f1c33;
+    --app-ink: #e8eef8;
+    --app-charcoal: #9bb0cc;
+    --app-line: #24385c;
+    --app-brand: #ff4d6d;
+    --app-brand-hover: #ff6b85;
+    --app-brand-soft: #2a1630;
+    --app-brand-ink: #ffd6de;
+    --app-positive: #4ade80;
+    --app-positive-soft: #0f2a1c;
+    --app-warning: #fbbf24;
+    --app-warning-soft: #2a210c;
+    color-scheme: dark;
 }
 
 /* Visible keyboard focus on all interactive elements (a11y) */
@@ -43,6 +79,27 @@ a {
 
 button:disabled {
     cursor: not-allowed;
+}
+
+html.dark .bg-red-50 {
+    background-color: rgba(127, 29, 29, 0.35);
+}
+
+html.dark .text-red-700,
+html.dark .text-red-600 {
+    color: #fca5a5;
+}
+
+html.dark .border-red-200,
+html.dark .border-red-400 {
+    border-color: rgba(248, 113, 113, 0.35);
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+    background-color: var(--app-surface);
+    color: var(--app-ink);
 }
 
 /* Collapsible sidebar (desktop) — state stored on <html class="sidebar-collapsed"> */
@@ -89,6 +146,14 @@ html.sidebar-collapsed #appSidebar .sidebar-user {
 
 html.sidebar-collapsed #sidebarToggle svg {
     transform: rotate(180deg);
+}
+
+html.dark .theme-icon-sun {
+    display: none;
+}
+
+html:not(.dark) .theme-icon-moon {
+    display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

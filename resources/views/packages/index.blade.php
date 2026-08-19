@@ -17,11 +17,11 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-lg border border-line p-4 sm:p-5 mb-4">
+    <div class="bg-surface rounded-lg border border-line p-4 sm:p-5 mb-4">
         @include('partials.trip-filters', ['filter' => $filter, 'showPackage' => false, 'showStatus' => true])
     </div>
 
-    <div class="bg-white rounded-lg border border-line overflow-hidden">
+    <div class="bg-surface rounded-lg border border-line overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
@@ -117,7 +117,7 @@
          role="dialog"
          aria-modal="true"
          aria-labelledby="deletePackageTitle">
-        <div class="bg-white rounded-3xl shadow-xl border border-line w-full max-w-md p-6 sm:p-8">
+        <div class="bg-surface rounded-3xl shadow-xl border border-line w-full max-w-md p-6 sm:p-8">
             <div class="flex items-start gap-4">
                 <div class="flex-shrink-0 w-11 h-11 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

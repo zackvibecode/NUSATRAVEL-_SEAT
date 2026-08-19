@@ -1,3 +1,34 @@
+@include('partials.theme-boot')
+
+<style>
+    :root {
+        --app-fog: #fafafa;
+        --app-surface: #ffffff;
+        --app-ink: #171717;
+        --app-charcoal: #666666;
+        --app-line: #eaeaea;
+        --app-brand: #e4002b;
+        --app-brand-hover: #c40027;
+        --app-brand-soft: #fff1f2;
+        --app-brand-ink: #3d000a;
+        color-scheme: light;
+    }
+    html.dark {
+        --app-fog: #07111f;
+        --app-surface: #0f1c33;
+        --app-ink: #e8eef8;
+        --app-charcoal: #9bb0cc;
+        --app-line: #24385c;
+        --app-brand: #ff4d6d;
+        --app-brand-hover: #ff6b85;
+        --app-brand-soft: #2a1630;
+        --app-brand-ink: #ffd6de;
+        color-scheme: dark;
+    }
+    html.dark .theme-icon-sun { display: none; }
+    html:not(.dark) .theme-icon-moon { display: none; }
+</style>
+
 {{-- Favicon (circular SeatWeb "S" mark) --}}
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
@@ -32,11 +63,12 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { DEFAULT: '#e4002b', hover: '#c40027', soft: '#ffe9ed', ink: '#3d000a' },
-                        fog: '#faf3f3',
-                        ink: '#14100f',
-                        charcoal: '#454245',
-                        line: '#e8e4e2',
+                        brand: { DEFAULT: 'var(--app-brand)', hover: 'var(--app-brand-hover)', soft: 'var(--app-brand-soft)', ink: 'var(--app-brand-ink)' },
+                        fog: 'var(--app-fog)',
+                        surface: 'var(--app-surface)',
+                        ink: 'var(--app-ink)',
+                        charcoal: 'var(--app-charcoal)',
+                        line: 'var(--app-line)',
                     }
                 }
             }

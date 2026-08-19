@@ -19,7 +19,7 @@
 
     <!-- KPI cards -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -31,7 +31,7 @@
             <p class="text-2xl font-semibold leading-none tracking-tight">{{ $upcomingTrips }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">{{ $registeredPax }} pax booked</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-brand-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-brand" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@
             <p class="text-2xl font-semibold leading-none tracking-tight">{{ $totalCapacity }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">{{ $overallOccupancy }}% occupied</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-positive-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-positive" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -55,7 +55,7 @@
             <p class="text-2xl font-semibold leading-none tracking-tight {{ $availableSeats <= 0 ? 'text-brand' : 'text-positive' }}">{{ $availableSeats }}</p>
             <p class="text-xs text-charcoal/70 mt-1.5 font-medium">{{ $availableSeats <= 0 ? 'All trips full' : 'across all trips' }}</p>
         </div>
-        <div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-line">
+        <div class="bg-surface rounded-xl p-4 sm:p-5 shadow-sm border border-line">
             <div class="flex items-center gap-2.5 mb-3">
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-warning-soft flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-warning" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -70,7 +70,7 @@
     </div>
 
     <!-- 6-month pax trend — SVG line chart -->
-    <div class="bg-white rounded-lg border border-line overflow-hidden mb-4">
+    <div class="bg-surface rounded-lg border border-line overflow-hidden mb-4">
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div>
                 <h3 class="font-semibold text-base tracking-tight">Pax Trend</h3>
@@ -144,7 +144,7 @@
     <!-- Two-column: Hermes + Attention -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
         <!-- Hermes seat updates -->
-        <div class="bg-white rounded-lg border border-line overflow-hidden">
+        <div class="bg-surface rounded-lg border border-line overflow-hidden">
             <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-line flex items-center justify-between gap-3">
                 <h3 class="font-semibold text-base tracking-tight">Hermes Update</h3>
                 <a href="{{ route('hermes.updates') }}" class="text-sm font-bold text-brand hover:text-brand-hover flex items-center gap-1 flex-shrink-0">
@@ -181,7 +181,7 @@
 
         <!-- Attention trips -->
         <a href="{{ route('attention-trips.index') }}"
-           class="block bg-white rounded-lg border border-line hover:shadow-md hover:border-brand/30 transition-all duration-150 group">
+           class="block bg-surface rounded-lg border border-line hover:shadow-md hover:border-brand/30 transition-all duration-150 group">
             <div class="px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between h-full">
                 <div class="flex items-center gap-3 sm:gap-4 min-w-0">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-warning-soft flex items-center justify-center flex-shrink-0">
@@ -213,7 +213,7 @@
     </div>
 
     <!-- Upcoming Trips -->
-    <div class="bg-white rounded-lg border border-line overflow-hidden">
+    <div class="bg-surface rounded-lg border border-line overflow-hidden">
         <div class="px-4 sm:px-6 py-4 border-b border-line flex items-center justify-between">
             <div>
                 <h3 class="font-semibold text-base tracking-tight">Upcoming Trips</h3>
