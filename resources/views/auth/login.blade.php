@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Login — WEBSEAT</title>
+        <title>Login — Nusa Travel</title>
 
         @include('partials.assets')
     </head>
@@ -23,10 +23,10 @@
 
                 <div class="relative z-10">
                     <a href="#" class="flex items-center gap-3">
-                        <span class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white text-brand font-bold text-lg tracking-wide shadow-lg select-none">SW</span>
+                        @include('partials.brand-mark', ['size' => 'w-12 h-12'])
                         <div class="leading-none">
-                            <span class="text-2xl font-black tracking-tight block">WEBSEAT</span>
-                            <span class="text-[11px] font-bold tracking-[0.25em] text-white/70 block mt-1.5">BY ZAQONE</span>
+                            <span class="text-2xl font-black tracking-tight block">nusa<span class="text-white">travel</span></span>
+                            <span class="text-[11px] font-bold tracking-[0.25em] text-white/70 block mt-1.5">TRIP SEAT</span>
                         </div>
                     </a>
                 </div>
@@ -79,16 +79,14 @@
             <div class="lg:w-1/2 flex items-center justify-center p-6 lg:p-12 bg-fog">
                 <div class="w-full max-w-md">
                     <div class="lg:hidden text-center mb-8">
-                        <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl text-white font-bold text-xl tracking-wide shadow-lg select-none mx-auto"
-                              style="background: linear-gradient(135deg, #ff1a3c 0%, #c40027 100%);">SW</span>
-                        <h1 class="text-3xl font-black tracking-tight mt-4">WEBSEAT</h1>
-                        <p class="text-xs font-bold tracking-[0.25em] text-charcoal mt-1.5">BY ZAQONE</p>
+                        @include('partials.brand-mark', ['size' => 'w-14 h-14 mx-auto'])
+                        <h1 class="text-3xl font-black tracking-tight mt-4">nusa<span class="text-brand">travel</span></h1>
+                        <p class="text-xs font-bold tracking-[0.25em] text-charcoal mt-1.5">TRIP SEAT</p>
                     </div>
 
                     <div class="bg-white rounded-3xl p-8 shadow-sm border border-line">
                         <div class="mb-8">
-                            <span class="hidden lg:inline-flex items-center justify-center w-14 h-14 rounded-2xl text-white font-bold text-xl tracking-wide shadow-lg select-none mb-6"
-                                  style="background: linear-gradient(135deg, #ff1a3c 0%, #c40027 100%);">SW</span>
+                            @include('partials.brand-mark', ['size' => 'w-14 h-14 mb-6 hidden lg:inline-flex'])
                             <h2 class="text-2xl font-black tracking-tight">Welcome back</h2>
                             <p class="text-charcoal text-sm mt-1.5">Enter your credentials to access the dashboard.</p>
                         </div>
