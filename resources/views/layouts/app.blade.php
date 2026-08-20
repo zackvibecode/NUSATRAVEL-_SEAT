@@ -34,11 +34,6 @@
                 <nav class="flex-1 px-3 py-3 space-y-0.5">
                     @php
                         $isAdmin = auth()->user()->isAdmin();
-                        // Badge counts Belum Bayar + Partial only (active payment follow-ups)
-                        $paymentAlertCount = \App\Models\Registration::query()
-                            ->forPic(auth()->user()->picFilterName())
-                            ->requiresPaymentFollowUp()
-                            ->count();
                         // Badge counts open upcoming trips that still need registrations
                         $attentionTripsCount = \App\Models\Departure::query()
                             ->withSum('registrations as registered_pax_sum', 'pax')
@@ -91,15 +86,6 @@
                                 'label' => 'Need Partner',
                                 'short' => 'Partner',
                                 'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
-                            ],
-                            [
-                                'route' => 'payment-alerts.index',
-                                'pattern' => 'payment-alerts.*',
-                                'label' => 'Payment Alert',
-                                'short' => 'Pay',
-                                'admin' => true,
-                                'badge' => $paymentAlertCount,
-                                'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
                             ],
                             [
                                 'route' => 'reports.index',

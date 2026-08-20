@@ -133,112 +133,9 @@ class PaymentAlertTest extends TestCase
         $this->assertFalse($reg->requires_follow_up);
     }
 
-    public function test_status_filter_paid_excludes_manual_pending(): void
-    {
-        $this->registration(['name' => 'Manual Pending', 'payment_status' => 'pending']);
-        $this->registration(['name' => 'Invoice Paid', 'invoice_amount' => 500, 'total_paid' => 500]);
-
-        $response = $this->actingAs($this->admin)
-            ->get(route('payment-alerts.index', ['status' => 'paid']));
-
-        $response->assertOk()
-            ->assertSee('Invoice Paid')
-            ->assertDontSee('Manual Pending');
-    }
-
-    public function test_search_works_without_crashing(): void
-    {
-        $this->registration([
-            'name' => 'Zack Customer',
-            'pic_utama' => 'Zack',
-            'invoice_no' => 'INV-SEARCH-1',
-            'invoice_amount' => 500,
-            'total_paid' => 0,
-        ]);
-
-        $response = $this->actingAs($this->admin)
-            ->get(route('payment-alerts.index', ['search' => 'zack']));
-
-        $response->assertOk()->assertSee('Zack Customer');
-    }
-
-    public function test_kpi_counts_manual_and_synced_records(): void
-    {
-        $this->registration(['name' => 'Manual Pending', 'payment_status' => 'pending']);
-        $this->registration(['name' => 'Synced Unpaid', 'invoice_amount' => 500, 'total_paid' => 0]);
-
-        $response = $this->actingAs($this->admin)->get(route('payment-alerts.index'));
-
-        $response->assertOk()
-            ->assertSee('Manual Pending')
-            ->assertSee('Synced Unpaid');
-    }
-
-    public function test_admin_sees_all_pics_payment_records(): void
-    {
-        $this->registration([
-            'name' => 'Zack Customer',
-            'pic_utama' => 'Zack',
-            'invoice_amount' => 500,
-            'total_paid' => 0,
-        ]);
-        $this->registration([
-            'name' => 'Aina Customer',
-            'pic_in_house' => 'Aina Kamal',
-            'invoice_amount' => 700,
-            'total_paid' => 200,
-        ]);
-        $this->registration([
-            'name' => 'Other Customer',
-            'pic_utama' => 'Someone Else',
-            'invoice_amount' => 900,
-            'total_paid' => 900,
-        ]);
-
-        $response = $this->actingAs($this->admin)->get(route('payment-alerts.index'));
-
-        $response->assertOk()
-            ->assertSee('Zack Customer')
-            ->assertSee('Aina Customer')
-            ->assertSee('Other Customer');
-    }
-
-    public function test_pic_only_sees_own_records(): void
-    {
-        $this->registration([
-            'name' => 'Zack Customer',
-            'pic_utama' => 'Zack',
-            'invoice_amount' => 500,
-            'total_paid' => 0,
-        ]);
-        $this->registration([
-            'name' => 'Aina Customer',
-            'pic_in_house' => 'Aina Kamal',
-            'invoice_amount' => 700,
-            'total_paid' => 200,
-        ]);
-        $this->registration([
-            'name' => 'Other Customer',
-            'pic_utama' => 'Someone Else',
-            'invoice_amount' => 900,
-            'total_paid' => 0,
-        ]);
-
-        // Payment alerts is admin-only; sales users cannot access the page.
-        $this->actingAs($this->picZack)->get(route('payment-alerts.index'))->assertForbidden();
-
-        // Admins see every PIC's records.
-        $this->actingAs($this->admin)->get(route('payment-alerts.index'))
-            ->assertOk()
-            ->assertSee('Zack Customer')
-            ->assertSee('Aina Customer')
-            ->assertSee('Other Customer');
-    }
-
     public function test_pic_matching_is_case_insensitive(): void
     {
-        // The forPic scope (used for the admin badge count and model-level
-        // scoping) matches case-insensitively against PIC Utama / In House.
+        // The forPic scope matches case-insensitively against PIC Utama / In House.
         $this->registration([
             'name' => 'Aina Customer',
             'pic_in_house' => 'aina kamal',
@@ -252,22 +149,18 @@ class PaymentAlertTest extends TestCase
         );
     }
 
-    public function test_badge_counts_only_belum_bayar_and_partial(): void
+    public function test_requires_payment_follow_up_scope_counts_belum_bayar_and_partial(): void
     {
         $this->registration(['invoice_amount' => 500, 'total_paid' => 0]); // belum bayar
         $this->registration(['invoice_amount' => 500, 'total_paid' => 100]); // partial
         $this->registration(['invoice_amount' => 500, 'total_paid' => 500]); // paid
         $this->registration(['invoice_status' => 'cancelled', 'invoice_amount' => 500, 'total_paid' => 0]); // cancelled
 
-        $response = $this->actingAs($this->admin)->get(route('dashboard'));
-
-        $response->assertOk();
-
         $this->assertSame(2, Registration::requiresPaymentFollowUp()->count());
         $this->assertSame(2, (clone Registration::query())->requiresPaymentFollowUp()->count());
     }
 
-    public function test_badge_respects_pic_scope(): void
+    public function test_requires_payment_follow_up_respects_pic_scope(): void
     {
         $this->registration([
             'pic_utama' => 'Zack',
@@ -284,60 +177,6 @@ class PaymentAlertTest extends TestCase
             1,
             (clone Registration::query())->forPic($this->picZack->picFilterName())->requiresPaymentFollowUp()->count()
         );
-    }
-
-    public function test_payment_page_shows_kpi_totals(): void
-    {
-        $this->registration([
-            'name' => 'Belum Bayar One',
-            'invoice_amount' => 500,
-            'total_paid' => 0,
-        ]);
-        $this->registration([
-            'name' => 'Partial One',
-            'invoice_amount' => 1000,
-            'total_paid' => 400,
-        ]);
-        $this->registration([
-            'name' => 'Paid One',
-            'invoice_amount' => 800,
-            'total_paid' => 800,
-        ]);
-
-        $response = $this->actingAs($this->admin)->get(route('payment-alerts.index'));
-
-        $response->assertOk()
-            ->assertSee('RM 1,100.00') // outstanding = 500 + 600
-            ->assertSee('Belum Bayar')
-            ->assertSee('Partial');
-    }
-
-    public function test_invoice_url_link_is_rendered(): void
-    {
-        $this->registration([
-            'name' => 'Invoice Linked Customer',
-            'invoice_amount' => 500,
-            'total_paid' => 0,
-            'invoice_url' => 'https://billing.example.com/invoice/12345',
-        ]);
-
-        $response = $this->actingAs($this->admin)->get(route('payment-alerts.index'));
-
-        $response->assertOk()
-            ->assertSee('href="https://billing.example.com/invoice/12345"', false);
-    }
-
-    public function test_status_filter_works(): void
-    {
-        $this->registration(['name' => 'Unpaid Customer', 'invoice_amount' => 500, 'total_paid' => 0]);
-        $this->registration(['name' => 'Paid Customer', 'invoice_amount' => 500, 'total_paid' => 500]);
-
-        $response = $this->actingAs($this->admin)
-            ->get(route('payment-alerts.index', ['status' => 'paid']));
-
-        $response->assertOk()
-            ->assertSee('Paid Customer')
-            ->assertDontSee('Unpaid Customer');
     }
 
     public function test_sync_imports_invoice_and_pic_fields(): void

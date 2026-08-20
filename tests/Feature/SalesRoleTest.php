@@ -82,11 +82,6 @@ class SalesRoleTest extends TestCase
         $this->actingAs($this->sales)->get(route('hermes.updates'))->assertOk();
     }
 
-    public function test_sales_cannot_access_payment_alerts(): void
-    {
-        $this->actingAs($this->sales)->get(route('payment-alerts.index'))->assertForbidden();
-    }
-
     public function test_sales_can_view_attention_trips(): void
     {
         $package = Package::create(['name' => 'P', 'destination' => 'D', 'status' => 'active']);
@@ -294,8 +289,7 @@ class SalesRoleTest extends TestCase
             ->assertDontSee('href="'.route('users.index').'"', false)
             ->assertDontSee('href="'.route('packages.index').'"', false)
             ->assertDontSee('href="'.route('hermes.chat').'"', false)
-            ->assertSee('href="'.route('hermes.updates').'"', false)
-            ->assertDontSee('href="'.route('payment-alerts.index').'"', false);
+            ->assertSee('href="'.route('hermes.updates').'"', false);
     }
 
     public function test_admin_sidebar_shows_admin_links(): void
@@ -305,8 +299,7 @@ class SalesRoleTest extends TestCase
         $response->assertOk()
             ->assertSee('href="'.route('reports.index').'"', false)
             ->assertSee('href="'.route('users.index').'"', false)
-            ->assertSee('href="'.route('hermes.updates').'"', false)
-            ->assertSee('href="'.route('payment-alerts.index').'"', false);
+            ->assertSee('href="'.route('hermes.updates').'"', false);
     }
 
     public function test_admin_can_create_sales_user(): void

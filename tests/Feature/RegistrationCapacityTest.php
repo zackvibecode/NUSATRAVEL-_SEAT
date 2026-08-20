@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\HermesSeatActivity;
 use App\Models\Departure;
 use App\Models\Package;
 use App\Models\Registration;
@@ -105,5 +106,58 @@ class RegistrationCapacityTest extends TestCase
 
         $response->assertSessionHasErrors('pax');
         $this->assertSame(1, $b->fresh()->pax);
+    }
+
+    public function test_store_logs_hermes_seat_activity(): void
+    {
+        $user = User::factory()->create();
+        $departure = $this->seedDeparture(10);
+
+        $this->actingAs($user)->post(route('registrations.store'), [
+            'departure_id' => $departure->id,
+            'name' => 'Ahmad Sufian',
+            'pax' => 2,
+            'payment_status' => 'pending',
+        ])->assertRedirect();
+
+        $activity = HermesSeatActivity::query()->where('actor_name', 'Ahmad Sufian')->firstOrFail();
+
+        $this->assertSame('registration_created', $activity->activity_type);
+        $this->assertSame(2, $activity->seat_delta);
+        $this->assertSame('TRANSJAVA', $activity->package_name);
+    }
+
+    public function test_update_logs_hermes_seat_activity_delta(): void
+    {
+        $user = User::factory()->create();
+        $departure = $this->seedDeparture(10);
+
+        $reg = Registration::create(['departure_id' => $departure->id, 'name' => 'A', 'pax' => 2]);
+
+        $this->actingAs($user)->put(route('registrations.update', $reg), [
+            'name' => 'A',
+            'pax' => 4,
+            'payment_status' => 'pending',
+        ])->assertRedirect();
+
+        $activity = HermesSeatActivity::query()->where('actor_name', 'A')->firstOrFail();
+
+        $this->assertSame('registration_updated', $activity->activity_type);
+        $this->assertSame(2, $activity->seat_delta); // 4 - 2
+    }
+
+    public function test_destroy_logs_hermes_seat_activity_cancellation(): void
+    {
+        $user = User::factory()->create();
+        $departure = $this->seedDeparture(10);
+
+        $reg = Registration::create(['departure_id' => $departure->id, 'name' => 'A', 'pax' => 3]);
+
+        $this->actingAs($user)->delete(route('registrations.destroy', $reg))->assertRedirect();
+
+        $activity = HermesSeatActivity::query()->where('actor_name', 'A')->firstOrFail();
+
+        $this->assertSame('registration_deleted', $activity->activity_type);
+        $this->assertSame(-3, $activity->seat_delta);
     }
 }

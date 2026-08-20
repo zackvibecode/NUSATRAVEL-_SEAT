@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Departure;
 use App\Models\Registration;
 use App\Services\ActivityLogger;
+use App\Services\HermesSeatActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RegistrationController extends Controller
 {
-    public function __construct(private ActivityLogger $audit) {}
+    public function __construct(
+        private ActivityLogger $audit,
+        private HermesSeatActivityLogger $seatActivity,
+    ) {}
 
     /**
      * Store a registration. Server-side over-capacity validation (PRD 9.2).
@@ -57,6 +61,15 @@ class RegistrationController extends Controller
                     ->reject(fn ($_, $key) => in_array($key, ['departure_id'], true))
                     ->map(fn ($value) => ['old' => null, 'new' => $value])
                     ->all());
+
+                // Surface the new customer in the Hermes Update feed + popup.
+                $this->seatActivity->record(
+                    $departure,
+                    (int) $data['pax'],
+                    'registration_created',
+                    $data['name'],
+                    'Pax '.$data['pax'],
+                );
             });
         } catch (\RuntimeException $e) {
             return back()
@@ -96,7 +109,7 @@ class RegistrationController extends Controller
         $original = $registration->getRawOriginal();
 
         try {
-            DB::transaction(function () use ($data, $registration): void {
+            DB::transaction(function () use ($data, $registration, $original): void {
                 // Lock the departure row so concurrent edits cannot overbook.
                 $departure = Departure::query()->lockForUpdate()->findOrFail($registration->departure_id);
 
@@ -111,6 +124,17 @@ class RegistrationController extends Controller
                 }
 
                 $registration->update($data);
+
+                // Surface the change in the Hermes Update feed + popup.
+                $oldPax = (int) ($original['pax'] ?? 0);
+                $newPax = (int) $data['pax'];
+                $this->seatActivity->record(
+                    $departure,
+                    $newPax - $oldPax,
+                    'registration_updated',
+                    $data['name'],
+                    "Pax {$oldPax}->{$newPax}",
+                );
             });
         } catch (\RuntimeException $e) {
             return back()
@@ -136,6 +160,15 @@ class RegistrationController extends Controller
             'pax' => ['old' => $registration->pax, 'new' => null],
             'payment_status' => ['old' => $registration->payment_status, 'new' => null],
         ]);
+
+        // Surface the cancellation in the Hermes Update feed + popup.
+        $this->seatActivity->record(
+            $departure,
+            -(int) $registration->pax,
+            'registration_deleted',
+            $registration->name,
+            'Cancelled',
+        );
 
         $registration->delete();
 

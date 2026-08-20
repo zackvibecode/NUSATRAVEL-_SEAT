@@ -9,7 +9,6 @@ use App\Http\Controllers\HermesGuideController;
 use App\Http\Controllers\NeedPartnerController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PasswordResetController;
-use App\Http\Controllers\PaymentAlertController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
@@ -53,8 +52,6 @@ Route::middleware('auth')->group(function () {
         Route::get('hermes', [HermesGuideController::class, 'index'])->name('hermes.guide');
         Route::get('hermes/chat', [HermesGuideController::class, 'chat'])->name('hermes.chat');
         Route::post('hermes/chat', [HermesGuideController::class, 'chatMessage'])->middleware('throttle:30,1')->name('hermes.chat.message');
-
-        Route::get('payment-alerts', [PaymentAlertController::class, 'index'])->name('payment-alerts.index');
 
         Route::resource('packages', PackageController::class)->except(['show']);
 
