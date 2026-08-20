@@ -167,7 +167,7 @@ class HermesDataService
         ]);
 
         $departure->load('package');
-        $this->activityLogger->record($departure, $departure->available_seats);
+        $this->activityLogger->recordFromSnapshot($departure, ['registered' => 0, 'total' => 0]);
 
         return $departure;
     }
@@ -177,7 +177,10 @@ class HermesDataService
      */
     public function updateDeparture(Departure $departure, array $data): Departure
     {
-        $before = $departure->available_seats;
+        $before = [
+            'registered' => $departure->registered_pax,
+            'total' => $departure->total_seats,
+        ];
         $payload = [];
         foreach (['package_id', 'departure_date', 'return_date', 'total_seats', 'price', 'airline', 'status', 'notes'] as $field) {
             if (array_key_exists($field, $data)) {
@@ -187,7 +190,7 @@ class HermesDataService
         $departure->update($payload);
 
         $fresh = $departure->fresh(['package']);
-        $this->activityLogger->record($fresh, $fresh->available_seats - $before);
+        $this->activityLogger->recordFromSnapshot($fresh, $before);
 
         return $fresh;
     }
@@ -252,7 +255,7 @@ class HermesDataService
             ]);
 
             $departure->loadMissing('package');
-            $this->activityLogger->record($departure, -$pax);
+            $this->activityLogger->record($departure, $pax);
 
             return $registration;
         });
@@ -296,7 +299,7 @@ class HermesDataService
             ]);
 
             $departure->loadMissing('package');
-            $this->activityLogger->record($departure, $oldPax - $pax);
+            $this->activityLogger->record($departure, $pax - $oldPax);
 
             return $registration->fresh();
         });
@@ -309,7 +312,7 @@ class HermesDataService
         $registration->delete();
 
         if ($departure) {
-            $this->activityLogger->record($departure, $pax);
+            $this->activityLogger->record($departure, -$pax);
         }
     }
 

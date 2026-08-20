@@ -183,7 +183,7 @@ class DropboxExcelImportTest extends TestCase
         $this->assertDatabaseCount('hermes_seat_activities', 0);
     }
 
-    public function test_pax_increase_records_negative_seat_activity(): void
+    public function test_pax_increase_records_positive_seat_activity(): void
     {
         $this->withToken($this->token)
             ->postJson('/api/imports/dropbox-excel', $this->capacityOnlyPayload(25))
@@ -212,7 +212,7 @@ class DropboxExcelImportTest extends TestCase
         $activity = HermesSeatActivity::firstOrFail();
         $this->assertSame('TRANSJAVA', $activity->package_name);
         $this->assertTrue($activity->departure_date->isSameDay('2026-09-15'));
-        $this->assertSame(-3, $activity->seat_delta);
+        $this->assertSame(3, $activity->seat_delta);
     }
 
     public function test_dashboard_shows_hermes_activity_using_travel_date(): void

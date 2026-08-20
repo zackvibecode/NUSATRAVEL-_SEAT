@@ -55,7 +55,7 @@ class DropboxExcelImportService
         /** @var array<string, Departure> */
         $departureIndex = [];
 
-        $availableBefore = $this->activityLogger->snapshotAvailable(
+        $occupancyBefore = $this->activityLogger->snapshotOccupancy(
             $this->findDeparturesTouchedByPayload($payload),
         );
 
@@ -104,8 +104,8 @@ class DropboxExcelImportService
         $status = count($errors) > 0 ? 'completed_with_errors' : 'completed';
 
         foreach ($this->findDeparturesTouchedByPayload($payload) as $departure) {
-            $before = $availableBefore[$departure->id] ?? 0;
-            $this->activityLogger->record($departure, $departure->available_seats - $before);
+            $before = $occupancyBefore[$departure->id] ?? ['registered' => 0, 'total' => 0];
+            $this->activityLogger->recordFromSnapshot($departure, $before);
         }
 
         $run = ImportRun::create([

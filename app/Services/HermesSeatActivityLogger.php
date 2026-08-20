@@ -24,15 +24,29 @@ class HermesSeatActivityLogger
     }
 
     /**
-     * @param  iterable<int, Departure>  $departures
-     * @return array<int, int> departure id => available seats
+     * @param  array{registered: int, total: int}  $before
      */
-    public function snapshotAvailable(iterable $departures): array
+    public function recordFromSnapshot(Departure $departure, array $before): void
+    {
+        $delta = ($departure->registered_pax - $before['registered'])
+            + ($departure->total_seats - $before['total']);
+
+        $this->record($departure, $delta);
+    }
+
+    /**
+     * @param  iterable<int, Departure>  $departures
+     * @return array<int, array{registered: int, total: int}>
+     */
+    public function snapshotOccupancy(iterable $departures): array
     {
         $snapshot = [];
 
         foreach ($departures as $departure) {
-            $snapshot[$departure->id] = $departure->available_seats;
+            $snapshot[$departure->id] = [
+                'registered' => $departure->registered_pax,
+                'total' => $departure->total_seats,
+            ];
         }
 
         return $snapshot;

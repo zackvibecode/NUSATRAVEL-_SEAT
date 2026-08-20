@@ -77,9 +77,9 @@ class SalesRoleTest extends TestCase
         $this->actingAs($this->sales)->get(route('calendar.index'))->assertOk();
     }
 
-    public function test_sales_cannot_access_hermes_updates(): void
+    public function test_sales_can_access_hermes_updates(): void
     {
-        $this->actingAs($this->sales)->get(route('hermes.updates'))->assertForbidden();
+        $this->actingAs($this->sales)->get(route('hermes.updates'))->assertOk();
     }
 
     public function test_sales_cannot_access_participants(): void
@@ -299,7 +299,7 @@ class SalesRoleTest extends TestCase
             ->assertDontSee('href="'.route('users.index').'"', false)
             ->assertDontSee('href="'.route('packages.index').'"', false)
             ->assertDontSee('href="'.route('hermes.chat').'"', false)
-            ->assertDontSee('href="'.route('hermes.updates').'"', false)
+            ->assertSee('href="'.route('hermes.updates').'"', false)
             ->assertDontSee('href="'.route('participants.index').'"', false)
             ->assertDontSee('href="'.route('payment-alerts.index').'"', false);
     }

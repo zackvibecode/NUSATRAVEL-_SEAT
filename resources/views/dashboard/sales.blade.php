@@ -101,6 +101,12 @@
             <div class="bg-surface rounded-lg border border-line overflow-hidden">
                 <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-line flex items-center justify-between gap-3">
                     <h3 class="font-semibold text-base tracking-tight">Hermes Update</h3>
+                    <a href="{{ route('hermes.updates') }}" class="text-sm font-bold text-brand hover:text-brand-hover flex items-center gap-1 flex-shrink-0">
+                        View all
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
                 </div>
                 <div class="divide-y divide-line max-h-64 overflow-y-auto">
                     @forelse ($hermesSeatActivities as $activity)

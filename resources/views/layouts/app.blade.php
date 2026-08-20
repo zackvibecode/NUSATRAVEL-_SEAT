@@ -60,14 +60,6 @@
                                 'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
                             ],
                             [
-                                'route' => 'hermes.updates',
-                                'pattern' => 'hermes.updates',
-                                'label' => 'Hermes Update',
-                                'short' => 'Update',
-                                'admin' => true,
-                                'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>',
-                            ],
-                            [
                                 'route' => 'departures.index',
                                 'pattern' => 'departures.*',
                                 'label' => 'Trips / Departures',
@@ -147,6 +139,16 @@
                             ],
                         ];
 
+                        $footerNavItems = [
+                            [
+                                'route' => 'hermes.updates',
+                                'pattern' => 'hermes.updates',
+                                'label' => 'Hermes Update',
+                                'short' => 'Update',
+                                'icon' => '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>',
+                            ],
+                        ];
+
                         $navItems = array_filter($navItems, fn ($item) => ! ($item['admin'] ?? false) || $isAdmin);
                     @endphp
 
@@ -167,8 +169,18 @@
                     @endforeach
                 </nav>
 
-                <div class="sidebar-footer px-5 py-5 border-t border-line text-sm">
-                    <div class="sidebar-user flex items-center gap-3">
+                <div class="sidebar-footer px-3 py-5 border-t border-line text-sm">
+                    @foreach ($footerNavItems as $item)
+                        @php
+                            $isActive = request()->routeIs($item['pattern']);
+                        @endphp
+                        <a href="{{ route($item['route']) }}" title="{{ $item['label'] }}"
+                           class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors {{ $isActive ? 'bg-fog text-ink font-semibold' : 'text-charcoal hover:bg-fog hover:text-ink' }}">
+                            <span class="{{ $isActive ? 'text-ink' : 'text-charcoal' }} flex-shrink-0">{!! $item['icon'] !!}</span>
+                            <span class="sidebar-label whitespace-nowrap flex-1">{{ $item['label'] }}</span>
+                        </a>
+                    @endforeach
+                    <div class="sidebar-user flex items-center gap-3 px-3 mt-2">
                         <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand-soft text-brand font-bold text-sm flex-shrink-0" title="{{ auth()->user()->name }}">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </span>
@@ -177,10 +189,10 @@
                             <div class="text-xs text-charcoal truncate">{{ auth()->user()->email }}</div>
                         </div>
                     </div>
-                    <div class="mt-3">
+                    <div class="mt-3 px-3">
                         @include('partials.theme-toggle')
                     </div>
-                    <form method="POST" action="{{ route('logout') }}" class="mt-1">
+                    <form method="POST" action="{{ route('logout') }}" class="mt-1 px-3">
                         @csrf
                         <button type="submit" title="Logout"
                                 class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-charcoal hover:bg-fog hover:text-ink transition-colors">
@@ -211,7 +223,7 @@
             <!-- Mobile bottom nav: 4 primary items + More drawer -->
             @php
                 $primaryMobile = collect($navItems)->take(4)->all();
-                $secondaryMobile = collect($navItems)->slice(4)->values()->all();
+                $secondaryMobile = collect($navItems)->slice(4)->merge($footerNavItems)->values()->all();
                 $secondaryActive = collect($secondaryMobile)->contains(fn ($item) => request()->routeIs($item['pattern']));
             @endphp
             <nav class="md:hidden fixed bottom-0 inset-x-0 z-20 bg-surface border-t border-line flex items-center justify-around py-2 px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]">

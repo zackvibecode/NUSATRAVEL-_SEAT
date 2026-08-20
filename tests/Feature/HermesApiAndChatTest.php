@@ -195,7 +195,7 @@ class HermesApiAndChatTest extends TestCase
         $activity = HermesSeatActivity::firstOrFail();
         $this->assertSame('Chengdu', $activity->package_name);
         $this->assertTrue($activity->departure_date->isSameDay('2026-09-02'));
-        $this->assertSame(-3, $activity->seat_delta);
+        $this->assertSame(3, $activity->seat_delta);
 
         HermesSeatActivity::query()->delete();
 
