@@ -156,6 +156,8 @@ class HermesApiAndChatTest extends TestCase
         $this->assertSame('Yunnan', $created->package_name);
         $this->assertTrue($created->departure_date->isSameDay('2026-08-25'));
         $this->assertSame(10, $created->seat_delta);
+        $this->assertSame('departure_created', $created->activity_type);
+        $this->assertStringContainsString('Total seats: 10', $created->activity_note ?? '');
 
         HermesSeatActivity::query()->delete();
 
@@ -168,6 +170,8 @@ class HermesApiAndChatTest extends TestCase
         $this->assertSame('Yunnan', $updated->package_name);
         $this->assertTrue($updated->departure_date->isSameDay('2026-08-25'));
         $this->assertSame(-3, $updated->seat_delta);
+        $this->assertSame('departure_updated', $updated->activity_type);
+        $this->assertStringContainsString('10->7', $updated->activity_note ?? '');
     }
 
     public function test_registration_pax_change_records_seat_activity(): void
@@ -196,6 +200,8 @@ class HermesApiAndChatTest extends TestCase
         $this->assertSame('Chengdu', $activity->package_name);
         $this->assertTrue($activity->departure_date->isSameDay('2026-09-02'));
         $this->assertSame(3, $activity->seat_delta);
+        $this->assertSame('registration_created', $activity->activity_type);
+        $this->assertSame('Ahmad', $activity->actor_name);
 
         HermesSeatActivity::query()->delete();
 

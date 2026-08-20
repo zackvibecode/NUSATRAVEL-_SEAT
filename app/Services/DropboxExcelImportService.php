@@ -105,7 +105,18 @@ class DropboxExcelImportService
 
         foreach ($this->findDeparturesTouchedByPayload($payload) as $departure) {
             $before = $occupancyBefore[$departure->id] ?? ['registered' => 0, 'total' => 0];
-            $this->activityLogger->recordFromSnapshot($departure, $before);
+            $paxChange = $departure->registered_pax - $before['registered'];
+            $seatChange = $departure->total_seats - $before['total'];
+            $note = ($paxChange !== 0 ? sprintf('%+d pax', $paxChange) : '')
+                .($paxChange !== 0 && $seatChange !== 0 ? ', ' : '')
+                .($seatChange !== 0 ? sprintf('%+d seats', $seatChange) : '');
+            $this->activityLogger->recordFromSnapshot(
+                $departure,
+                $before,
+                'import',
+                null,
+                $note !== '' ? $note.' via Excel' : 'Synced via Excel',
+            );
         }
 
         $run = ImportRun::create([

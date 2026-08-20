@@ -167,7 +167,13 @@ class HermesDataService
         ]);
 
         $departure->load('package');
-        $this->activityLogger->recordFromSnapshot($departure, ['registered' => 0, 'total' => 0]);
+        $this->activityLogger->record(
+            $departure,
+            $departure->total_seats,
+            'departure_created',
+            null,
+            'Total seats: '.$departure->total_seats,
+        );
 
         return $departure;
     }
@@ -190,7 +196,7 @@ class HermesDataService
         $departure->update($payload);
 
         $fresh = $departure->fresh(['package']);
-        $this->activityLogger->recordFromSnapshot($fresh, $before);
+        $this->activityLogger->recordFromSnapshot($fresh, $before, 'departure_updated', null, "Total: {$before['total']}->{$fresh->total_seats}");
 
         return $fresh;
     }
@@ -255,7 +261,13 @@ class HermesDataService
             ]);
 
             $departure->loadMissing('package');
-            $this->activityLogger->record($departure, $pax);
+            $this->activityLogger->record(
+                $departure,
+                $pax,
+                'registration_created',
+                trim((string) $data['name']),
+                $data['notes'] ?? null,
+            );
 
             return $registration;
         });
@@ -299,7 +311,13 @@ class HermesDataService
             ]);
 
             $departure->loadMissing('package');
-            $this->activityLogger->record($departure, $pax - $oldPax);
+            $this->activityLogger->record(
+                $departure,
+                $pax - $oldPax,
+                'registration_updated',
+                $registration->name,
+                "Pax {$oldPax}->{$pax}",
+            );
 
             return $registration->fresh();
         });
@@ -309,10 +327,11 @@ class HermesDataService
     {
         $departure = $registration->departure()->with('package')->first();
         $pax = $registration->pax;
+        $name = $registration->name;
         $registration->delete();
 
         if ($departure) {
-            $this->activityLogger->record($departure, -$pax);
+            $this->activityLogger->record($departure, -$pax, 'registration_deleted', $name);
         }
     }
 

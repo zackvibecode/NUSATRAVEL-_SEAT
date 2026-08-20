@@ -91,6 +91,26 @@
                                 {{ $activity->created_at->timezone('Asia/Kuala_Lumpur')->diffForHumans() }}
                             </span>
                         </div>
+                        @if ($activity->activity_type || $activity->actor_name || $activity->activity_note)
+                            <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-1.5 text-xs">
+                                @if ($activity->activity_type)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-brand-soft text-brand font-bold whitespace-nowrap">
+                                        {{ $activity->activity_type_label }}
+                                    </span>
+                                @endif
+                                @if ($activity->actor_name)
+                                    <span class="text-charcoal font-semibold inline-flex items-center gap-1 whitespace-nowrap">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                        </svg>
+                                        {{ $activity->actor_name }}
+                                    </span>
+                                @endif
+                                @if ($activity->activity_note)
+                                    <span class="text-charcoal/70 font-medium truncate">{{ $activity->activity_note }}</span>
+                                @endif
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Seat delta badge -->

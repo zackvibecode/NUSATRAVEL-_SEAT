@@ -12,6 +12,9 @@ class HermesSeatActivity extends Model
         'package_name',
         'departure_date',
         'seat_delta',
+        'activity_type',
+        'actor_name',
+        'activity_note',
     ];
 
     protected function casts(): array
@@ -32,6 +35,21 @@ class HermesSeatActivity extends Model
         $prefix = $this->seat_delta > 0 ? '+' : '';
 
         return 'Seat '.$prefix.$this->seat_delta;
+    }
+
+    public function getActivityTypeLabelAttribute(): string
+    {
+        return match ($this->activity_type) {
+            'registration_created' => 'Pendaftaran',
+            'registration_updated' => 'Pax diubah',
+            'registration_deleted' => 'Pembatalan',
+            'departure_created' => 'Trip baru',
+            'departure_updated' => 'Kapasiti diubah',
+            'import' => 'Import Excel',
+            default => $this->activity_type
+                ? ucfirst(str_replace('_', ' ', $this->activity_type))
+                : '',
+        };
     }
 
     public function getUpdatedAtLabelAttribute(): string

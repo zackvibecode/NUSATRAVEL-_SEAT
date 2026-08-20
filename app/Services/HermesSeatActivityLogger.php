@@ -7,8 +7,13 @@ use App\Models\HermesSeatActivity;
 
 class HermesSeatActivityLogger
 {
-    public function record(Departure $departure, int $delta): void
-    {
+    public function record(
+        Departure $departure,
+        int $delta,
+        ?string $activityType = null,
+        ?string $actorName = null,
+        ?string $activityNote = null,
+    ): void {
         if ($delta === 0) {
             return;
         }
@@ -20,18 +25,26 @@ class HermesSeatActivityLogger
             'package_name' => $departure->package?->name ?? '',
             'departure_date' => $departure->departure_date?->toDateString(),
             'seat_delta' => $delta,
+            'activity_type' => $activityType,
+            'actor_name' => $actorName,
+            'activity_note' => $activityNote,
         ]);
     }
 
     /**
      * @param  array{registered: int, total: int}  $before
      */
-    public function recordFromSnapshot(Departure $departure, array $before): void
-    {
+    public function recordFromSnapshot(
+        Departure $departure,
+        array $before,
+        ?string $activityType = 'import',
+        ?string $actorName = null,
+        ?string $activityNote = null,
+    ): void {
         $delta = ($departure->registered_pax - $before['registered'])
             + ($departure->total_seats - $before['total']);
 
-        $this->record($departure, $delta);
+        $this->record($departure, $delta, $activityType, $actorName, $activityNote);
     }
 
     /**

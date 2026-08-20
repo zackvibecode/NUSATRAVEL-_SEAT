@@ -165,6 +165,7 @@ class DropboxExcelImportTest extends TestCase
         $this->assertSame('TRANSJAVA', $activity->package_name);
         $this->assertTrue($activity->departure_date->isSameDay('2026-09-15'));
         $this->assertSame(5, $activity->seat_delta);
+        $this->assertSame('import', $activity->activity_type);
     }
 
     public function test_unchanged_seats_do_not_record_activity(): void
@@ -214,6 +215,8 @@ class DropboxExcelImportTest extends TestCase
         $this->assertSame('TRANSJAVA', $activity->package_name);
         $this->assertTrue($activity->departure_date->isSameDay('2026-09-15'));
         $this->assertSame(3, $activity->seat_delta);
+        $this->assertSame('import', $activity->activity_type);
+        $this->assertStringContainsString('pax', $activity->activity_note ?? '');
     }
 
     public function test_dashboard_shows_hermes_activity_using_travel_date(): void
@@ -244,8 +247,10 @@ class DropboxExcelImportTest extends TestCase
             'package_name' => 'Yunnan',
             'departure_date' => '2026-08-25',
             'seat_delta' => -3,
+            'activity_type' => 'registration_deleted',
+            'actor_name' => 'Siti Aminah',
+            'activity_note' => 'Cancelled by customer',
         ]);
-        $activity = HermesSeatActivity::firstOrFail();
 
         $this->actingAs($user)
             ->get(route('hermes.updates'))
@@ -253,7 +258,10 @@ class DropboxExcelImportTest extends TestCase
             ->assertSee('Hermes Update')
             ->assertSee('Yunnan')
             ->assertSee('Seat -3')
-            ->assertSee('25 Aug 2026');
+            ->assertSee('25 Aug 2026')
+            ->assertSee('Pembatalan')
+            ->assertSee('Siti Aminah')
+            ->assertSee('Cancelled by customer');
     }
 
     public function test_legacy_available_seat_signs_display_as_occupancy_after_invert(): void
