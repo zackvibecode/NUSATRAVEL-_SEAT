@@ -10,6 +10,7 @@ Route::middleware([VerifyImportToken::class, 'throttle:60,1'])->group(function (
         ->name('api.imports.dropbox-excel');
 
     Route::get('/hermes/overview', [HermesApiController::class, 'overview']);
+    Route::get('/hermes/instructions', [HermesApiController::class, 'instructions']);
     Route::post('/hermes/chat', [HermesApiController::class, 'chat']);
 
     Route::get('/hermes/packages', [HermesApiController::class, 'packages']);

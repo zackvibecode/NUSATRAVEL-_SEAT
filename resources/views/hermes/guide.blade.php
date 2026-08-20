@@ -67,6 +67,17 @@
     </div>
 
     <div class="bg-surface rounded-xl p-6 shadow-sm border border-line mb-8">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal mb-4">Auto-read rules (untuk Hermes agent)</h3>
+        <p class="text-sm text-charcoal mb-3">
+            Hermes fetch endpoint ini sekali sebelum buat sebarang update — dia akan tahu semua rules + field apa yang perlu diisi.
+        </p>
+        <code class="block text-xs bg-fog rounded-2xl px-3 py-2 break-all mb-3">{{ rtrim($apiBase, '/') }}/instructions</code>
+        <p class="text-xs text-charcoal leading-relaxed">
+            Tambah pada system prompt Hermes: <em>"Before any write, GET {base}/instructions and follow the rules and field specs returned."</em>
+        </p>
+    </div>
+
+    <div class="bg-surface rounded-xl p-6 shadow-sm border border-line mb-8">
         <h3 class="text-sm font-bold uppercase tracking-wider text-charcoal mb-4">Hermes chatbot API (baca / edit / delete)</h3>
         <p class="text-sm text-charcoal mb-4">
             Token sama: <code class="bg-fog px-1.5 py-0.5 rounded">Authorization: Bearer SEATWEB_IMPORT_TOKEN</code>
@@ -84,6 +95,7 @@
                 <tbody class="divide-y divide-line font-mono">
                     <tr><td class="py-2 pr-4">POST</td><td class="py-2 pr-4">/chat</td><td class="font-sans">Chat: {"message":"list package"}</td></tr>
                     <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/overview</td><td class="font-sans">Ringkasan counts</td></tr>
+                    <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/instructions</td><td class="font-sans">Rules + field spec penuh untuk agent (auto-read sebelum update)</td></tr>
                     <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/packages?q=</td><td class="font-sans">Baca / cari package</td></tr>
                     <tr><td class="py-2 pr-4">POST/PUT/DELETE</td><td class="py-2 pr-4">/packages</td><td class="font-sans">Create / edit / hard-delete</td></tr>
                     <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4">/departures?q=</td><td class="font-sans">Baca trip</td></tr>

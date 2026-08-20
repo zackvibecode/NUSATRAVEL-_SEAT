@@ -21,6 +21,37 @@ class HermesApiAndChatTest extends TestCase
         config(['services.import.token' => $this->token]);
     }
 
+    public function test_instructions_endpoint_returns_rules_and_field_specs(): void
+    {
+        $this->withToken($this->token)
+            ->getJson('/api/hermes/instructions')
+            ->assertOk()
+            ->assertJsonPath('agent_name', 'Hermes')
+            ->assertJsonStructure([
+                'agent_name',
+                'system',
+                'base_url',
+                'auth',
+                'seat_semantics',
+                'rules',
+                'endpoints' => [
+                    'overview',
+                    'chat',
+                    'list_packages',
+                    'create_package',
+                    'create_departure',
+                    'create_registration',
+                    'import_excel',
+                ],
+            ]);
+
+        $this->withToken($this->token)
+            ->getJson('/api/hermes/instructions')
+            ->assertOk()
+            ->assertJsonFragment(['path' => '/api/hermes/registrations'])
+            ->assertJsonFragment(['recommended']);
+    }
+
     public function test_hermes_can_crud_package_and_delete_registration(): void
     {
         $create = $this->withToken($this->token)->postJson('/api/hermes/packages', [
