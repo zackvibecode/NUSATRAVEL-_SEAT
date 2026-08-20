@@ -194,6 +194,7 @@ class HermesApiAndChatTest extends TestCase
             'departure_id' => $dep->json('id'),
             'name' => 'Ahmad',
             'pax' => 3,
+            'activity_note' => 'Didaftar oleh agent Zack',
         ])->assertCreated();
 
         $activity = HermesSeatActivity::firstOrFail();
@@ -202,6 +203,7 @@ class HermesApiAndChatTest extends TestCase
         $this->assertSame(3, $activity->seat_delta);
         $this->assertSame('registration_created', $activity->activity_type);
         $this->assertSame('Ahmad', $activity->actor_name);
+        $this->assertSame('Didaftar oleh agent Zack', $activity->activity_note);
 
         HermesSeatActivity::query()->delete();
 

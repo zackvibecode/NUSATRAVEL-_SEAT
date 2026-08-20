@@ -102,6 +102,7 @@ class HermesApiController extends Controller
             'airline' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', 'in:open,cancelled'],
             'notes' => ['nullable', 'string'],
+            'activity_note' => ['nullable', 'string', 'max:500'],
         ]);
 
         $departure = $this->hermes->createDeparture($data);
@@ -120,6 +121,7 @@ class HermesApiController extends Controller
             'airline' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', 'in:open,cancelled'],
             'notes' => ['nullable', 'string'],
+            'activity_note' => ['nullable', 'string', 'max:500'],
         ]);
 
         $departure = $this->hermes->updateDeparture($departure, $data);
@@ -159,6 +161,7 @@ class HermesApiController extends Controller
             'need_partner' => ['nullable', 'boolean'],
             'partner_gender' => ['nullable', 'in:male,female'],
             'notes' => ['nullable', 'string'],
+            'activity_note' => ['nullable', 'string', 'max:500'],
         ]);
 
         try {
@@ -179,6 +182,7 @@ class HermesApiController extends Controller
             'need_partner' => ['nullable', 'boolean'],
             'partner_gender' => ['nullable', 'in:male,female'],
             'notes' => ['nullable', 'string'],
+            'activity_note' => ['nullable', 'string', 'max:500'],
         ]);
 
         try {

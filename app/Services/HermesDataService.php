@@ -172,7 +172,7 @@ class HermesDataService
             $departure->total_seats,
             'departure_created',
             null,
-            'Total seats: '.$departure->total_seats,
+            $data['activity_note'] ?? 'Total seats: '.$departure->total_seats,
         );
 
         return $departure;
@@ -196,7 +196,7 @@ class HermesDataService
         $departure->update($payload);
 
         $fresh = $departure->fresh(['package']);
-        $this->activityLogger->recordFromSnapshot($fresh, $before, 'departure_updated', null, "Total: {$before['total']}->{$fresh->total_seats}");
+        $this->activityLogger->recordFromSnapshot($fresh, $before, 'departure_updated', null, $data['activity_note'] ?? "Total: {$before['total']}->{$fresh->total_seats}");
 
         return $fresh;
     }
@@ -266,7 +266,7 @@ class HermesDataService
                 $pax,
                 'registration_created',
                 trim((string) $data['name']),
-                $data['notes'] ?? null,
+                $data['activity_note'] ?? $data['notes'] ?? null,
             );
 
             return $registration;
@@ -316,7 +316,7 @@ class HermesDataService
                 $pax - $oldPax,
                 'registration_updated',
                 $registration->name,
-                "Pax {$oldPax}->{$pax}",
+                $data['activity_note'] ?? "Pax {$oldPax}->{$pax}",
             );
 
             return $registration->fresh();
