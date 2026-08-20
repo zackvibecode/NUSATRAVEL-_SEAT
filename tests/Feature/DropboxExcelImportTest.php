@@ -8,6 +8,7 @@ use App\Models\ImportRun;
 use App\Models\Package;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class DropboxExcelImportTest extends TestCase
@@ -253,6 +254,27 @@ class DropboxExcelImportTest extends TestCase
             ->assertSee('Yunnan')
             ->assertSee('Seat -3')
             ->assertSee('25 Aug 2026');
+    }
+
+    public function test_legacy_available_seat_signs_display_as_occupancy_after_invert(): void
+    {
+        $user = User::factory()->create();
+
+        HermesSeatActivity::create([
+            'package_name' => 'Makassar',
+            'departure_date' => '2026-11-12',
+            'seat_delta' => -2,
+        ]);
+
+        DB::table('hermes_seat_activities')->update([
+            'seat_delta' => DB::raw('-seat_delta'),
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('hermes.updates'))
+            ->assertOk()
+            ->assertSee('Seat +2')
+            ->assertDontSee('Seat -2');
     }
 
     /**
