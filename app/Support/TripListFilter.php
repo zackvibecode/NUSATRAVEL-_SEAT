@@ -65,7 +65,7 @@ class TripListFilter
         $this->seat = filled($params['seat'] ?? null) ? (string) $params['seat'] : null;
         $this->search = filled($params['search'] ?? null) ? trim((string) $params['search']) : null;
 
-        $defaultIncludePast = in_array($context, ['reports', 'participants', 'need_partner'], true);
+        $defaultIncludePast = in_array($context, ['reports', 'need_partner'], true);
         $this->includePast = ($params['past'] ?? null) === '1' || $defaultIncludePast;
 
         $defaults = self::defaultSort($context);
@@ -96,7 +96,7 @@ class TripListFilter
     {
         $allowed = match ($context) {
             'packages' => ['name', 'destination', 'departures_count'],
-            'participants', 'need_partner' => ['departure_date', 'name', 'package_name'],
+            'need_partner' => ['departure_date', 'name', 'package_name'],
             default => ['departure_date', 'package_name', 'destination'],
         };
 

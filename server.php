@@ -7,7 +7,6 @@
  * (public/), so static assets resolve correctly. Everything else goes
  * through the Laravel front controller.
  */
-
 $uri = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 $docroot = $_SERVER['DOCUMENT_ROOT'] ?? __DIR__.'/public';
 

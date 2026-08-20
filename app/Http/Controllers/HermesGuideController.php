@@ -44,10 +44,40 @@ class HermesGuideController extends Controller
 
         $activities = $query->paginate(30)->withQueryString();
 
+        // Customer changes (new / updated / cancelled) since this user's last visit,
+        // used for the "what's new" popup on page load.
+        $seenAt = $request->session()->get('hermes_updates_seen_at');
+        $freshActivities = collect();
+
+        if ($seenAt) {
+            try {
+                $seenAt = \Illuminate\Support\Carbon::parse($seenAt);
+            } catch (\Throwable) {
+                $seenAt = null;
+            }
+
+            if ($seenAt) {
+                $freshActivities = HermesSeatActivity::query()
+                    ->whereIn('activity_type', [
+                        'registration_created',
+                        'registration_updated',
+                        'registration_deleted',
+                    ])
+                    ->where('created_at', '>', $seenAt)
+                    ->latest()
+                    ->limit(50)
+                    ->get();
+            }
+        }
+
+        $request->session()->put('hermes_updates_seen_at', now());
+
         return view('hermes.updates', [
             'activities' => $activities,
             'packageFilter' => $request->string('package')->toString(),
             'monthFilter' => $request->integer('month'),
+            'freshActivities' => $freshActivities,
+            'seenAtLabel' => $seenAt ? $seenAt->timezone('Asia/Kuala_Lumpur')->format('D, j M Y g:ia') : null,
         ]);
     }
 

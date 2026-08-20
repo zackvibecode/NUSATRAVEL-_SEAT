@@ -137,4 +137,136 @@
             {{ $activities->links() }}
         </div>
     @endif
+
+    {{-- "What's new" popup: customer names new / updated / cancelled since last visit --}}
+    @if ($freshActivities->isNotEmpty())
+        <div id="whatsNewModal"
+             class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-ink/40 backdrop-blur-[2px]"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="whatsNewTitle">
+            <div class="bg-surface rounded-3xl shadow-xl border border-line w-full max-w-lg max-h-[85vh] flex flex-col">
+                {{-- Header --}}
+                <div class="px-6 sm:px-8 pt-6 sm:pt-8 pb-4 border-b border-line">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-11 h-11 rounded-2xl bg-brand-soft text-brand flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h3 id="whatsNewTitle" class="text-lg font-semibold tracking-tight text-ink">
+                                Apa yang baharu sejak anda buka kali terakhir
+                            </h3>
+                            <p class="text-xs text-charcoal mt-1 font-medium">
+                                @if ($seenAtLabel)
+                                    Sejak {{ $seenAtLabel }}
+                                @else
+                                    Perubahan terbaru Hermes
+                                @endif
+                                · {{ $freshActivities->count() }} kemaskini customer
+                            </p>
+                        </div>
+                        <button type="button"
+                                id="whatsNewClose"
+                                class="flex-shrink-0 -mr-2 -mt-2 p-2 rounded-full text-charcoal hover:bg-fog hover:text-ink transition-colors"
+                                aria-label="Tutup">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Grouped customer lists --}}
+                <div class="px-6 sm:px-8 py-5 overflow-y-auto flex-1">
+                    @php
+                        $grouped = $freshActivities->groupBy('activity_type');
+                        $groups = [
+                            'registration_created'  => ['label' => 'Baharu masuk', 'icon' => 'plus', 'classes' => 'bg-positive-soft text-positive'],
+                            'registration_updated'  => ['label' => 'Pax / detail diubah', 'icon' => 'edit', 'classes' => 'bg-warning-soft text-warning'],
+                            'registration_deleted'  => ['label' => 'Cancel / dibatalkan', 'icon' => 'minus', 'classes' => 'bg-red-50 text-red-600'],
+                        ];
+                    @endphp
+
+                    @foreach ($groups as $type => $meta)
+                        @if (isset($grouped[$type]) && $grouped[$type]->isNotEmpty())
+                            @php $rows = $grouped[$type]; @endphp
+                            <div class="mb-5 last:mb-0">
+                                <div class="flex items-center gap-2 mb-2.5">
+                                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg {{ $meta['classes'] }}">
+                                        @if ($meta['icon'] === 'plus')
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                        @elseif ($meta['icon'] === 'edit')
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        @else
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/></svg>
+                                        @endif
+                                    </span>
+                                    <h4 class="text-sm font-bold text-ink">{{ $meta['label'] }}</h4>
+                                    <span class="text-xs font-bold text-charcoal/60">{{ $rows->count() }}</span>
+                                </div>
+                                <ul class="space-y-1.5 ml-8">
+                                    @foreach ($rows as $row)
+                                        <li class="flex items-start gap-2 text-sm">
+                                            <span class="font-semibold text-ink truncate">{{ $row->actor_name ?: '(tiada nama)' }}</span>
+                                            <span class="text-charcoal/60 text-xs whitespace-nowrap">·</span>
+                                            <span class="text-xs text-charcoal truncate">{{ $row->package_name }}</span>
+                                            @if ($row->activity_note)
+                                                <span class="text-xs text-charcoal/70 font-medium truncate">— {{ $row->activity_note }}</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+
+                {{-- Footer --}}
+                <div class="px-6 sm:px-8 py-4 border-t border-line flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                    <button type="button"
+                            id="whatsNewDismiss"
+                            class="inline-flex justify-center items-center rounded-full px-5 py-2.5 text-sm font-bold text-white bg-brand hover:bg-brand-hover transition-colors">
+                        Ok, tengok sudah
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                const modal = document.getElementById('whatsNewModal');
+                if (!modal) return;
+
+                function openModal() {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeModal() {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    document.body.style.overflow = '';
+                }
+
+                // Auto-open on page load (robust whether script runs before or after DOM ready)
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', openModal);
+                } else {
+                    openModal();
+                }
+
+                document.getElementById('whatsNewClose')?.addEventListener('click', closeModal);
+                document.getElementById('whatsNewDismiss')?.addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+                });
+            })();
+        </script>
+    @endif
 @endsection

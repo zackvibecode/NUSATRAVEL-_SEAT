@@ -90,35 +90,6 @@ class TripListFilterTest extends TestCase
             ->assertDontSee('GREATWALL');
     }
 
-    public function test_participants_can_be_filtered_by_departure_month(): void
-    {
-        $sep = $this->createDeparture('SEP PKG', 'INDONESIA', '2026-09-10');
-        $oct = $this->createDeparture('OCT PKG', 'INDONESIA', '2026-10-10');
-
-        Registration::create([
-            'departure_id' => $sep->id,
-            'name' => 'Ali September',
-            'phone' => '0123456789',
-            'pax' => 2,
-            'need_partner' => false,
-        ]);
-
-        Registration::create([
-            'departure_id' => $oct->id,
-            'name' => 'Siti October',
-            'phone' => '0198765432',
-            'pax' => 1,
-            'need_partner' => false,
-        ]);
-
-        $response = $this->actingAs($this->user)
-            ->get(route('participants.index', ['month' => 9, 'year' => 2026]));
-
-        $response->assertOk()
-            ->assertSee('Ali September')
-            ->assertDontSee('Siti October');
-    }
-
     public function test_trip_list_filter_helper_applies_destination_to_departures(): void
     {
         $indonesiaPkg = Package::create(['name' => 'INDO', 'destination' => 'INDONESIA', 'status' => 'active']);

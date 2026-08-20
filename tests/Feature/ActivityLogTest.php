@@ -131,36 +131,4 @@ class ActivityLogTest extends TestCase
         $this->assertStringNotContainsString('super-secret-password', $raw);
         $this->assertArrayNotHasKey('password', ActivityLog::query()->latest('id')->first()->changes);
     }
-
-    public function test_admin_can_view_activity_log_page(): void
-    {
-        Registration::create([
-            'departure_id' => $this->departure->id,
-            'name' => 'Logged Customer',
-            'pax' => 1,
-        ]);
-
-        $this->actingAs($this->admin)
-            ->post(route('registrations.store'), [
-                'departure_id' => $this->departure->id,
-                'name' => 'Another Customer',
-                'pax' => 1,
-            ])->assertRedirect();
-
-        $response = $this->actingAs($this->admin)->get(route('activity-logs.index'));
-
-        $response->assertOk()
-            ->assertSee('Activity Log')
-            ->assertSee($this->admin->name)
-            ->assertSee('Another Customer');
-    }
-
-    public function test_sales_cannot_access_activity_log(): void
-    {
-        $sales = User::factory()->create(['role' => 'sales']);
-
-        $this->actingAs($sales)
-            ->get(route('activity-logs.index'))
-            ->assertForbidden();
-    }
 }

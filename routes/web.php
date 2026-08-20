@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
@@ -9,7 +8,6 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\HermesGuideController;
 use App\Http\Controllers\NeedPartnerController;
 use App\Http\Controllers\PackageController;
-use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PaymentAlertController;
 use App\Http\Controllers\RegistrationController;
@@ -56,7 +54,6 @@ Route::middleware('auth')->group(function () {
         Route::get('hermes/chat', [HermesGuideController::class, 'chat'])->name('hermes.chat');
         Route::post('hermes/chat', [HermesGuideController::class, 'chatMessage'])->middleware('throttle:30,1')->name('hermes.chat.message');
 
-        Route::get('participants', [ParticipantController::class, 'index'])->name('participants.index');
         Route::get('payment-alerts', [PaymentAlertController::class, 'index'])->name('payment-alerts.index');
 
         Route::resource('packages', PackageController::class)->except(['show']);
@@ -82,7 +79,5 @@ Route::middleware('auth')->group(function () {
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-
-        Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
     });
 });
